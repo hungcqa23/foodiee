@@ -1,4 +1,4 @@
-package com.example.captain2.ui.theme
+package com.example.foodiee.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

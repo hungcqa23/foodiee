@@ -1,4 +1,4 @@
-package com.example.captain2
+package com.example.foodiee
 
 import org.junit.Test
 
