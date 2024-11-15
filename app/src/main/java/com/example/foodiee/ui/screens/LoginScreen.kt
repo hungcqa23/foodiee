@@ -1,14 +1,15 @@
 package com.example.foodiee.ui.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.*
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.*
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -25,31 +26,46 @@ fun LoginScreen(navController: NavController) {
         if (username == "admin" && password == "password") {
             // Navigate to home screen
             navController.navigate("homeScreen")
-        } else
-        // Show error message
+        } else {
             errorMessage = "Invalid username or password"
+        }
     }
 
-    // UI for login screen
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
+            .padding(24.dp),
+        horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Center
     ) {
-        // Input fields for username and password
+        Text(
+            text = "Username",
+            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium),
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
         OutlinedTextField(
             value = username,
             onValueChange = { username = it },
-            label = { Text("Username") },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp),
+        )
+        if (errorMessage.isNotEmpty()) Text(
+            text = errorMessage,
+            color = MaterialTheme.colorScheme.error
+        )
+
+        Text(
+            text = "Password",
+            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold),
+            modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
         )
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
-            label = { Text("Password") },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp),
             visualTransformation = PasswordVisualTransformation(),
         )
         if (errorMessage.isNotEmpty()) Text(
@@ -57,8 +73,61 @@ fun LoginScreen(navController: NavController) {
             color = MaterialTheme.colorScheme.error
         )
 
-        Button(onClick = { handleLogin() }) {
-            Text("Login")
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End
+        ) {
+            Text(
+                text = "Forgot Password?",
+                style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold),
+                modifier = Modifier.padding(top = 16.dp)
+            )
+        }
+
+        Button(
+            onClick = { handleLogin() },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp),
+            shape = RoundedCornerShape(4.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = colorScheme.primary
+            )
+        ) {
+            Text(
+                "Sign In",
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontWeight = FontWeight.SemiBold,
+                ),
+            )
+        }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 12.dp), // Add some padding from the button
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = buildAnnotatedString {
+                    append("Don’t have an account? ")
+                    pushStringAnnotation(tag = "signUp", annotation = "signUp")
+                    withStyle(
+                        style = SpanStyle(
+                            color = colorScheme.primary,
+                            fontWeight = FontWeight.Bold,
+                        )
+                    ) {
+                        append("Create one")
+                    }
+                    pop()
+                },
+                modifier = Modifier.clickable {
+                    navController.navigate("homeScreen")
+                },
+                style = MaterialTheme.typography.bodyLarge
+            )
+
         }
     }
 }
