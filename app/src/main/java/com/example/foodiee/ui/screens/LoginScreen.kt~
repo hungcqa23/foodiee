@@ -12,6 +12,7 @@ import androidx.compose.ui.text.*
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
 @Composable
@@ -41,54 +42,58 @@ fun LoginScreen(navController: NavController) {
         Text(
             text = "Username",
             style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium),
-            modifier = Modifier.padding(bottom = 8.dp)
+            modifier = Modifier.padding(bottom = 16.dp)
         )
         OutlinedTextField(
             value = username,
             onValueChange = { username = it },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(48.dp),
+                .height(56.dp),
+            singleLine = true,
+            textStyle = TextStyle(
+                fontSize = 16.sp,
+            )
         )
-        if (errorMessage.isNotEmpty()) Text(
-            text = errorMessage,
-            color = MaterialTheme.colorScheme.error
-        )
+        if (errorMessage.isNotEmpty()) {
+            Text(
+                text = errorMessage,
+                color = colorScheme.error
+            )
+        } else {
+            Spacer(modifier = Modifier.height(20.dp))
+        }
 
         Text(
             text = "Password",
             style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold),
-            modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
+            modifier = Modifier.padding(top = 16.dp, bottom = 16.dp)
         )
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(48.dp),
+                .height(56.dp),
+            singleLine = true,
             visualTransformation = PasswordVisualTransformation(),
-        )
-        if (errorMessage.isNotEmpty()) Text(
-            text = errorMessage,
-            color = MaterialTheme.colorScheme.error
-        )
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.End
-        ) {
-            Text(
-                text = "Forgot Password?",
-                style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold),
-                modifier = Modifier.padding(top = 16.dp)
+            textStyle = TextStyle(
+                fontSize = 16.sp,
             )
+        )
+        if (errorMessage.isNotEmpty()) {
+            Text(
+                text = errorMessage,
+                color = colorScheme.error
+            )
+        } else {
+            Spacer(modifier = Modifier.height(20.dp))
         }
 
         Button(
             onClick = { handleLogin() },
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 16.dp),
+                .fillMaxWidth(),
             shape = RoundedCornerShape(4.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = colorScheme.primary
@@ -109,26 +114,19 @@ fun LoginScreen(navController: NavController) {
             horizontalArrangement = Arrangement.Center
         ) {
             Text(
-                text = buildAnnotatedString {
-                    append("Don’t have an account? ")
-                    pushStringAnnotation(tag = "signUp", annotation = "signUp")
-                    withStyle(
-                        style = SpanStyle(
-                            color = colorScheme.primary,
-                            fontWeight = FontWeight.Bold,
-                        )
-                    ) {
-                        append("Create one")
-                    }
-                    pop()
-                },
-                modifier = Modifier.clickable {
-//                    navController.navigate("signUpScreen")
-                    println("Navigating to sign up screen");
-                },
+                text = "Don’t have an account? ",
                 style = MaterialTheme.typography.bodyLarge
             )
-
+            Text(
+                text = "Create one",
+                modifier = Modifier.clickable {
+                    navController.navigate("homeScreen")
+                },
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    color = colorScheme.primary,
+                    fontWeight = FontWeight.Bold
+                )
+            )
         }
     }
 }

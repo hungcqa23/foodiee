@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.*
-import com.example.foodiee.ui.screens.LoginScreen
+import com.example.foodiee.ui.screens.*
 import com.example.foodiee.ui.theme.FoodieeeTheme
 
 class MainActivity : ComponentActivity() {
@@ -25,16 +25,24 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val navController = rememberNavController()
 
-                    NavHost(navController = navController, startDestination = "loginScreen") {
+                    NavHost(navController = navController, startDestination = "roleSelectionScreen") {
+                        composable("roleSelectionScreen") {
+                            RoleSelectionScreen(navController)
+                        }
+
                         composable("loginScreen") {
                             LoginScreen(navController)
                         }
 
-                        
-
-                        composable("homeScreen") {
-                            HomeScreen()
+                        composable("signUpScreen") {
+                            SignUpScreen()
                         }
+
+                        composable("profileScreen") {
+                            ProfileScreen()
+                        }
+
+
                     }
                 }
             }
@@ -43,9 +51,9 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun HomeScreen() {
-    // TODO: Add your home screen content here
-    Text("Hello from Home Screen")
+fun SignUpScreen() {
+    // TODO: Add your sign up screen content here
+    Text("Hello from Sign Up Screen")
 }
 
 @Preview(showBackground = true)
