@@ -1,5 +1,6 @@
 package com.example.foodiee.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -8,11 +9,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.foodiee.R
 import com.example.foodiee.ui.theme.FoodieeeColors
 
 @Composable
@@ -37,22 +40,20 @@ fun RoleSelectionScreen(navController: NavController) {
         isButtonEnabled = true
     }
 
-    // Function for the Confirm Button's click action
     fun onConfirmButtonClick() {
         when {
-            guestBorderColor == primaryColor -> navController.navigate("guestScreen")
+            guestBorderColor == primaryColor -> navController.navigate("homeScreen")
             loginBorderColor == primaryColor -> navController.navigate("loginScreen")
         }
     }
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
-        contentAlignment = Alignment.Center,
-
-        ) {
+            .padding(12.dp),
+        contentAlignment = Alignment.Center
+    ) {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Header Texts
             Text(
@@ -81,7 +82,6 @@ fun RoleSelectionScreen(navController: NavController) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(80.dp)
                         .border(
                             width = 2.dp,
                             color = guestBorderColor,
@@ -93,15 +93,23 @@ fun RoleSelectionScreen(navController: NavController) {
                     Button(
                         onClick = { onButtonClick(isGuestButton = true) },
                         modifier = Modifier
-                            .fillMaxSize(),
+                            .fillMaxWidth() // Ensure button stretches full width
+                            .wrapContentHeight(), // Height adjusts to fit content
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.White
                         ),
                         shape = RoundedCornerShape(8.dp) // Same shape for consistency
                     ) {
                         Column(
-                            horizontalAlignment = Alignment.CenterHorizontally
+                            horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.circle_user_round),
+                                contentDescription = "Search Icon",
+                                modifier = Modifier
+                                    .size(24.dp)
+                            )
+                            Spacer(modifier = Modifier.height(12.dp))
                             Text(
                                 text = "Continue as Guest",
                                 fontSize = 18.sp,
@@ -123,7 +131,6 @@ fun RoleSelectionScreen(navController: NavController) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(84.dp)
                         .border(
                             width = 2.dp, // Border thickness
                             color = loginBorderColor, // Border color
@@ -135,7 +142,8 @@ fun RoleSelectionScreen(navController: NavController) {
                     Button(
                         onClick = { onButtonClick(isGuestButton = false) },
                         modifier = Modifier
-                            .fillMaxSize(),
+                            .fillMaxWidth() // Ensure button stretches full width
+                            .wrapContentHeight(), // Height adjusts to fit content
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.White
                         ),
@@ -145,6 +153,13 @@ fun RoleSelectionScreen(navController: NavController) {
                             modifier = Modifier.fillMaxWidth(),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.user_round_plus),
+                                contentDescription = "Search Icon",
+                                modifier = Modifier
+                                    .size(24.dp)
+                            )
+                            Spacer(modifier = Modifier.height(12.dp))
                             Text(
                                 text = "Login with Account",
                                 fontSize = 18.sp,
