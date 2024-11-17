@@ -44,9 +44,8 @@ class MainActivity : ComponentActivity() {
 //                        }
 
                         composable("profileScreen") {
-                            ProfileScreen()
+                            ProfileScreen(navController)
                         }
-
 
                     }
                 }

@@ -25,7 +25,7 @@ class MainActivity : ComponentActivity() {
 
                     NavHost(
                         navController = navController,
-                        startDestination = "roleSelectionScreen"
+                        startDestination = "profileScreen"
                     ) {
                         composable("roleSelectionScreen") {
                             RoleSelectionScreen(navController)
@@ -35,16 +35,17 @@ class MainActivity : ComponentActivity() {
                             LoginScreen(navController)
                         }
 
-                        composable("")
+                        composable("homeScreen") {
+                            HomeScreen(navController)
+                        }
 
 //                        composable("signUpScreen") {
 //                            SignUpScreen()
 //                        }
 
                         composable("profileScreen") {
-                            ProfileScreen()
+                            ProfileScreen(navController)
                         }
-
 
                     }
                 }

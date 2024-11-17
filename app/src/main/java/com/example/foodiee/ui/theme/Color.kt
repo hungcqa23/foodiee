@@ -9,10 +9,21 @@ val Pink80 = Color(0xFFEFB8C8)
 val Purple40 = Color(0xFF6650a4)
 val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5a260)
-val Red400 = Color(0xFFEF4444)
-val Orange400 = Color(0xFFFB923C)
 
-//#cbd5e1
+// Red
+val Red100 = Color(0xFFfee2e2)
+val Red200 = Color(0xFFfecaca)
+val Red400 = Color(0xFFf87171)
+val Red500 = Color(0xFFef4444)
+
+// Orange
+val Orange100 = Color(0xFFfff7ed)
+val Orange200 = Color(0xFFffedd5)
+val Orange400 = Color(0xFFFB923C)
+val Orange500 = Color(0xFFf97316)
+
+// Slate
+val Slate100 = Color(0xFFf1f5f9)
 val Slate200 = Color(0xFFe2e8f0)
 val Slate300 = Color(0xFFcbd5e1)
 val Slate500 = Color(0xFF64748b)

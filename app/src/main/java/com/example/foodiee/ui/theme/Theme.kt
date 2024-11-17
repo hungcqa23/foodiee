@@ -14,14 +14,14 @@ private val DarkColorScheme = darkColorScheme(
     primary = Orange400,
     secondary = PurpleGrey80,
     tertiary = Pink80,
-    error = Orange400,
+    error = Red400,
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = Orange400,
     secondary = PurpleGrey40,
     tertiary = Pink40,
-    error = Orange400
+    error = Red400
 )
 
 @Composable

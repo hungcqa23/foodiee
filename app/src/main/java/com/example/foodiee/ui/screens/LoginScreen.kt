@@ -41,7 +41,7 @@ fun LoginScreen(navController: NavController) {
     ) {
         Text(
             text = "Username",
-            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium),
+            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold),
             modifier = Modifier.padding(bottom = 16.dp)
         )
         OutlinedTextField(
@@ -53,7 +53,10 @@ fun LoginScreen(navController: NavController) {
             singleLine = true,
             textStyle = TextStyle(
                 fontSize = 16.sp,
-            )
+            ),
+            placeholder = {
+                Text(text = "Enter your username...")
+            }
         )
         if (errorMessage.isNotEmpty()) {
             Text(
@@ -67,8 +70,9 @@ fun LoginScreen(navController: NavController) {
         Text(
             text = "Password",
             style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold),
-            modifier = Modifier.padding(top = 16.dp, bottom = 16.dp)
-        )
+            modifier = Modifier.padding(top = 16.dp, bottom = 16.dp),
+
+            )
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
@@ -79,9 +83,12 @@ fun LoginScreen(navController: NavController) {
             visualTransformation = PasswordVisualTransformation(),
             textStyle = TextStyle(
                 fontSize = 16.sp,
-            )
+            ),
+            placeholder = {
+                Text(text = "Enter your password...")
+            }
         )
-        
+
         if (errorMessage.isNotEmpty()) {
             Text(
                 text = errorMessage,

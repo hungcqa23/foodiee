@@ -1,8 +1,6 @@
 package com.example.foodiee.ui.theme
 
 object FoodieeeColors {
-    val red500 = Red500
-
     val slate100 = Slate100
     val slate200 = Slate200
     val slate300 = Slate300
