@@ -112,7 +112,7 @@ fun DetailedCourseScreen(navController: NavController, course: CourseDetails) {
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 Text(
-                    text = "Type of meal: ",
+                    text = "Type of meal 1: ",
                     modifier = Modifier.width(120.dp),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
