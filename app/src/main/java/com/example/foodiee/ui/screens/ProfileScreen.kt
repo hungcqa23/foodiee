@@ -217,7 +217,6 @@ fun ProfileImage(imageUrl: String?, modifier: Modifier = Modifier) {
         Box(
             modifier = modifier
                 .background(FoodieeeColors.slate200, shape = CircleShape)
-        ) {
-        }
+        )
     }
 }

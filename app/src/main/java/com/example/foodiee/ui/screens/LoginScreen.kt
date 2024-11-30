@@ -71,8 +71,7 @@ fun LoginScreen(navController: NavController) {
             text = "Password",
             style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold),
             modifier = Modifier.padding(top = 16.dp, bottom = 16.dp),
-
-            )
+        )
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
