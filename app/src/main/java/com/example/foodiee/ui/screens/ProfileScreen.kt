@@ -16,202 +16,139 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.example.foodiee.R
+import com.example.foodiee.ui.components.Footer
 import com.example.foodiee.ui.theme.FoodieeeColors
 
 @Composable
 fun ProfileScreen(navController: NavController) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(start = 24.dp, end = 24.dp, bottom = 28.dp)
-    ) {
-        // Existing Profile layout
-        Column(
-            modifier = Modifier.align(Alignment.TopCenter) // Keep existing layout aligned at the top
-        ) {
-            Text(
-                text = "Profile",
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(top = 56.dp, bottom = 24.dp), // Add space between text and image
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Bold,
-                letterSpacing = 0.05.sp
-            )
-
-            ProfileImage(
-                imageUrl = null,
-                modifier = Modifier
-                    .size(80.dp) // Set size for the profile picture
-                    .align(Alignment.CenterHorizontally)
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Text(
-                text = "John Doe",
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                letterSpacing = 0.05.sp
-            )
-        }
-
-        // Button layout actions
-        Column(
+    Scaffold(
+        bottomBar = { Footer(navController = navController) }
+    ) { paddingValues: PaddingValues -> // Use paddingValues here
+        Box(
             modifier = Modifier
-                .fillMaxHeight()
-                .wrapContentHeight(Alignment.CenterVertically),
-            verticalArrangement = Arrangement.spacedBy(14.dp)
+                .fillMaxSize()
+                .padding(
+                    start = 24.dp,
+                    end = 24.dp,
+                    bottom = 28.dp
+                )
+                .padding(paddingValues) // Apply paddingValues here
         ) {
-            Text(
-                text = "My Center",
-                modifier = Modifier,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = FoodieeeColors.slate900
-            )
-
-            Box(
-                modifier = Modifier.fillMaxWidth(),
+            Column(
+                modifier = Modifier.align(Alignment.TopCenter)
             ) {
-                Button(
-                    onClick = { /*TODO*/ },
+                Text(
+                    text = "Profile",
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = FoodieeeColors.slate200,
-                        contentColor = FoodieeeColors.slate900
-                    ),
-                    shape = RoundedCornerShape(8.dp),
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(6.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                        .align(Alignment.CenterHorizontally)
+                        .padding(top = 56.dp, bottom = 24.dp),
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 0.05.sp
+                )
+
+                ProfileImage(
+                    imageUrl = null,
+                    modifier = Modifier
+                        .size(80.dp)
+                        .align(Alignment.CenterHorizontally)
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Text(
+                    text = "John Doe",
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 0.05.sp
+                )
+            }
+
+            Column(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .wrapContentHeight(Alignment.CenterVertically),
+                verticalArrangement = Arrangement.spacedBy(14.dp)
+            ) {
+                Text(
+                    text = "My Center",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = FoodieeeColors.slate900
+                )
+
+                listOf(
+                    "Personal Information",
+                    "Order History",
+                    "Payment Methods"
+                ).forEach { label ->
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        Button(
+                            onClick = { /* TODO: Action */ },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(56.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = FoodieeeColors.slate200,
+                                contentColor = FoodieeeColors.slate900
+                            ),
+                            shape = RoundedCornerShape(8.dp),
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.circle_user_round),
+                                    contentDescription = null
+                                )
+                                Text(
+                                    text = label,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+            Column(
+                modifier = Modifier.align(Alignment.BottomCenter)
+            ) {
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    Button(
+                        onClick = { navController.navigate("roleSelectionScreen") },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.White),
+                        border = BorderStroke(1.dp, FoodieeeColors.slate300),
+                        shape = RoundedCornerShape(8.dp),
                     ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.circle_user_round),
-                            contentDescription = null
-                        )
                         Text(
-                            "Personal Information",
+                            text = "Log out",
                             fontSize = 16.sp,
+                            color = FoodieeeColors.red500,
                             fontWeight = FontWeight.SemiBold
                         )
                     }
                 }
-
-            }
-
-            Box(
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Button(
-                    onClick = { /*TODO*/ },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = FoodieeeColors.slate200,
-                        contentColor = FoodieeeColors.slate900
-                    ),
-                    shape = RoundedCornerShape(8.dp),
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(6.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.circle_user_round),
-                            contentDescription = null
-                        )
-                        Text(
-                            "Personal Information",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.SemiBold
-                        )
-                    }
-                }
-
-            }
-
-            Box(
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Button(
-                    onClick = { /*TODO*/ },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = FoodieeeColors.slate200,
-                        contentColor = FoodieeeColors.slate900
-                    ),
-                    shape = RoundedCornerShape(8.dp),
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(6.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.circle_user_round),
-                            contentDescription = null
-                        )
-                        Text(
-                            "Personal Information",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.SemiBold
-                        )
-                    }
-                }
-
-            }
-        }
-
-        // Logout section
-        Column(
-            modifier = Modifier.align(Alignment.BottomCenter)
-        ) {
-            Box(
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Button(
-                    onClick = {
-                        navController.navigate("roleSelectionScreen")
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.White
-                    ),
-                    border = BorderStroke(1.dp, FoodieeeColors.slate300),
-                    shape = RoundedCornerShape(8.dp),
-                ) {
-                    Text(
-                        "Log out",
-                        fontSize = 16.sp,
-                        color = FoodieeeColors.red500,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                }
-
             }
         }
     }
 }
 
+
 @Composable
 fun ProfileImage(imageUrl: String?, modifier: Modifier = Modifier) {
     if (!imageUrl.isNullOrEmpty()) {
-        // Load the image using Coil
         AsyncImage(
             model = imageUrl,
             contentDescription = "Profile Image",
+            modifier = modifier
         )
     } else {
         Box(

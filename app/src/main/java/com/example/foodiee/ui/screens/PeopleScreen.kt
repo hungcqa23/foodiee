@@ -1,5 +1,5 @@
 package com.example.foodiee.ui.screens
-import androidx.compose.foundation.background
+
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -13,33 +13,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.foodiee.ui.BottomNavigationBar
-
-data class Person(
-    val id: String,
-    val name: String,
-    val phone: String,
-    val cccd: String,
-    val address: String,
-    val type: PersonType // To differentiate between Customer and Employee
-)
-
-enum class PersonType {
-    CUSTOMER, EMPLOYEE
-}
+import com.example.foodiee.data.models.*
+import com.example.foodiee.ui.components.Footer
+import com.example.foodiee.ui.components.people_screens.PersonCard
 
 @Composable
-fun CustomerListScreen(navController: NavController, viewSelected: PersonType) {
+fun CustomerListScreen(navController: NavController, viewSelected: Customer) {
     var searchQuery by remember { mutableStateOf("") }
-
     val tabs = listOf("Customers", "Employee")
     val navigationBarInsets = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
     val statusBarInsets = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
@@ -50,21 +36,22 @@ fun CustomerListScreen(navController: NavController, viewSelected: PersonType) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceEvenly,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .padding(top = statusBarInsets)
                         .padding(top = 16.dp)
-                ){
+                ) {
                     Text(
                         text = "Customer",
                         fontSize = 16.sp,
-                        textDecoration = if (viewSelected == PersonType.CUSTOMER) TextDecoration.Underline else TextDecoration.None,
-                        fontWeight = if (viewSelected == PersonType.CUSTOMER) FontWeight.Bold else FontWeight.Normal
-                        )
+                        textDecoration = if (viewSelected.type == CustomerType.CUSTOMER) TextDecoration.Underline else TextDecoration.None,
+                        fontWeight = if (viewSelected.type == CustomerType.CUSTOMER) FontWeight.Bold else FontWeight.Normal
+                    )
                     Text(
                         text = "Employee",
                         fontSize = 16.sp,
-                        textDecoration = if (viewSelected == PersonType.EMPLOYEE) TextDecoration.Underline else TextDecoration.None,
-                        fontWeight = if (viewSelected == PersonType.EMPLOYEE) FontWeight.Bold else FontWeight.Normal
+                        textDecoration = if (viewSelected.type == CustomerType.EMPLOYEE) TextDecoration.Underline else TextDecoration.None,
+                        fontWeight = if (viewSelected.type == CustomerType.EMPLOYEE) FontWeight.Bold else FontWeight.Normal
                     )
                 }
                 // Search Bar
@@ -102,7 +89,7 @@ fun CustomerListScreen(navController: NavController, viewSelected: PersonType) {
             }
         },
         bottomBar = {
-            BottomNavigationBar(navController)
+            Footer(navController)
             Spacer(modifier = Modifier.height(navigationBarInsets))
         },
         containerColor = Color(0xFFFDFCFB)
@@ -124,73 +111,6 @@ fun CustomerListScreen(navController: NavController, viewSelected: PersonType) {
             items(getSampleCustomers()) { customer ->
                 PersonCard(person = customer)
             }
-        }
-    }
-}
-
-@Composable
-fun PersonCard(person: Person) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
-        colors = CardColors(
-            containerColor = Color.White,
-            contentColor = Color.Gray,
-            disabledContainerColor = Color.White,
-            disabledContentColor = Color.Gray
-        )
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(10.dp)
-                .fillMaxWidth()
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(bottom = 8.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(Color(0xFFF8F8F8))
-                    .fillMaxWidth()
-                    .size(45.dp)
-            ) {
-                Icon(
-                    Icons.Default.Menu,
-                    contentDescription = null,
-                    tint = Color(0xFFF37021),
-                    modifier = Modifier.padding(start = 8.dp)
-                )
-                Text(
-                    text = person.id,
-                    modifier = Modifier.padding(start = 8.dp),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 15.sp,
-                    color = Color.Black
-                )
-            }
-
-            CustomerInfoRow(
-                icon = Icons.Default.Person,
-                text = person.name
-            )
-
-            CustomerInfoRow(
-                icon = Icons.Default.DateRange,
-                text = person.cccd,
-                textColor = Color(0xFFF37021),
-                weight = FontWeight.Medium
-            )
-
-            CustomerInfoRow(
-                icon = Icons.Default.Phone,
-                text = person.phone
-            )
-
-            CustomerInfoRow(
-                icon = Icons.Default.LocationOn,
-                text = person.address
-            )
         }
     }
 }
@@ -222,16 +142,15 @@ fun CustomerInfoRow(
 }
 
 
-
-private fun getSampleCustomers(): List<Person> {
+private fun getSampleCustomers(): List<Customer> {
     return listOf(
-        Person(
+        Customer(
             id = "HNH406551",
             name = "Lương Thuỳ Linh",
             cccd = "034886599",
             phone = "098 812 3456",
             address = "Số 10, Phạm Văn Bạch, P. Yên Hoà, Q. Cầu Giấy, Hà Nội",
-            type = PersonType.CUSTOMER
+            type = CustomerType.CUSTOMER
         )
     )
 }
@@ -239,13 +158,5 @@ private fun getSampleCustomers(): List<Person> {
 @Preview
 @Composable
 fun CustomerListScreenPreview() {
-    CustomerListScreen(navController = NavController(LocalContext.current), PersonType.CUSTOMER)
-//    PersonCard(Person(
-//        id = "HNH406551",
-//        name = "Lương Thuỳ Linh",
-//        cccd = "034886599",
-//        phone = "098 812 3456",
-//        address = "Số 10, Phạm Văn Bạch, P. Yên Hoà, Q. Cầu Giấy, Hà Nội",
-//        type = PersonType.CUSTOMER
-//    ))
+    CustomerListScreen(navController = NavController(LocalContext.current), getSampleCustomers()[0])
 }
