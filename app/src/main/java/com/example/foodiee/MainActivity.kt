@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.*
 import com.example.foodiee.data.models.CourseDetails
 import com.example.foodiee.ui.screens.*
+import com.example.foodiee.ui.screens.admin.OrdersManagementScreen
 import com.example.foodiee.ui.theme.FoodieeeTheme
 
 class MainActivity : ComponentActivity() {
@@ -22,7 +23,6 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize()
                 ) {
                     val navController = rememberNavController()
-
                     val mockCourseDetails = listOf(
                         CourseDetails(
                             title = "Spaghetti Carbonara",
@@ -108,30 +108,45 @@ class MainActivity : ComponentActivity() {
 
                     NavHost(
                         navController = navController,
-                        startDestination = "detailedCourseScreen"
+                        startDestination = "ordersManagementScreen"
                     ) {
-                        composable("detailedCourseScreen") {
-                            DetailedCourseScreen(navController, mockCourseDetails[0])
-                        }
-
+                        // Auth screens
                         composable("roleSelectionScreen") {
                             RoleSelectionScreen(navController)
+                        }
+
+                        composable("signUpScreen") {
+                            SignUpScreen(navController)
                         }
 
                         composable("loginScreen") {
                             LoginScreen(navController)
                         }
 
+                        // Main screens
                         composable("homeScreen") {
                             HomeScreen(navController)
                         }
 
-//                        composable("signUpScreen") {
-//                            SignUpScreen()
-//                        }
+                        composable("detailedCourseScreen") {
+                            DetailedCourseScreen(navController, mockCourseDetails[0])
+                        }
 
                         composable("profileScreen") {
                             ProfileScreen(navController)
+                        }
+
+                        composable("editProfileScreen") {
+                            EditProfileScreen(navController)
+                        }
+
+                        // Admin screens
+                        composable("ordersManagementScreen") {
+                            OrdersManagementScreen(navController)
+                        }
+                        composable("orderDetail/{orderId}") {
+                            val orderId = it.arguments?.getString("orderId") ?: ""
+                            OrderDetailScreen(navController, orderId)
                         }
                     }
                 }
