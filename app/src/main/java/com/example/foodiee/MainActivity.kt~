@@ -108,7 +108,7 @@ class MainActivity : ComponentActivity() {
 
                     NavHost(
                         navController = navController,
-                        startDestination = "orderDetail/1"
+                        startDestination = "ordersManagementScreen"
                     ) {
                         // Auth screens
                         composable("roleSelectionScreen") {
