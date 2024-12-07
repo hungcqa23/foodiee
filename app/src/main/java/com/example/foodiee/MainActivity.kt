@@ -157,6 +157,10 @@ class MainActivity : ComponentActivity() {
                         composable("statisticsScreen") {
                             StatisticsScreen(navController)
                         }
+                        composable("CartScreen/{cartId}") {
+                            val cartId = it.arguments?.getString("cartId") ?: ""
+                            CartScreen(navController, cartId)
+                        }
 
                     }
                 }

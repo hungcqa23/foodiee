@@ -105,7 +105,8 @@ fun AddItemScreen(
             MyDropdownMenu(
                 "Type",
                 options = listOf("Food", "Drink", "Dessert"),
-                onOptionSelected = {})
+                onOptionSelected = {}
+            )
             InputField(
                     "Price",
             onValueChange = {}

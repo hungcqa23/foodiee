@@ -73,8 +73,8 @@ import ir.ehsannarmani.compose_charts.models.Pie
 fun StatisticsScreen(navController: NavController) {
     val mockData: List<Double> = listOf(245.0, 443.0, 523.0, 314.0, 566.0, 693.0, 482.0)
     var mockDataCustomer by remember { mutableStateOf(listOf(
-        Pie(label = "Returning Customer", data = 20.0, color = Color(0xFFEF4444), selectedColor = Color(0xFFFF4444)),
-        Pie(label = "New Customer", data = 80.0, color = Color(0xFFF97315), selectedColor = Color(0xFFFF7315)),
+        Pie(label = "Returning Customer", data = 72.6, color = Color(0xFFEF4444), selectedColor = Color(0xFFFF4444)),
+        Pie(label = "New Customer", data = 27.4, color = Color(0xFFF97315), selectedColor = Color(0xFFFF7315)),
     )) }
 
     Scaffold(
