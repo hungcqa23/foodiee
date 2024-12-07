@@ -108,7 +108,7 @@ class MainActivity : ComponentActivity() {
 
                     NavHost(
                         navController = navController,
-                        startDestination = "orderDetail/1"
+                        startDestination = "statisticsScreen"
                     ) {
                         // Auth screens
                         composable("roleSelectionScreen") {
@@ -148,6 +148,16 @@ class MainActivity : ComponentActivity() {
                             val orderId = it.arguments?.getString("orderId") ?: ""
                             OrderDetailScreen(navController, orderId)
                         }
+                        composable("addItemScreen") {
+                            AddItemScreen(navController)
+                        }
+                        composable("inventoryScreen") {
+                            InventoryScreen(navController)
+                        }
+                        composable("statisticsScreen") {
+                            StatisticsScreen(navController)
+                        }
+
                     }
                 }
             }
