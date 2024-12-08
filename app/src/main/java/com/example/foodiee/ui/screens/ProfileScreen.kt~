@@ -86,12 +86,12 @@ fun ProfileScreen(navController: NavController) {
                 ProfileMenuItem(
                     label = "Order History",
                     iconResId = R.drawable.circle_user_round,
-                    onClick = { }
+                    onClick = {  }
                 )
                 ProfileMenuItem(
                     label = "Payment Methods",
                     iconResId = R.drawable.circle_user_round,
-                    onClick = { }
+                    onClick = {  }
                 )
             }
 

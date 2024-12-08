@@ -28,3 +28,11 @@ val Slate200 = Color(0xFFe2e8f0)
 val Slate300 = Color(0xFFcbd5e1)
 val Slate500 = Color(0xFF64748b)
 val Slate900 = Color(0xFF0F172A)
+
+// Green
+val Green100 = Color(0xFFdcfce7)
+val Green200 = Color(0xFFbbf7d0)
+val Green300 = Color(0xFF86efac)
+val Green400 = Color(0xFF22c55e)
+val Green500 = Color(0xFF16a34a)
+val Green600 = Color(0xFF15803d)
