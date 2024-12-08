@@ -73,6 +73,7 @@ fun BottomNavigationItem(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
+            .background(FoodieeeColors.slate200)
             .clickable {
                 navController.navigate(routeNavigate) {
                     launchSingleTop = true

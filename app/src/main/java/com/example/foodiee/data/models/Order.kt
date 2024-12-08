@@ -1,7 +1,7 @@
 package com.example.foodiee.data.models
 
 enum class OrderStatus {
-    PENDING, COMPLETED
+    PENDING, CANCELED, COMPLETED
 }
 
 data class Order(
@@ -10,5 +10,6 @@ data class Order(
     val orderStatus: OrderStatus,
     val orderDetails: String,
     val price: String,
-    val time: String
+    val time: String,
+    val note: String? = null
 )
