@@ -1,7 +1,6 @@
 package com.example.foodiee
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -13,13 +12,10 @@ import com.example.foodiee.data.models.CourseDetails
 import com.example.foodiee.ui.screens.*
 import com.example.foodiee.ui.screens.admin.OrdersManagementScreen
 import com.example.foodiee.ui.theme.FoodieeeTheme
-import com.google.firebase.FirebaseApp
-import com.google.firebase.messaging.FirebaseMessaging
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        FirebaseApp.initializeApp(this)
 
         enableEdgeToEdge()
         setContent {
@@ -115,15 +111,5 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-
-        FirebaseMessaging.getInstance().token
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val token = task.result
-                    Log.d("FCM", "FCM Registration Token: $token")
-                } else {
-                    Log.e("FCM", "Failed to get the token", task.exception)
-                }
-            }
     }
 }
