@@ -1,6 +1,5 @@
 package com.example.foodiee.ui.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Icon
@@ -29,9 +28,10 @@ fun BackButton(navController: NavController, textDisplay: String = "Back") {
             contentDescription = "Back arrow",
             modifier = Modifier.size(24.dp)
         )
-        Text(textDisplay,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold)
-
+        Text(
+            textDisplay,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.SemiBold
+        )
     }
 }

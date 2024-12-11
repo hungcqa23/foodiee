@@ -1,4 +1,4 @@
-package com.example.foodiee.ui.screens
+package com.example.foodiee.ui.screens.auth
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border

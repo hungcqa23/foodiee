@@ -1,4 +1,4 @@
-package com.example.foodiee.ui.screens
+package com.example.foodiee.ui.screens.auth
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*

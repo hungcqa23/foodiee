@@ -1,4 +1,4 @@
-package com.example.foodiee.ui.screens
+package com.example.foodiee.ui.screens.client
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -10,11 +10,9 @@ import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -29,39 +27,35 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import coil3.compose.ImagePainter
 import com.example.foodiee.R
-import com.example.foodiee.ui.components.BackButton
 import com.example.foodiee.ui.components.Footer
 import com.example.foodiee.ui.components.NavigationHeader
 import com.example.foodiee.ui.components.configSubPage
-import com.example.foodiee.ui.theme.Orange400
 import com.example.foodiee.ui.theme.Orange500
 
 @Composable
 fun InventoryScreen(
     navController: NavController
-){
+) {
     Scaffold(
         topBar = {
-            Column{
+            Column {
                 NavigationHeader(configSubPage.INVENTORY, navController)
                 TabBar(navController)
             }
         },
-        bottomBar = { Footer(navController)}
-    ){ padding ->
+        bottomBar = { Footer(navController) }
+    ) { padding ->
         LazyColumn(
             modifier = Modifier.padding(padding)
-        ){
-            items(MockInventoryItems()){ item ->
+        ) {
+            items(MockInventoryItems()) { item ->
                 InventoryItemCard(
                     name = item.name,
                     type = item.type,
@@ -73,6 +67,7 @@ fun InventoryScreen(
         }
     }
 }
+
 @Composable
 fun InventoryItemCard(
     name: String,
@@ -150,44 +145,55 @@ fun InventoryItemCard(
         }
     }
 }
+
 @Composable
-fun TabBar(navController: NavController){
+fun TabBar(navController: NavController) {
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
             .height(64.dp)
-    ){
-      Surface(
-          shadowElevation = 1.dp,
-          shape = RoundedCornerShape(8.dp),
-          color = Orange500,
-          modifier = Modifier.padding(8.dp)
-              .clickable {  }
-              .fillMaxHeight()
-      ) {
-          Row(
-              verticalAlignment = Alignment.CenterVertically,
-              modifier = Modifier.padding(horizontal = 16.dp)
-          ){
-              Icon(painter = painterResource(R.drawable.add_icon), contentDescription = "add icon", tint = Color.White)
-              Text("Add new Item", fontSize = 18.sp, color = Color.White)
-          }
-      }
+    ) {
         Surface(
             shadowElevation = 1.dp,
             shape = RoundedCornerShape(8.dp),
             color = Orange500,
-            modifier = Modifier.padding(8.dp)
-                .clickable {  }
+            modifier = Modifier
+                .padding(8.dp)
+                .clickable { }
                 .fillMaxHeight()
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(horizontal = 16.dp)
-            ){
-                Icon(painter = painterResource(R.drawable.pen), contentDescription = "pen icon", tint = Color.White)
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.add_icon),
+                    contentDescription = "add icon",
+                    tint = Color.White
+                )
+                Text("Add new Item", fontSize = 18.sp, color = Color.White)
+            }
+        }
+        Surface(
+            shadowElevation = 1.dp,
+            shape = RoundedCornerShape(8.dp),
+            color = Orange500,
+            modifier = Modifier
+                .padding(8.dp)
+                .clickable { }
+                .fillMaxHeight()
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.pen),
+                    contentDescription = "pen icon",
+                    tint = Color.White
+                )
                 Text("Add new Item", fontSize = 18.sp, color = Color.White)
             }
         }
@@ -244,7 +250,7 @@ data class InventoryItem(
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewInventoryScreen(){
+fun PreviewInventoryScreen() {
     InventoryItemCard(
         name = "Apple",
         type = "Fruit",

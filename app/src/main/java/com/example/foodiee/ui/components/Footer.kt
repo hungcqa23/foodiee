@@ -35,7 +35,7 @@ fun Footer(navController: NavController) {
             icon = ImageVector.vectorResource(R.drawable.orders),
             text = "Orders",
             routeNavigate = "OrdersManagementScreen",
-            selected = navController.currentDestination?.route == "OrdersManagementScreen"
+            selected = navController.currentDestination?.route == "ordersManagementScreen"
         )
         BottomNavigationItem(
             navController = navController,
@@ -48,8 +48,8 @@ fun Footer(navController: NavController) {
             navController = navController,
             icon = ImageVector.vectorResource(R.drawable.people),
             text = "People",
-            routeNavigate = "People",
-            selected = navController.currentDestination?.route == "People"
+            routeNavigate = "peopleManagementScreen",
+            selected = navController.currentDestination?.route == "peopleManagementScreen"
         )
         BottomNavigationItem(
             navController = navController,

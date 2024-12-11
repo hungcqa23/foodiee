@@ -9,8 +9,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.*
 import com.example.foodiee.data.models.CourseDetails
+import com.example.foodiee.data.models.CustomerType
 import com.example.foodiee.ui.screens.*
+import com.example.foodiee.ui.screens.auth.*
 import com.example.foodiee.ui.screens.admin.OrdersManagementScreen
+import com.example.foodiee.ui.screens.client.*
 import com.example.foodiee.ui.theme.FoodieeeTheme
 
 class MainActivity : ComponentActivity() {
@@ -42,10 +45,9 @@ class MainActivity : ComponentActivity() {
 
                         )
                     )
-
                     NavHost(
                         navController = navController,
-                        startDestination = "addItemScreen"
+                        startDestination = "cartScreen/1"
                     ) {
                         // Auth screens
                         composable("roleSelectionScreen") {
@@ -103,9 +105,13 @@ class MainActivity : ComponentActivity() {
                             StatisticsScreen(navController)
                         }
 
-                        composable("CartScreen/{cartId}") {
+                        composable("cartScreen/{cartId}") {
                             val cartId = it.arguments?.getString("cartId") ?: ""
                             CartScreen(navController, cartId)
+                        }
+
+                        composable("peopleManagementScreen") {
+                            PeopleManagementScreen(navController, CustomerType.CUSTOMER)
                         }
                     }
                 }
