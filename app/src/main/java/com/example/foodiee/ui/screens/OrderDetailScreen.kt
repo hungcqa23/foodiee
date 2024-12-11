@@ -45,7 +45,6 @@ fun OrderDetailScreen(navController: NavController, orderId: String) {
                     customerName = order.customerName,
                     orderStatus = order.orderStatus
                 )
-                Spacer(modifier = Modifier.height(16.dp))
                 OrderDetails(order)
                 OrderItems(orderItems = listOf("Burger", "Fries", "Soda"), price = "$15.99")
                 TotalAmount(totalAmount = "$45.97")

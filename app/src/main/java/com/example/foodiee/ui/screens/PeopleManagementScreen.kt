@@ -4,27 +4,29 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.foodiee.data.models.*
+import com.example.foodiee.data.models.Customer
+import com.example.foodiee.data.models.CustomerType
 import com.example.foodiee.ui.components.Footer
 import com.example.foodiee.ui.components.people_screens.PersonCard
 
 @Composable
-fun CustomerListScreen(navController: NavController, viewSelected: Customer) {
+fun PeopleManagementScreen(navController: NavController, viewSelected: CustomerType) {
     var searchQuery by remember { mutableStateOf("") }
     val tabs = listOf("Customers", "Employee")
     val navigationBarInsets = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
@@ -44,14 +46,14 @@ fun CustomerListScreen(navController: NavController, viewSelected: Customer) {
                     Text(
                         text = "Customer",
                         fontSize = 16.sp,
-                        textDecoration = if (viewSelected.type == CustomerType.CUSTOMER) TextDecoration.Underline else TextDecoration.None,
-                        fontWeight = if (viewSelected.type == CustomerType.CUSTOMER) FontWeight.Bold else FontWeight.Normal
+                        textDecoration = if (viewSelected == CustomerType.CUSTOMER) TextDecoration.Underline else TextDecoration.None,
+                        fontWeight = if (viewSelected == CustomerType.CUSTOMER) FontWeight.Bold else FontWeight.Normal
                     )
                     Text(
                         text = "Employee",
                         fontSize = 16.sp,
-                        textDecoration = if (viewSelected.type == CustomerType.EMPLOYEE) TextDecoration.Underline else TextDecoration.None,
-                        fontWeight = if (viewSelected.type == CustomerType.EMPLOYEE) FontWeight.Bold else FontWeight.Normal
+                        textDecoration = if (viewSelected == CustomerType.EMPLOYEE) TextDecoration.Underline else TextDecoration.None,
+                        fontWeight = if (viewSelected == CustomerType.EMPLOYEE) FontWeight.Bold else FontWeight.Normal
                     )
                 }
                 // Search Bar
@@ -69,22 +71,6 @@ fun CustomerListScreen(navController: NavController, viewSelected: Customer) {
                         leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
                         singleLine = true,
                     )
-
-                    FloatingActionButton(
-                        onClick = { /* Handle add */ },
-                        modifier = Modifier
-                            .padding(start = 16.dp)
-                            .size(56.dp),
-                        containerColor = Color(0xFFE37A54),
-                        shape = RoundedCornerShape(4.dp)
-                    ) {
-                        Icon(
-                            Icons.Default.Add,
-                            contentDescription = "Add",
-                            tint = Color.White,
-                            modifier = Modifier.size(32.dp)
-                        )
-                    }
                 }
             }
         },
@@ -158,5 +144,7 @@ private fun getSampleCustomers(): List<Customer> {
 @Preview
 @Composable
 fun CustomerListScreenPreview() {
-    CustomerListScreen(navController = NavController(LocalContext.current), getSampleCustomers()[0])
+//    PeopleManagementScreen(
+//        navController = NavController(LocalContext.current),
+//    )
 }

@@ -42,7 +42,6 @@ fun Header(orderId: String, customerName: String, orderStatus: OrderStatus) {
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier.fillMaxWidth()
     ) {
-        BackButton(navController = rememberNavController())
         Text(
             text = "Order #$orderId",
             fontWeight = FontWeight.SemiBold,

@@ -84,12 +84,7 @@ fun ProfileScreen(navController: NavController) {
                     onClick = { navController.navigate("personalInformationScreen") }
                 )
                 ProfileMenuItem(
-                    label = "Order History",
-                    iconResId = R.drawable.circle_user_round,
-                    onClick = { }
-                )
-                ProfileMenuItem(
-                    label = "Payment Methods",
+                    label = "Orders History",
                     iconResId = R.drawable.circle_user_round,
                     onClick = { }
                 )
