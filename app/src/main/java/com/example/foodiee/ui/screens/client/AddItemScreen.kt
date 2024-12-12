@@ -51,6 +51,7 @@ fun AddItemScreen(
     var newItemPrice by remember { mutableStateOf("") }
     var newItemQuantity by remember { mutableStateOf("") }
     var newItemType by remember { mutableStateOf("") }
+    var selectedIngredients by remember { mutableStateOf(setOf<String>()) }
     var showAddImageDialog by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -80,27 +81,26 @@ fun AddItemScreen(
 
             Box(
                 modifier = Modifier
-                    .size(275.dp)
+                    .size(215.dp)
                     .border(
                         width = 2.dp,
                         color = Color.Gray,
                         shape = RoundedCornerShape(8.dp),
                     )
                     .clickable { showAddImageDialog = true }
-                    .padding(32.dp),
+                    .padding(16.dp),
                 contentAlignment = Alignment.Center
             ) {
-                if(newItemImage != null){
+                if (newItemImage != null) {
                     Image(
                         painter = rememberAsyncImagePainter(newItemImage),
                         contentDescription = "New Item Image",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier.fillMaxSize()
                     )
-                }
-                else{
-                    Row {
-                        Icon(painterResource(R.drawable.add_icon), contentDescription = "Camera")
+                } else {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(painterResource(R.drawable.add_icon), contentDescription = "Camera", modifier = Modifier.size(22.dp))
                         Text(
                             "Add image",
                             fontSize = 24.sp,
@@ -119,6 +119,12 @@ fun AddItemScreen(
                 options = listOf("Food", "Drink", "Dessert"),
                 onOptionSelected = { newItemType = it }
             )
+            MultiSelectDropdown(
+                title = "Ingredients",
+                options = listOf("Tomato", "Cheese", "Lettuce", "Onion", "Chicken"),
+                selectedItems = selectedIngredients,
+                onSelectionChange = { selectedIngredients = it }
+            )
             InputField(
                 "Price",
                 onValueChange = { newItemPrice = it }
@@ -128,15 +134,84 @@ fun AddItemScreen(
                 onValueChange = { newItemQuantity = it }
             )
             Spacer(modifier = Modifier.weight(1f))
-            ActionButton(text = "Add new item", onClick = {})
-            if(showAddImageDialog){
+            if (showAddImageDialog) {
                 AddImageDialog(
                     onNewImageAdded = { newItemImage = it; showAddImageDialog = false },
                     onDismiss = { showAddImageDialog = false }
                 )
             }
+            ActionButton(text = "Add new item", onClick = {})
         }
 
+    }
+}
+
+@Composable
+fun MultiSelectDropdown(
+    title: String,
+    options: List<String>,
+    selectedItems: Set<String>,
+    onSelectionChange: (Set<String>) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Column(modifier = Modifier.padding(8.dp)) {
+        Text(text = title, fontSize = 24.sp, fontWeight = FontWeight.Bold, color = Color.Black)
+
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(32.dp)
+                .border(width = 1.dp, color = Color.Black, shape = RoundedCornerShape(4.dp)),
+            shape = RoundedCornerShape(4.dp)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White)
+                    .clickable { expanded = !expanded },
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = if (selectedItems.isEmpty()) "Select ingredients" else selectedItems.joinToString(", "),
+                    color = Color.Black,
+                    fontSize = 16.sp,
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(horizontal = 8.dp)
+                )
+                Icon(
+                    imageVector = if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                    contentDescription = "Dropdown Icon",
+                    tint = Color.Black,
+                    modifier = Modifier.padding(end = 8.dp)
+                )
+            }
+        }
+
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp) // Padding added to prevent touching the edges
+                .background(Color.White)
+                .border(1.dp, Color.Black, shape = RoundedCornerShape(4.dp))
+        ) {
+            options.forEach { option ->
+                DropdownMenuItem(
+                    text = { Text(option, color = Color.Black) },
+                    onClick = {
+                        val newSelection = if (option in selectedItems) {
+                            selectedItems - option
+                        } else {
+                            selectedItems + option
+                        }
+                        onSelectionChange(newSelection)
+                    }
+                )
+            }
+        }
     }
 }
 
@@ -188,6 +263,7 @@ fun MyDropdownMenu(
             onDismissRequest = { expanded = false },
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(horizontal = 16.dp) // Padding added to prevent touching the edges
                 .background(Color.White)
                 .border(1.dp, Color.Black, shape = RoundedCornerShape(4.dp))
         ) {
