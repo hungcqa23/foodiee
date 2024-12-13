@@ -45,7 +45,7 @@ import androidx.navigation.NavController
 import com.example.foodiee.R
 import com.example.foodiee.ui.components.Footer
 import com.example.foodiee.ui.components.NavigationHeader
-import com.example.foodiee.ui.components.configSubPage
+import com.example.foodiee.ui.components.ConfigSubPage
 import ir.ehsannarmani.compose_charts.LineChart
 import ir.ehsannarmani.compose_charts.PieChart
 import ir.ehsannarmani.compose_charts.models.DrawStyle
@@ -77,7 +77,7 @@ fun StatisticsScreen(navController: NavController) {
     Scaffold(
         topBar = {
             Column {
-                NavigationHeader(configSubPage.STATISTICS, navController)
+                NavigationHeader(ConfigSubPage.STATISTICS, navController)
             }
         },
         bottomBar = {

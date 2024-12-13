@@ -39,10 +39,10 @@ fun Footer(navController: NavController) {
         )
         BottomNavigationItem(
             navController = navController,
-            icon = ImageVector.vectorResource(R.drawable.config),
+            icon = ImageVector.vectorResource(R.drawable.file_cog),
             text = "Config",
-            routeNavigate = "Config",
-            selected = navController.currentDestination?.route == "Config"
+            routeNavigate = "inventoryScreen",
+            selected = navController.currentDestination?.route == "inventoryScreen"
         )
         BottomNavigationItem(
             navController = navController,
