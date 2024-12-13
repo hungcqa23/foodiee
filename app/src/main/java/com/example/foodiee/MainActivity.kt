@@ -47,7 +47,7 @@ class MainActivity : ComponentActivity() {
                     )
                     NavHost(
                         navController = navController,
-                        startDestination = "cartScreen/1"
+                        startDestination = "homeScreen"
                     ) {
                         // Auth screens
                         composable("roleSelectionScreen") {
