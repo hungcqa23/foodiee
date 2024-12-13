@@ -31,7 +31,6 @@ import com.example.foodiee.ui.components.BackButton
 import com.example.foodiee.ui.components.Footer
 import com.example.foodiee.ui.theme.FoodieeeColors
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CartScreen(navController: NavController, cartId: String) {
 
@@ -66,39 +65,6 @@ fun CartScreen(navController: NavController, cartId: String) {
                     onQuantityClick = { },
                     onRemoveClick = { }
                 )
-            }
-
-            item {
-                Text(
-                    "Order Type",
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(16.dp)
-                )
-                Column(Modifier.selectableGroup()) {
-                    radioOptions.forEach { text ->
-                        Row(
-                            Modifier
-                                .fillMaxWidth()
-                                .selectable(
-                                    selected = (text == selectedOrderOption),
-                                    onClick = { onOrderOptionSelected(text) },
-                                    role = Role.RadioButton
-                                )
-                                .padding(horizontal = 16.dp, vertical = 8.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            RadioButton(
-                                selected = (text == selectedOrderOption),
-                                onClick = null
-                            )
-                            Text(
-                                text = text,
-                                modifier = Modifier.padding(start = 16.dp)
-                            )
-                        }
-                    }
-                }
             }
             item {
                 var expanded by remember { mutableStateOf(false) }
@@ -148,7 +114,7 @@ fun CartScreen(navController: NavController, cartId: String) {
                         expanded = expanded,
                         onDismissRequest = { expanded = false },
                         modifier = Modifier
-                            .padding(16.dp)
+                            .padding(horizontal = 16.dp)
                             .fillMaxWidth()
                             .background(Color.White)
                             .border(1.dp, Color.Black, shape = RoundedCornerShape(4.dp))
@@ -166,42 +132,77 @@ fun CartScreen(navController: NavController, cartId: String) {
                     }
                 }
             }
+
             item {
                 Text(
-                    "Delivery Address",
+                    "Order Type",
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(16.dp)
                 )
-                Card(
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .fillMaxWidth()
-                        .height(100.dp)
-                        .border(
-                            width = 1.dp,
-                            color = Color.Black,
-                            shape = RoundedCornerShape(4.dp)
-                        ),
-                    shape = RoundedCornerShape(4.dp)
-                ) {
-                    Row(
+                Column(Modifier.selectableGroup()) {
+                    radioOptions.forEach { text ->
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .selectable(
+                                    selected = (text == selectedOrderOption),
+                                    onClick = { onOrderOptionSelected(text) },
+                                    role = Role.RadioButton
+                                )
+                                .padding(horizontal = 16.dp, vertical = 8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            RadioButton(
+                                selected = (text == selectedOrderOption),
+                                onClick = null
+                            )
+                            Text(
+                                text = text,
+                                modifier = Modifier.padding(start = 16.dp)
+                            )
+                        }
+                    }
+                }
+            }
+            if(selectedOrderOption == "Delivery"){
+                item {
+                    Text(
+                        "Delivery Address",
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                    Card(
                         modifier = Modifier
-                            .fillMaxSize()
-                            .background(Color.White),
-                        verticalAlignment = Alignment.Top
+                            .padding(horizontal = 16.dp)
+                            .fillMaxWidth()
+                            .height(100.dp)
+                            .border(
+                                width = 1.dp,
+                                color = Color.Black,
+                                shape = RoundedCornerShape(4.dp)
+                            ),
+                        shape = RoundedCornerShape(4.dp)
                     ) {
-                        BasicTextField(
-                            value = address,
-                            onValueChange = { address = it },
-                            textStyle = TextStyle(color = Color.Black, fontSize = 16.sp),
-                            cursorBrush = SolidColor(Color.Black),
-                            singleLine = false,
+                        Row(
                             modifier = Modifier
-                                .weight(1f)
-                                .padding(horizontal = 8.dp, vertical = 8.dp)
-                                .background(Color.Transparent)
-                        )
+                                .fillMaxSize()
+                                .background(Color.White),
+                            verticalAlignment = Alignment.Top
+                        ) {
+                            BasicTextField(
+                                value = address,
+                                onValueChange = { address = it },
+                                textStyle = TextStyle(color = Color.Black, fontSize = 16.sp),
+                                cursorBrush = SolidColor(Color.Black),
+                                singleLine = false,
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(horizontal = 8.dp, vertical = 8.dp)
+                                    .background(Color.Transparent)
+                            )
+                        }
                     }
                 }
             }
