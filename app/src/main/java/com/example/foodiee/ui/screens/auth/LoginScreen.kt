@@ -14,6 +14,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.foodiee.Navigation.Routes
 
 @Composable
 fun LoginScreen(navController: NavController) {
@@ -26,7 +27,7 @@ fun LoginScreen(navController: NavController) {
     fun handleLogin() {
         if (username == "admin" && password == "password") {
             // Navigate to home screen
-            navController.navigate("homeScreen")
+            navController.navigate(Routes.HomeScreen.route)
         } else {
             errorMessage = "Invalid username or password"
         }
@@ -58,14 +59,6 @@ fun LoginScreen(navController: NavController) {
                 Text(text = "Enter your username...")
             }
         )
-        if (errorMessage.isNotEmpty()) {
-            Text(
-                text = errorMessage,
-                color = colorScheme.error
-            )
-        } else {
-            Spacer(modifier = Modifier.height(20.dp))
-        }
 
         Text(
             text = "Password",
@@ -127,7 +120,7 @@ fun LoginScreen(navController: NavController) {
             Text(
                 text = "Create one",
                 modifier = Modifier.clickable {
-                    navController.navigate("homeScreen")
+                    navController.navigate(Routes.SignUpScreen.route)
                 },
                 style = MaterialTheme.typography.bodyLarge.copy(
                     color = colorScheme.primary,

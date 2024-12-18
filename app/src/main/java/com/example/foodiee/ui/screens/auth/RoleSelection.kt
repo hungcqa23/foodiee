@@ -15,6 +15,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.foodiee.Navigation.Routes
 import com.example.foodiee.R
 import com.example.foodiee.ui.theme.FoodieeeColors
 
@@ -42,7 +43,7 @@ fun RoleSelectionScreen(navController: NavController) {
 
     fun onConfirmButtonClick() {
         when {
-            guestBorderColor == primaryColor -> navController.navigate("homeScreen")
+            guestBorderColor == primaryColor -> navController.navigate(Routes.HomeScreen.route)
             loginBorderColor == primaryColor -> navController.navigate("loginScreen")
         }
     }

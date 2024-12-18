@@ -29,6 +29,8 @@ import androidx.navigation.NavController
 import com.example.foodiee.R
 import com.example.foodiee.ui.components.BackButton
 import com.example.foodiee.ui.components.Footer
+import com.example.foodiee.ui.screens.admin.InventoryItem
+import com.example.foodiee.ui.screens.admin.MockInventoryItems
 import com.example.foodiee.ui.theme.FoodieeeColors
 
 @Composable
