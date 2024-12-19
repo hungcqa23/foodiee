@@ -15,11 +15,12 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.foodiee.R
 import com.example.foodiee.data.models.CourseDetails
+import com.example.foodiee.data.models.User.UserViewModel
 import com.example.foodiee.ui.components.BackButton
 import com.example.foodiee.ui.theme.FoodieeeColors
 
 @Composable
-fun DetailedCourseScreen(navController: NavController, course: CourseDetails) {
+fun DetailedCourseScreen(navController: NavController, userViewModel: UserViewModel, course: CourseDetails) {
     Box(
         modifier = Modifier
             .fillMaxSize()

@@ -17,18 +17,19 @@ import androidx.navigation.NavController
 import com.example.foodiee.R
 import com.example.foodiee.data.models.Order
 import com.example.foodiee.data.models.OrderStatus
+import com.example.foodiee.data.models.User.UserViewModel
 import com.example.foodiee.ui.components.Footer
 import com.example.foodiee.ui.components.order_detail_screen.Header
 
 @Composable
-fun OrderDetailScreen(navController: NavController, orderId: String) {
+fun OrderDetailScreen(navController: NavController, userViewModel: UserViewModel, orderId: String) {
     val order = Order(
         "1", "John Doe", OrderStatus.PENDING, "Burger, Fries, Soda", "$15.99", "10:30 AM",
         note = "Please deliver without ketchup" // Example note
     )
 
     Scaffold(
-        bottomBar = { Footer(navController) }
+        bottomBar = { Footer(navController, userViewModel) }
     ) { paddingValues ->
         Box(
             modifier = Modifier

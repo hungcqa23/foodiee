@@ -15,14 +15,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
+import com.example.foodiee.Navigation.Routes
 import com.example.foodiee.R
+import com.example.foodiee.data.models.User.UserViewModel
 import com.example.foodiee.ui.components.Footer
 import com.example.foodiee.ui.theme.FoodieeeColors
 
 @Composable
-fun ProfileScreen(navController: NavController) {
+fun ProfileScreen(navController: NavController, userViewModel: UserViewModel) {
     Scaffold(
-        bottomBar = { Footer(navController = navController) }
+        bottomBar = { Footer(navController = navController, userViewModel) }
     ) { paddingValues: PaddingValues ->
         Box(
             modifier = Modifier
@@ -95,7 +97,12 @@ fun ProfileScreen(navController: NavController) {
             ) {
                 Box(modifier = Modifier.fillMaxWidth()) {
                     Button(
-                        onClick = { navController.navigate("roleSelectionScreen") },
+                        onClick = {
+                            userViewModel.logout()
+                            navController.navigate(Routes.LoginScreen.route){
+                                popUpTo(Routes.LoginScreen.route) { inclusive = true }
+                            }
+                                  },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(56.dp),

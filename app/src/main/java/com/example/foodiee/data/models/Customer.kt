@@ -6,9 +6,10 @@ data class Customer(
     val phone: String,
     val cccd: String,
     val address: String,
-    val type: CustomerType
+    val type: Role
 )
 
-enum class CustomerType {
-    CUSTOMER, EMPLOYEE
+enum class Role {
+    CUSTOMER,
+    EMPLOYEE
 }

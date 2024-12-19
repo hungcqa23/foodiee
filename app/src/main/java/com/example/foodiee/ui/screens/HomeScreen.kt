@@ -51,17 +51,18 @@ import androidx.navigation.NavController
 import com.example.foodiee.Navigation.Routes
 import com.example.foodiee.R
 import com.example.foodiee.data.models.CourseDetails
+import com.example.foodiee.data.models.User.UserViewModel
 import com.example.foodiee.ui.components.Footer
 import com.example.foodiee.ui.theme.FoodieeeColors
 
 @Composable
-fun HomeScreen(navController: NavController) {
+fun HomeScreen(navController: NavController, userViewModel: UserViewModel) {
     var searchQuery by remember { mutableStateOf("") }
     var selectedCategory by remember { mutableStateOf("Main") }  // For managing selected category
 
     Scaffold(
         bottomBar = {
-            Footer(navController)
+            Footer(navController, userViewModel)
         },
     ) { innerPadding ->
         LazyColumn(modifier = Modifier.padding(innerPadding)) {

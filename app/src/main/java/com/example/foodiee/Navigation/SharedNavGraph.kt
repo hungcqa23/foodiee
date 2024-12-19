@@ -4,7 +4,8 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.foodiee.data.models.CourseDetails
-import com.example.foodiee.ui.screens.DetailedCourseScreen
+import com.example.foodiee.data.models.User.UserViewModel
+import com.example.foodiee.ui.screens.DishDescriptionScreen
 import com.example.foodiee.ui.screens.EditProfileScreen
 import com.example.foodiee.ui.screens.OrderDetailScreen
 import com.example.foodiee.ui.screens.PersonalInformationScreen
@@ -12,6 +13,7 @@ import com.example.foodiee.ui.screens.ProfileScreen
 
 fun NavGraphBuilder.sharedNavGraph(
     navController: NavController,
+    userViewModel: UserViewModel
 ) {
 
     val mockCourse = CourseDetails(
@@ -30,22 +32,21 @@ fun NavGraphBuilder.sharedNavGraph(
         mealType = "Main Course"
 
     )
-
-    composable(Routes.DetailedCourseScreen.route) {backStackEntry ->
+    composable(Routes.DishDescriptionScreen.route){ backStackEntry ->
         val courseId = backStackEntry.arguments?.getString("courseId") ?: ""
-        DetailedCourseScreen(navController, mockCourse)
+        DishDescriptionScreen(navController, userViewModel, mockCourse)
     }
     composable(Routes.OrderDetailScreen.route) { backStackEntry ->
         val orderId = backStackEntry.arguments?.getString("orderId") ?: ""
-        OrderDetailScreen(navController, orderId)
+        OrderDetailScreen(navController, userViewModel, orderId)
     }
     composable(Routes.ProfileScreen.route) {
-        ProfileScreen(navController)
+        ProfileScreen(navController, userViewModel)
     }
     composable(Routes.EditProfileScreen.route) {
-        EditProfileScreen(navController)
+        EditProfileScreen(navController, userViewModel)
     }
     composable(Routes.PersonalInformationScreen.route) {
-        PersonalInformationScreen(navController)
+        PersonalInformationScreen(navController, userViewModel)
     }
 }

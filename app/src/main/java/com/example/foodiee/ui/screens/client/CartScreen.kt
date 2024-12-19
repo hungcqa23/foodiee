@@ -27,14 +27,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.foodiee.R
+import com.example.foodiee.data.models.InventoryItem
+import com.example.foodiee.data.models.MockInventoryItems
+import com.example.foodiee.data.models.User.UserViewModel
 import com.example.foodiee.ui.components.BackButton
 import com.example.foodiee.ui.components.Footer
-import com.example.foodiee.ui.screens.admin.InventoryItem
-import com.example.foodiee.ui.screens.admin.MockInventoryItems
 import com.example.foodiee.ui.theme.FoodieeeColors
 
 @Composable
-fun CartScreen(navController: NavController, cartId: String) {
+fun CartScreen(navController: NavController,userViewModel: UserViewModel, cartId: String) {
 
     val radioOptions = listOf("Eat at Restaurant", "Delivery")
     val (selectedOrderOption, onOrderOptionSelected) = remember { mutableStateOf(radioOptions[0]) }
@@ -43,7 +44,7 @@ fun CartScreen(navController: NavController, cartId: String) {
     var address by remember { mutableStateOf("") }
 
     Scaffold(
-        bottomBar = { Footer(navController = navController) },
+        bottomBar = { Footer(navController = navController, userViewModel) },
     ) { padding ->
         LazyColumn(
             modifier = Modifier
@@ -321,10 +322,4 @@ fun CartItemCard(
 
     }
 
-}
-
-@Preview(showBackground = true)
-@Composable
-fun CartScreenPreview() {
-    CartScreen(navController = NavController(LocalContext.current), "325")
 }

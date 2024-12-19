@@ -43,8 +43,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.foodiee.R
+import com.example.foodiee.data.models.MockInventoryItems
+import com.example.foodiee.data.models.User.UserViewModel
+import com.example.foodiee.ui.components.ConfigNavigationHeader
 import com.example.foodiee.ui.components.Footer
-import com.example.foodiee.ui.components.NavigationHeader
 import com.example.foodiee.ui.components.ConfigSubPage
 import ir.ehsannarmani.compose_charts.LineChart
 import ir.ehsannarmani.compose_charts.PieChart
@@ -53,7 +55,7 @@ import ir.ehsannarmani.compose_charts.models.Line
 import ir.ehsannarmani.compose_charts.models.Pie
 
 @Composable
-fun StatisticsScreen(navController: NavController) {
+fun StatisticsScreen(navController: NavController, userViewModel: UserViewModel) {
     val mockData: List<Double> = listOf(245.0, 443.0, 523.0, 314.0, 566.0, 693.0, 482.0)
     var mockDataCustomer by remember {
         mutableStateOf(
@@ -77,11 +79,11 @@ fun StatisticsScreen(navController: NavController) {
     Scaffold(
         topBar = {
             Column {
-                NavigationHeader(ConfigSubPage.STATISTICS, navController)
+                ConfigNavigationHeader(ConfigSubPage.STATISTICS, navController)
             }
         },
         bottomBar = {
-            Footer(navController)
+            Footer(navController, userViewModel)
         }
     ) { padding ->
         LazyColumn(

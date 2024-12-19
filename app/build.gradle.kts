@@ -84,6 +84,7 @@ dependencies {
 
     // Google Fonts support in Compose
     implementation("androidx.compose.ui:ui-text-google-fonts:1.7.5")
+    implementation(libs.androidx.runtime.livedata)
 
     // Testing dependencies
     testImplementation(libs.junit)

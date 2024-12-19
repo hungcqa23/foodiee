@@ -17,11 +17,12 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.foodiee.data.models.Order
 import com.example.foodiee.data.models.OrderStatus
+import com.example.foodiee.data.models.User.UserViewModel
 import com.example.foodiee.ui.components.Footer
 import com.example.foodiee.ui.theme.Slate500
 
 @Composable
-fun OrdersManagementScreen(navController: NavController) {
+fun OrdersManagementScreen(navController: NavController, userViewModel: UserViewModel) {
     val tabs = listOf("Pending", "Completed")
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     val ordersData = mapOf(
@@ -50,7 +51,7 @@ fun OrdersManagementScreen(navController: NavController) {
     )
 
     Scaffold(
-        bottomBar = { Footer(navController = navController) }
+        bottomBar = { Footer(navController = navController, userViewModel) }
     ) { paddingValues: PaddingValues ->
         Box(
             modifier = Modifier

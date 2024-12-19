@@ -17,11 +17,10 @@ import com.example.foodiee.Navigation.Routes
 enum class ConfigSubPage {
     EDIT_DISH,
     STATISTICS,
-    INVENTORY
 }
 
 @Composable
-fun NavigationHeader(currentConfigSubPage: ConfigSubPage, navController: NavController) {
+fun ConfigNavigationHeader(currentConfigSubPage: ConfigSubPage, navController: NavController) {
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically,
@@ -43,13 +42,6 @@ fun NavigationHeader(currentConfigSubPage: ConfigSubPage, navController: NavCont
             textDecoration = if (currentConfigSubPage == ConfigSubPage.STATISTICS) TextDecoration.Underline else TextDecoration.None,
             fontWeight = if (currentConfigSubPage == ConfigSubPage.STATISTICS) FontWeight.Bold else FontWeight.Normal,
             modifier = Modifier.clickable { navController.navigate(Routes.StatisticScreen.route) }
-        )
-        Text("Inventory",
-            fontSize = 18.sp,
-            color = Color.Black,
-            textDecoration = if (currentConfigSubPage == ConfigSubPage.INVENTORY) TextDecoration.Underline else TextDecoration.None,
-            fontWeight = if (currentConfigSubPage == ConfigSubPage.INVENTORY) FontWeight.Bold else FontWeight.Normal,
-            modifier = Modifier.clickable { navController.navigate(Routes.InventoryScreen.route) }
         )
     }
 }

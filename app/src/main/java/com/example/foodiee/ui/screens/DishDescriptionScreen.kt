@@ -4,11 +4,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -32,17 +34,20 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.example.foodiee.R
+import com.example.foodiee.data.models.CourseDetails
+import com.example.foodiee.data.models.User.UserViewModel
 import com.example.foodiee.ui.components.BackButton
 import com.example.foodiee.ui.components.Footer
+import com.example.foodiee.ui.theme.FoodieeeColors
 
 @Composable
-fun DishDescriptionScreen(navController: NavController, dishId: String) {
+fun DishDescriptionScreen(navController: NavController, userViewModel: UserViewModel, course: CourseDetails) {
     Scaffold(
         topBar = {
             BackButton(navController = navController)
         },
         bottomBar = {
-            Footer(navController)
+            Footer(navController, userViewModel)
         }
     ) { innerPadding ->
         LazyColumn(
@@ -107,6 +112,46 @@ fun DishDescriptionScreen(navController: NavController, dishId: String) {
                     fontSize = 16.sp,
                     modifier = Modifier.padding(16.dp)
                 )
+            }
+            item{
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        Text(
+                            text = "Ingredients: ",
+                            modifier = Modifier.width(120.dp),
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Medium,
+                        )
+                        Text(
+                            text = course.ingredients.joinToString(", "),
+                            color = FoodieeeColors.slate500
+                        )
+                    }
+
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        Text(
+                            text = "Type of meal: ",
+                            modifier = Modifier.width(120.dp),
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Medium,
+
+                            )
+                        Text(
+                            text = course.mealType,
+                            color = FoodieeeColors.slate500
+                        )
+                    }
+                }
+            }
+            item{
+                Text("Reviews:", fontWeight = FontWeight.Medium, fontSize = 24.sp, modifier = Modifier.padding(start = 16.dp,top = 24.dp))
             }
             items(5){ item ->
                 CommentCard()

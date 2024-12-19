@@ -30,9 +30,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.foodiee.Navigation.Routes
+import com.example.foodiee.data.models.User.UserViewModel
 
 @Composable
-fun SignUpScreen(navController: NavController) {
+fun SignUpScreen(navController: NavController, userViewModel: UserViewModel) {
 // State to store user input
     var fullName by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }

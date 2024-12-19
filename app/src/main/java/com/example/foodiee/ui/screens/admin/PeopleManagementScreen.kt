@@ -18,41 +18,34 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.foodiee.data.models.Customer
-import com.example.foodiee.data.models.CustomerType
+import com.example.foodiee.data.models.Role
+import com.example.foodiee.data.models.User.UserViewModel
 import com.example.foodiee.ui.components.Footer
+import com.example.foodiee.ui.components.PeopleNavigationHeader
 import com.example.foodiee.ui.components.people_screens.PersonCard
 
 @Composable
-fun PeopleManagementScreen(navController: NavController, viewSelected: CustomerType) {
+fun PeopleManagementScreen(navController: NavController, userViewModel: UserViewModel) {
     var searchQuery by remember { mutableStateOf("") }
-    val tabs = listOf("Customers", "Employee")
+    var tabs: Role by remember { mutableStateOf(Role.CUSTOMER) }
     val navigationBarInsets = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
     val statusBarInsets = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
+
+    val queryResult = getSampleCustomers()
+        .filter {
+            it.type == tabs &&
+                    it.name.contains(searchQuery, ignoreCase = true)
+        }
+
 
     Scaffold(
         topBar = {
             Column {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = statusBarInsets)
-                        .padding(top = 16.dp)
-                ) {
-                    Text(
-                        text = "Customer",
-                        fontSize = 16.sp,
-                        textDecoration = if (viewSelected == CustomerType.CUSTOMER) TextDecoration.Underline else TextDecoration.None,
-                        fontWeight = if (viewSelected == CustomerType.CUSTOMER) FontWeight.Bold else FontWeight.Normal
-                    )
-                    Text(
-                        text = "Employee",
-                        fontSize = 16.sp,
-                        textDecoration = if (viewSelected == CustomerType.EMPLOYEE) TextDecoration.Underline else TextDecoration.None,
-                        fontWeight = if (viewSelected == CustomerType.EMPLOYEE) FontWeight.Bold else FontWeight.Normal
-                    )
-                }
+                PeopleNavigationHeader(
+                    currentPeopleSubPage = tabs,
+                    onClick = {
+                        tabs = it
+                    })
                 // Search Bar
                 Row(
                     modifier = Modifier
@@ -72,7 +65,7 @@ fun PeopleManagementScreen(navController: NavController, viewSelected: CustomerT
             }
         },
         bottomBar = {
-            Footer(navController)
+            Footer(navController, userViewModel)
             Spacer(modifier = Modifier.height(navigationBarInsets))
         },
         containerColor = Color(0xFFFDFCFB)
@@ -85,13 +78,13 @@ fun PeopleManagementScreen(navController: NavController, viewSelected: CustomerT
         ) {
             item {
                 Text(
-                    "Kết quả (5)",
+                    "Kết quả (${queryResult.size})",
                     modifier = Modifier.padding(vertical = 8.dp),
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
-            items(getSampleCustomers()) { customer ->
+            items(queryResult) { customer ->
                 PersonCard(person = customer)
             }
         }
@@ -133,7 +126,39 @@ private fun getSampleCustomers(): List<Customer> {
             cccd = "034886599",
             phone = "098 812 3456",
             address = "Số 10, Phạm Văn Bạch, P. Yên Hoà, Q. Cầu Giấy, Hà Nội",
-            type = CustomerType.CUSTOMER
+            type = Role.CUSTOMER
+        ),
+        Customer(
+            id = "HNH406551",
+            name = "Lương Thuỳ Loan",
+            cccd = "034886599",
+            phone = "098 812 3456",
+            address = "Số 10, Phạm Văn Bạch, P. Yên Hoà, Q. Cầu Giấy, Hà Nội",
+            type = Role.CUSTOMER
+        ),
+        Customer(
+            id = "HNH406551",
+            name = "Lương Thuỳ Liên",
+            cccd = "034886599",
+            phone = "098 812 3456",
+            address = "Số 10, Phạm Văn Bạch, P. Yên Hoà, Q. Cầu Giấy, Hà Nội",
+            type = Role.EMPLOYEE
+        ),
+        Customer(
+            id = "HNH406551",
+            name = "Lương Thuỳ Link",
+            cccd = "034886599",
+            phone = "098 812 3456",
+            address = "Số 10, Phạm Văn Bạch, P. Yên Hoà, Q. Cầu Giấy, Hà Nội",
+            type = Role.EMPLOYEE
+        ),
+        Customer(
+            id = "HNH406551",
+            name = "Lương Thuỳ Lung",
+            cccd = "034886599",
+            phone = "098 812 3456",
+            address = "Số 10, Phạm Văn Bạch, P. Yên Hoà, Q. Cầu Giấy, Hà Nội",
+            type = Role.EMPLOYEE
         )
     )
 }

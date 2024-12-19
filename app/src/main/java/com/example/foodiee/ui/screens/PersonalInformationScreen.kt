@@ -3,25 +3,34 @@ package com.example.foodiee.ui.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.foodiee.R
+import com.example.foodiee.data.models.User.UserViewModel
+import com.example.foodiee.ui.components.BackButton
 import com.example.foodiee.ui.components.Footer
 import com.example.foodiee.ui.theme.FoodieeeColors
 
 @Composable
-fun PersonalInformationScreen(navController: NavController) {
+fun PersonalInformationScreen(navController: NavController, userViewModel: UserViewModel) {
     Scaffold(
+        topBar = { BackButton(navController)},
         bottomBar = {
-            Footer(navController)
+            Footer(navController, userViewModel)
         }
     ) { paddingValues: PaddingValues ->
         Box(
@@ -35,6 +44,12 @@ fun PersonalInformationScreen(navController: NavController) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
             ) {
+                ProfileImage(
+                    imageUrl = null,
+                    modifier = Modifier
+                        .size(80.dp)
+                        .align(Alignment.CenterHorizontally)
+                )
                 Text(
                     text = "John Doe",
                     fontWeight = FontWeight.Bold,
@@ -42,7 +57,7 @@ fun PersonalInformationScreen(navController: NavController) {
                     modifier = Modifier.padding(top = 16.dp)
                 )
 
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
                     text = "Employee",
@@ -58,17 +73,20 @@ fun PersonalInformationScreen(navController: NavController) {
                     ProfileItem(
                         title = "Email",
                         icon = R.drawable.mail,
-                        displayText = "john.doe@example.com"
+                        displayText = "john.doe@example.com",
+                        onChange = { }
                     )
                     ProfileItem(
                         title = "Phone",
                         icon = R.drawable.phone,
-                        displayText = "+123 456 789"
+                        displayText = "+123 456 789",
+                        onChange = { }
                     )
                     ProfileItem(
                         title = "Address",
                         icon = R.drawable.map_pin,
-                        displayText = "123 Main Street, City"
+                        displayText = "123 Main Street, City",
+                        onChange = { }
                     )
                 }
             }
@@ -77,7 +95,8 @@ fun PersonalInformationScreen(navController: NavController) {
 }
 
 @Composable
-fun ProfileItem(title: String, icon: Int, displayText: String) {
+fun ProfileItem(title: String, icon: Int, displayText: String, onChange: (String) -> Unit) {
+    var input by remember { mutableStateOf(displayText) }
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
@@ -102,9 +121,13 @@ fun ProfileItem(title: String, icon: Int, displayText: String) {
                 contentDescription = "$title icon",
                 modifier = Modifier.size(20.dp)
             )
-            Text(
-                text = displayText,
-                letterSpacing = (-0.2).sp,
+            BasicTextField(
+                value = input,
+                onValueChange = {input = it},
+                singleLine = true,
+                textStyle = TextStyle(
+                    fontSize = 18.sp
+                )
             )
         }
     }

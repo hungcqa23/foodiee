@@ -34,6 +34,7 @@ import androidx.core.content.FileProvider
 import androidx.navigation.NavController
 import coil3.compose.rememberAsyncImagePainter
 import com.example.foodiee.R
+import com.example.foodiee.data.models.User.UserViewModel
 import com.example.foodiee.ui.components.*
 import com.example.foodiee.ui.theme.Orange400
 import java.io.File
@@ -43,7 +44,8 @@ import java.util.Locale
 
 @Composable
 fun AddItemScreen(
-    navController: NavController
+    navController: NavController,
+    userViewModel: UserViewModel
 ) {
 
     var newItemImage: Uri? by remember { mutableStateOf(null) }
@@ -56,7 +58,7 @@ fun AddItemScreen(
 
     Scaffold(
         bottomBar = {
-            Footer(navController)
+            Footer(navController, userViewModel)
         },
         topBar = {
             BackButton(navController)
@@ -453,8 +455,3 @@ fun createImageUri(context: Context): Uri {
 }
 
 
-@Preview(showBackground = true)
-@Composable
-fun AddItemScreenPreview() {
-    AddItemScreen(navController = NavController(LocalContext.current))
-}

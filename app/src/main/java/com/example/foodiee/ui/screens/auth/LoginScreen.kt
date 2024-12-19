@@ -3,6 +3,7 @@ package com.example.foodiee.ui.screens.auth
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.runtime.*
@@ -10,14 +11,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.*
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.foodiee.Navigation.Routes
+import com.example.foodiee.data.models.Role
+import com.example.foodiee.data.models.User.UserViewModel
 
 @Composable
-fun LoginScreen(navController: NavController) {
+fun LoginScreen(navController: NavController, userViewModel: UserViewModel) {
     // State to store user input
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -26,9 +30,13 @@ fun LoginScreen(navController: NavController) {
     // handle login logic
     fun handleLogin() {
         if (username == "admin" && password == "password") {
-            // Navigate to home screen
+            userViewModel.login(Role.EMPLOYEE)
+            navController.navigate(Routes.OrdersManagementScreen.route)
+        } else if(username == "client" && password == "password"){
+            userViewModel.login(Role.CUSTOMER)
             navController.navigate(Routes.HomeScreen.route)
-        } else {
+        }
+        else {
             errorMessage = "Invalid username or password"
         }
     }
@@ -52,6 +60,7 @@ fun LoginScreen(navController: NavController) {
                 .fillMaxWidth()
                 .height(56.dp),
             singleLine = true,
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
             textStyle = TextStyle(
                 fontSize = 16.sp,
             ),
@@ -73,6 +82,7 @@ fun LoginScreen(navController: NavController) {
                 .height(56.dp),
             singleLine = true,
             visualTransformation = PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
             textStyle = TextStyle(
                 fontSize = 16.sp,
             ),

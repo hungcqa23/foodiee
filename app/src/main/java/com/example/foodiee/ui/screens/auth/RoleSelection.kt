@@ -17,10 +17,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.foodiee.Navigation.Routes
 import com.example.foodiee.R
+import com.example.foodiee.data.models.User.UserViewModel
 import com.example.foodiee.ui.theme.FoodieeeColors
 
 @Composable
-fun RoleSelectionScreen(navController: NavController) {
+fun RoleSelectionScreen(navController: NavController, userViewModel: UserViewModel) {
     val primaryColor = MaterialTheme.colorScheme.primary
 
     // Remember the border color state for each button
