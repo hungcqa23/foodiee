@@ -18,8 +18,9 @@ import com.example.foodiee.R
 fun BackButton(navController: NavController, textDisplay: String = "Back") {
     Row(
         modifier = Modifier
+            .padding(start = 12.dp, top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding() + 8.dp)
             .clickable { navController.popBackStack() }
-            .padding(horizontal = 12.dp, vertical = 6.dp),
+        ,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {

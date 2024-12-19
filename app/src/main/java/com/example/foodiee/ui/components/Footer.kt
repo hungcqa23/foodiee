@@ -25,11 +25,12 @@ fun Footer(navController: NavController) {
         horizontalArrangement = Arrangement.SpaceAround,
         modifier = Modifier
             .fillMaxWidth()
-            .height(80.dp)
+            .height(WindowInsets.systemBars.asPaddingValues().calculateBottomPadding() + 64.dp)
             .border(
                 width = 2.dp,
                 color = FoodieeeColors.slate200,
             )
+            .padding(bottom = WindowInsets.systemBars.asPaddingValues().calculateBottomPadding())
     ) {
         BottomNavigationItem(
             navController = navController,
