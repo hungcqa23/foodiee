@@ -161,7 +161,7 @@ fun HomeScreen(navController: NavController) {
             }
             else{
                 items(if (searchQuery.isNotEmpty()) searchedCourses else filteredCourses) { course ->
-                    CourseDetailCard(course = course, onIncrement = {})
+                    CourseDetailCard(course = course, onIncrement = {}, navController)
                 }
             }
         }
@@ -171,7 +171,8 @@ fun HomeScreen(navController: NavController) {
 @Composable
 fun CourseDetailCard(
     course: CourseDetails,
-    onIncrement: (Int) -> Unit ,
+    onIncrement: (Int) -> Unit,
+    navController: NavController
 ) {
     var count by remember { mutableIntStateOf(0) }
 
@@ -179,6 +180,7 @@ fun CourseDetailCard(
         shadowElevation = 4.dp,
         shape = RoundedCornerShape(8.dp),
         modifier = Modifier.padding(8.dp)
+            .clickable { navController.navigate(Routes.DishDescriptionScreen.route) }
     ) {
         Row(
             modifier = Modifier.height(IntrinsicSize.Max) // Ensure the height of the Row matches its tallest child
@@ -203,7 +205,7 @@ fun CourseDetailCard(
                 Text(text = course.title, fontSize = 22.sp, fontWeight = FontWeight.Bold, maxLines = 2, overflow = TextOverflow.Ellipsis)
                 Text(
                     text = course.mealType,
-                    fontSize = 10.sp,
+                    fontSize = 12.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
                         .padding(vertical = 2.dp)
