@@ -14,6 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.foodiee.Navigation.Routes
 import com.example.foodiee.R
 import com.example.foodiee.ui.theme.FoodieeeColors
 
@@ -35,28 +36,30 @@ fun Footer(navController: NavController) {
             icon = ImageVector.vectorResource(R.drawable.orders),
             text = "Orders",
             routeNavigate = "OrdersManagementScreen",
-            selected = navController.currentDestination?.route == "ordersManagementScreen"
+            selected = navController.currentDestination?.route == Routes.OrdersManagementScreen.route
         )
         BottomNavigationItem(
             navController = navController,
             icon = ImageVector.vectorResource(R.drawable.file_cog),
             text = "Config",
             routeNavigate = "inventoryScreen",
-            selected = navController.currentDestination?.route == "inventoryScreen"
+            selected = navController.currentDestination?.route == Routes.InventoryScreen.route ||
+                    navController.currentDestination?.route == Routes.StatisticScreen.route ||
+                    navController.currentDestination?.route == Routes.EditDishScreen.route
         )
         BottomNavigationItem(
             navController = navController,
             icon = ImageVector.vectorResource(R.drawable.people),
             text = "People",
             routeNavigate = "peopleManagementScreen",
-            selected = navController.currentDestination?.route == "peopleManagementScreen"
+            selected = navController.currentDestination?.route == Routes.PeopleManagementScreen.route
         )
         BottomNavigationItem(
             navController = navController,
             icon = ImageVector.vectorResource(R.drawable.profile),
             text = "Profile",
             routeNavigate = "profileScreen",
-            selected = navController.currentDestination?.route == "profileScreen"
+            selected = navController.currentDestination?.route == Routes.ProfileScreen.route
         )
     }
 }

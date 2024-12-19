@@ -15,7 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.foodiee.data.models.Customer
-import com.example.foodiee.ui.screens.CustomerInfoRow
+import com.example.foodiee.ui.screens.admin.CustomerInfoRow
 
 @Composable
 fun PersonCard(person: Customer) {

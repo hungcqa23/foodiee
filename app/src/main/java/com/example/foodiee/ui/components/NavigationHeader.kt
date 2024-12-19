@@ -12,6 +12,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.foodiee.Navigation.Routes
 
 enum class ConfigSubPage {
     EDIT_DISH,
@@ -34,21 +35,21 @@ fun NavigationHeader(currentConfigSubPage: ConfigSubPage, navController: NavCont
             color = Color.Black,
             textDecoration = if (currentConfigSubPage == ConfigSubPage.EDIT_DISH) TextDecoration.Underline else TextDecoration.None,
             fontWeight = if (currentConfigSubPage == ConfigSubPage.EDIT_DISH) FontWeight.Bold else FontWeight.Normal,
-            modifier = Modifier.clickable { navController.navigate("editDish") }
+            modifier = Modifier.clickable { navController.navigate(Routes.EditDishScreen.route) }
         )
         Text("Statistics",
             fontSize = 18.sp,
             color = Color.Black,
             textDecoration = if (currentConfigSubPage == ConfigSubPage.STATISTICS) TextDecoration.Underline else TextDecoration.None,
             fontWeight = if (currentConfigSubPage == ConfigSubPage.STATISTICS) FontWeight.Bold else FontWeight.Normal,
-            modifier = Modifier.clickable { navController.navigate("statisticsScreen") }
+            modifier = Modifier.clickable { navController.navigate(Routes.StatisticScreen.route) }
         )
         Text("Inventory",
             fontSize = 18.sp,
             color = Color.Black,
             textDecoration = if (currentConfigSubPage == ConfigSubPage.INVENTORY) TextDecoration.Underline else TextDecoration.None,
             fontWeight = if (currentConfigSubPage == ConfigSubPage.INVENTORY) FontWeight.Bold else FontWeight.Normal,
-            modifier = Modifier.clickable { navController.navigate("inventoryScreen") }
+            modifier = Modifier.clickable { navController.navigate(Routes.InventoryScreen.route) }
         )
     }
 }
