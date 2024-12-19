@@ -3,6 +3,7 @@ package com.example.foodiee.Navigation
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.example.foodiee.ui.screens.DishDescriptionScreen
 import com.example.foodiee.ui.screens.HomeScreen
 import com.example.foodiee.ui.screens.client.AddItemScreen
 import com.example.foodiee.ui.screens.client.CartScreen
@@ -17,5 +18,8 @@ fun NavGraphBuilder.clientNavGraph(navController: NavController) {
     }
     composable(Routes.HomeScreen.route) {
         HomeScreen(navController)
+    }
+    composable(Routes.DishDescriptionScreen.route){
+        DishDescriptionScreen(navController, "123")
     }
 }

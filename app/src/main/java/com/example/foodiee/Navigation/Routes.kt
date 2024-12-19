@@ -21,5 +21,5 @@ sealed class Routes(val route: String) {
     object InventoryScreen: Routes("inventoryScreen")
     object OrdersManagementScreen: Routes("ordersManagementScreen")
     object PeopleManagementScreen: Routes("peopleManagementScreen")
-
+    object DishDescriptionScreen: Routes("dishDescriptionScreen/{dishId}")
 }

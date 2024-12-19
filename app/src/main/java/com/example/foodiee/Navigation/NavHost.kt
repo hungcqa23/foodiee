@@ -8,7 +8,7 @@ import androidx.navigation.compose.NavHost
 fun FoodieeeNavHost(navController: NavHostController) {
     NavHost(
         navController = navController,
-        startDestination = Routes.LoginScreen.route
+        startDestination = Routes.HomeScreen.route
     ) {
         // Authentication Flow
         authNavGraph(navController)
