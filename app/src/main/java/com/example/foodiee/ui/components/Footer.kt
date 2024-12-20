@@ -42,15 +42,15 @@ fun Footer(navController: NavController, userViewModel: UserViewModel) {
     ) {
         when (userRole.value) {
             Role.CUSTOMER -> {
-                FooterItem(navController, R.drawable.home, "Home", Routes.HomeScreen.route)
-                FooterItem(navController, R.drawable.orders, "Orders", Routes.OrdersManagementScreen.route)
-                FooterItem(navController, R.drawable.profile, "Profile", Routes.ProfileScreen.route)
+                FooterItem(navController, R.drawable.home, "Home", listOf(Routes.HomeScreen.route, Routes.DishDescriptionScreen.route))
+                FooterItem(navController, R.drawable.orders, "Orders", listOf(Routes.OrdersManagementScreen.route))
+                FooterItem(navController, R.drawable.profile, "Profile", listOf(Routes.ProfileScreen.route, Routes.PersonalInformationScreen.route))
             }
             Role.EMPLOYEE -> {
-                FooterItem(navController, R.drawable.orders, "Orders", Routes.OrdersManagementScreen.route)
-                FooterItem(navController, R.drawable.file_cog, "Config", Routes.StatisticScreen.route)
-                FooterItem(navController, R.drawable.people, "People", Routes.PeopleManagementScreen.route)
-                FooterItem(navController, R.drawable.profile, "Profile", Routes.ProfileScreen.route)
+                FooterItem(navController, R.drawable.orders, "Orders", listOf(Routes.OrdersManagementScreen.route))
+                FooterItem(navController, R.drawable.file_cog, "Config", listOf(Routes.StatisticScreen.route, Routes.EditDishScreen.route))
+                FooterItem(navController, R.drawable.people, "People", listOf(Routes.PeopleManagementScreen.route))
+                FooterItem(navController, R.drawable.profile, "Profile", listOf(Routes.ProfileScreen.route, Routes.PersonalInformationScreen.route))
             }
         }
     }
@@ -61,21 +61,21 @@ fun FooterItem(
     navController: NavController,
     iconResId: Int,
     text: String,
-    route: String,
+    routes: List<String>, // Accepting a list of routes
 ) {
     val currentRoute = navController.currentBackStackEntry?.destination?.route
-    val selected = currentRoute == route
+    val selected = routes.contains(currentRoute) // Check if the current route is in the provided list
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .clickable {
                 Log.d("nav", "before: ${navController.currentBackStackEntry?.destination?.route}")
-                if (currentRoute != route) {
-                    navController.navigate(route) {
+                if (currentRoute !in routes) {
+                    navController.navigate(routes.first()) { // Navigate to the first route in the list
                         launchSingleTop = true
                         restoreState = true
-                        Log.d("nav", "after: $navController.currentBackStackEntry?.destination?.route")
+                        Log.d("nav", "after: ${navController.currentBackStackEntry?.destination?.route}")
                     }
                 }
             }

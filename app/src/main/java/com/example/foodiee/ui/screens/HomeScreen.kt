@@ -121,7 +121,9 @@ fun HomeScreen(navController: NavController, userViewModel: UserViewModel, cours
             }
             item {
                 if (searchQuery.isNotEmpty()) {
-                    Text("Result for: ${searchQuery}", fontSize = 24.sp, modifier = Modifier.padding(start = 16.dp, top = 16.dp).height(48.dp))
+                    Text("Result for: ${searchQuery}", fontSize = 24.sp, modifier = Modifier
+                        .padding(start = 16.dp, top = 16.dp)
+                        .height(48.dp))
                 } else {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -194,7 +196,8 @@ fun CourseDetailCard(
     Surface(
         shadowElevation = 4.dp,
         shape = RoundedCornerShape(8.dp),
-        modifier = Modifier.padding(8.dp)
+        modifier = Modifier
+            .padding(8.dp)
             .clickable {
                 navController.navigate(Routes.DishDescriptionScreen.createRoute(course.id!!))
             }
@@ -210,6 +213,7 @@ fun CourseDetailCard(
                     .padding(8.dp)
                     .fillMaxHeight() // Match the Row's height
                     .width(102.dp)
+                    .clip(RoundedCornerShape(8.dp))
             )
             Column(
                 horizontalAlignment = Alignment.Start,
@@ -230,7 +234,7 @@ fun CourseDetailCard(
                         .background(Color.LightGray)
                         .padding(horizontal = 8.dp)
                 )
-                Text(text = course.price.toString(), fontSize = 14.sp, color = Color.Gray)
+                Text(text = "$${course.price}", fontSize = 14.sp, color = Color.Gray)
             }
             Spacer(modifier = Modifier.width(8.dp))
             Row(
