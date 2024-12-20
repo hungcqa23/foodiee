@@ -68,15 +68,18 @@ fun DishDescriptionScreen(navController: NavController, userViewModel: UserViewM
                 .fillMaxSize()
         ) {
             item {
-                AsyncImage(
-                    model = course?.image,
-                    contentDescription = "Dish Image",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .padding(start = 16.dp, top = 48.dp, end = 16.dp, bottom = 16.dp)
-                        .size(300.dp)
-                        .clip(RoundedCornerShape(16.dp))
-                )
+                Row(horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.fillMaxWidth()) {
+                    AsyncImage(
+                        model = course?.image,
+                        contentDescription = "Dish Image",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .padding(start = 16.dp, top = 48.dp, end = 16.dp, bottom = 16.dp)
+                            .size(300.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                    )
+                }
             }
 
             item {
@@ -99,7 +102,7 @@ fun DishDescriptionScreen(navController: NavController, userViewModel: UserViewM
                         .fillMaxWidth()
                 ) {
                     Text(
-                        text = course?.price.toString(),
+                        text = "$${ course?.price }",
                         fontSize = 24.sp,
                         fontWeight = FontWeight.SemiBold,
                     )
@@ -163,7 +166,7 @@ fun DishDescriptionScreen(navController: NavController, userViewModel: UserViewM
                             )
                         course?.let {
                             Text(
-                                text = it.title,
+                                text = it.typeCourse,
                                 color = FoodieeeColors.slate500
                             )
                         }

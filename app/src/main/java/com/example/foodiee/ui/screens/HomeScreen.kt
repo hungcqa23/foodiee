@@ -203,7 +203,7 @@ fun CourseDetailCard(
             modifier = Modifier.height(IntrinsicSize.Max) // Ensure the height of the Row matches its tallest child
         ) {
             AsyncImage(
-                model = "https://res.cloudinary.com/dp2ag1ljd/image/upload/v1733730231/ce0tm4gmwwa72lrfdd8d.png",
+                model = course.image,
                 contentDescription = "item image",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier

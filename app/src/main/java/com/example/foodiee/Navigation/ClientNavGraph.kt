@@ -11,9 +11,6 @@ import com.example.foodiee.ui.screens.client.AddItemScreen
 import com.example.foodiee.ui.screens.client.CartScreen
 
 fun NavGraphBuilder.clientNavGraph(navController: NavController, userViewModel: UserViewModel, courseViewModel: CourseViewModel) {
-    composable("addItemScreen") {
-        AddItemScreen(navController, userViewModel)
-    }
     composable(Routes.CartScreen.route) { backStackEntry ->
         val cartId = backStackEntry.arguments?.getString("cartId") ?: ""
         CartScreen(navController, userViewModel, cartId)

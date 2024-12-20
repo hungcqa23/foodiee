@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -25,15 +26,20 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.times
 import androidx.compose.ui.window.Dialog
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.net.toUri
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.foodiee.R
+import com.example.foodiee.data.models.Course.Course
+import com.example.foodiee.data.models.Course.CourseViewModel
 import com.example.foodiee.data.models.User.UserViewModel
 import com.example.foodiee.ui.components.*
 import com.example.foodiee.ui.theme.Orange400
@@ -45,17 +51,48 @@ import java.util.Locale
 @Composable
 fun AddItemScreen(
     navController: NavController,
-    userViewModel: UserViewModel
+    userViewModel: UserViewModel,
+    courseViewModel: CourseViewModel,
+    courseID: String? = null,
 ) {
-
+    val course by courseViewModel.courseDetail.collectAsState()
     var newItemImage: Uri? by remember { mutableStateOf(null) }
     var newItemName by remember { mutableStateOf("") }
     var newItemPrice by remember { mutableStateOf("") }
     var newItemQuantity by remember { mutableStateOf("") }
     var newItemType by remember { mutableStateOf("") }
-    var selectedIngredients by remember { mutableStateOf(setOf<String>()) }
+    var selectedIngredients by remember { mutableStateOf(emptySet<String>()) }
     var showAddImageDialog by remember { mutableStateOf(false) }
 
+    Log.d("AddItemScreen", "course outside: $course")
+
+    LaunchedEffect(courseID) {
+        if (courseID != null) {
+            courseViewModel.getCourseById(courseID.toInt())
+        } else {
+            Log.d("AddItemScreen", "Course ID not provided")
+        }
+    }
+
+    // Update variables whenever the course changes
+    LaunchedEffect(course) {
+        course?.let {
+            newItemImage = it.image?.toUri()
+            newItemName = it.title ?: ""
+            newItemPrice = it.price.toString()
+            newItemQuantity = it.quantity.toString()
+            newItemType = it.typeCourse ?: ""
+            selectedIngredients = it.ingredients?.toSet() ?: emptySet()
+
+            Log.d("AddItemScreen", "Updated new item variables")
+            Log.d("AddItemScreen", "new item image: $newItemImage")
+            Log.d("AddItemScreen", "new item name: $newItemName")
+            Log.d("AddItemScreen", "new item price: $newItemPrice")
+            Log.d("AddItemScreen", "new item quantity: $newItemQuantity")
+            Log.d("AddItemScreen", "new item type: $newItemType")
+            Log.d("AddItemScreen", "new item ingredients: $selectedIngredients")
+        }
+    }
     Scaffold(
         bottomBar = {
             Footer(navController, userViewModel)
@@ -114,11 +151,13 @@ fun AddItemScreen(
             }
             InputField(
                 "Name",
+                defaultString = newItemName,
                 onValueChange = { newItemName = it }
             )
             MyDropdownMenu(
                 "Type",
-                options = listOf("Food", "Drink", "Dessert"),
+                options = listOf("main_course", "appetizer", "drink", "dessert"),
+                defaultOption = newItemType,
                 onOptionSelected = { newItemType = it }
             )
             MultiSelectDropdown(
@@ -129,10 +168,12 @@ fun AddItemScreen(
             )
             InputField(
                 "Price",
+                defaultString = newItemPrice,
                 onValueChange = { newItemPrice = it }
             )
             InputField(
                 "Quantity",
+                defaultString = newItemQuantity,
                 onValueChange = { newItemQuantity = it }
             )
             Spacer(modifier = Modifier.weight(1f))
@@ -142,7 +183,26 @@ fun AddItemScreen(
                     onDismiss = { showAddImageDialog = false }
                 )
             }
-            ActionButton(text = "Add new item", onClick = {})
+            ActionButton(text = "Add new item", onClick = {
+                val newCourse = Course(
+                    title = newItemName,
+                    description = "",
+                    typeCourse = newItemType,
+                    quantity = newItemQuantity.toInt(),
+                    price = newItemPrice.toDouble(),
+                    ingredients = selectedIngredients.toList(),
+                    image = newItemImage.toString()
+                )
+                if(courseID != null) {
+                    courseViewModel.updateCourse(courseID.toInt(), newCourse) {
+                        navController.popBackStack()
+                    }
+                }else {
+                    courseViewModel.createCourse(newCourse) {
+                        navController.popBackStack()
+                    }
+                }
+            })
         }
 
     }
@@ -156,6 +216,8 @@ fun MultiSelectDropdown(
     onSelectionChange: (Set<String>) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
+    val maxVisibleItems = 5 // Max number of visible selected items
+    val itemHeight = 32.dp
 
     Column(modifier = Modifier.padding(8.dp)) {
         Text(text = title, fontSize = 24.sp, fontWeight = FontWeight.Bold, color = Color.Black)
@@ -163,13 +225,12 @@ fun MultiSelectDropdown(
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(32.dp)
                 .border(width = 1.dp, color = Color.Black, shape = RoundedCornerShape(4.dp)),
             shape = RoundedCornerShape(4.dp)
         ) {
             Row(
                 modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxWidth()
                     .background(Color.White)
                     .clickable { expanded = !expanded },
                 verticalAlignment = Alignment.CenterVertically
@@ -178,6 +239,8 @@ fun MultiSelectDropdown(
                     text = if (selectedItems.isEmpty()) "Select ingredients" else selectedItems.joinToString(", "),
                     color = Color.Black,
                     fontSize = 16.sp,
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis,
                     modifier = Modifier
                         .weight(1f)
                         .padding(horizontal = 8.dp)
@@ -196,7 +259,9 @@ fun MultiSelectDropdown(
             onDismissRequest = { expanded = false },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp) // Padding added to prevent touching the edges
+                .heightIn(
+                    max = maxVisibleItems * itemHeight + 16.dp, // Max height for dropdown
+                )
                 .background(Color.White)
                 .border(1.dp, Color.Black, shape = RoundedCornerShape(4.dp))
         ) {
@@ -221,10 +286,10 @@ fun MultiSelectDropdown(
 fun MyDropdownMenu(
     title: String,
     options: List<String>,
+    defaultOption: String = "",
     onOptionSelected: (String) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
-    var selectedOption by remember { mutableStateOf("") }
 
     Column(modifier = Modifier.padding(8.dp)) {
         Text(text = title, fontSize = 24.sp, fontWeight = FontWeight.Bold, color = Color.Black)
@@ -244,7 +309,7 @@ fun MyDropdownMenu(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = selectedOption.ifEmpty { "Select an option" },
+                    text = if (defaultOption.isEmpty()) "Select an option" else defaultOption,
                     color = Color.Black,
                     fontSize = 16.sp,
                     modifier = Modifier
@@ -265,7 +330,6 @@ fun MyDropdownMenu(
             onDismissRequest = { expanded = false },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp) // Padding added to prevent touching the edges
                 .background(Color.White)
                 .border(1.dp, Color.Black, shape = RoundedCornerShape(4.dp))
         ) {
@@ -274,9 +338,8 @@ fun MyDropdownMenu(
                     text = { Text(option, color = Color.Black) },
                     onClick = {
                         onOptionSelected(option)
-                        selectedOption = option
                         expanded = false
-                    },
+                    }
                 )
             }
         }
@@ -286,9 +349,9 @@ fun MyDropdownMenu(
 @Composable
 fun InputField(
     title: String,
+    defaultString: String,
     onValueChange: (String) -> Unit,
 ) {
-    var value by remember { mutableStateOf("") }
     Column(modifier = Modifier.padding(8.dp)) {
         Text(text = title, fontSize = 24.sp, fontWeight = FontWeight.Bold, color = Color.Black)
 
@@ -306,8 +369,8 @@ fun InputField(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 BasicTextField(
-                    value = value,
-                    onValueChange = { onValueChange(value); value = it },
+                    value = defaultString, // Directly use defaultString as the text
+                    onValueChange = { onValueChange(it) }, // Notify parent of changes
                     textStyle = TextStyle(color = Color.Black, fontSize = 16.sp),
                     cursorBrush = SolidColor(Color.Black),
                     singleLine = true,

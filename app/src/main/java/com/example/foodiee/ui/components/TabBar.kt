@@ -43,7 +43,7 @@ fun TabBar(navController: NavController) {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.clickable {
-                navController.navigate(Routes.AddItemScreen.route)
+                navController.navigate(Routes.AddItemScreen.createRoute(null))
             }
         ) {
             Text("Add new Item",

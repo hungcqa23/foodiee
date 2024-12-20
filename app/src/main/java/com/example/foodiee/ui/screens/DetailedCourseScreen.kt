@@ -19,6 +19,14 @@ import com.example.foodiee.data.models.User.UserViewModel
 import com.example.foodiee.ui.components.BackButton
 import com.example.foodiee.ui.theme.FoodieeeColors
 
+
+/*
+Unused
+đi qua cái DishDescriptionScreen coi
+cái này xấu quá e làm lại cái khác =))))
+ */
+
+
 @Composable
 fun DetailedCourseScreen(navController: NavController, userViewModel: UserViewModel, course: CourseDetails) {
     Box(

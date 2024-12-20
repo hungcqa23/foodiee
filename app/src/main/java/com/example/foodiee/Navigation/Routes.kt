@@ -24,5 +24,11 @@ sealed class Routes(val route: String) {
     object DishDescriptionScreen : Routes("dishDescriptionScreen/{dishId}") {
         fun createRoute(dishId: Int) = "dishDescriptionScreen/$dishId"
     }
-    object AddItemScreen: Routes("addItemScreen")
+    object AddItemScreen : Routes("addItemScreen/{dishId?}") { // Make dishId optional
+        fun createRoute(dishId: String?) = if (dishId == null) {
+            "addItemScreen"
+        } else {
+            "addItemScreen/$dishId"
+        }
+    }
 }
