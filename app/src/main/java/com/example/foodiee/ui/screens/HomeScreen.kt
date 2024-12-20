@@ -1,5 +1,6 @@
 package com.example.foodiee.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -29,6 +30,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -48,18 +51,28 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.foodiee.Navigation.Routes
 import com.example.foodiee.R
+import com.example.foodiee.data.models.Course.Course
+import com.example.foodiee.data.models.Course.CourseViewModel
 import com.example.foodiee.data.models.CourseDetails
 import com.example.foodiee.data.models.User.UserViewModel
 import com.example.foodiee.ui.components.Footer
 import com.example.foodiee.ui.theme.FoodieeeColors
 
 @Composable
-fun HomeScreen(navController: NavController, userViewModel: UserViewModel) {
+fun HomeScreen(navController: NavController, userViewModel: UserViewModel, courseViewModel: CourseViewModel) {
     var searchQuery by remember { mutableStateOf("") }
-    var selectedCategory by remember { mutableStateOf("Main") }  // For managing selected category
+    var selectedCategory by remember { mutableStateOf("main_course") }  // For managing selected category
+    val allCourse by courseViewModel.courses.collectAsState()
 
+    LaunchedEffect(Unit) {
+        Log.d("CourseViewModel", "dang lay course")
+        courseViewModel.getAllCourses()
+    }
+
+    Log.d("CourseViewModel", "Lay xong roi ${allCourse}")
     Scaffold(
         bottomBar = {
             Footer(navController, userViewModel)
@@ -120,36 +133,36 @@ fun HomeScreen(navController: NavController, userViewModel: UserViewModel) {
                         MenuCategory(
                             icon = ImageVector.vectorResource(R.drawable.mainmenu),
                             text = "Main",
-                            selected = selectedCategory == "Main",
-                            onClick = { selectedCategory = "Main" }
+                            selected = selectedCategory == "main_course",
+                            onClick = { selectedCategory = "main_course" }
                         )
                         MenuCategory(
                             icon = ImageVector.vectorResource(R.drawable.appertizer),
                             text = "Appetizer",
-                            selected = selectedCategory == "Appetizer",
-                            onClick = { selectedCategory = "Appetizer" }
+                            selected = selectedCategory == "appetizer",
+                            onClick = { selectedCategory = "appetizer" }
                         )
                         MenuCategory(
                             icon = ImageVector.vectorResource(R.drawable.dessertmenu),
                             text = "Dessert",
-                            selected = selectedCategory == "Dessert",
-                            onClick = { selectedCategory = "Dessert" }
+                            selected = selectedCategory == "dessert",
+                            onClick = { selectedCategory = "dessert" }
                         )
                         MenuCategory(
                             icon = ImageVector.vectorResource(R.drawable.drinkmenu),
                             text = "Drink",
-                            selected = selectedCategory == "Drink",
-                            onClick = { selectedCategory = "Drink" }
+                            selected = selectedCategory == "drink",
+                            onClick = { selectedCategory = "drink" }
                         )
                     }
                 }
             }
 
-            val filteredCourses = getMockCourses().filter {
-                it.mealType == selectedCategory || selectedCategory == "All"
+            val filteredCourses = allCourse.filter {
+                it.typeCourse == selectedCategory || selectedCategory == "All"
             }
 
-            val searchedCourses = getMockCourses().filter {
+            val searchedCourses = allCourse.filter {
                 it.title.contains(searchQuery, ignoreCase = true)
             }
 
@@ -161,8 +174,8 @@ fun HomeScreen(navController: NavController, userViewModel: UserViewModel) {
                 }
             }
             else{
-                items(if (searchQuery.isNotEmpty()) searchedCourses else filteredCourses) { course ->
-                    CourseDetailCard(course = course, onIncrement = {}, navController)
+                items(if (searchQuery.isNotEmpty()) searchedCourses else filteredCourses) { dish ->
+                    CourseDetailCard(course = dish, onIncrement = {}, navController)
                 }
             }
         }
@@ -171,23 +184,26 @@ fun HomeScreen(navController: NavController, userViewModel: UserViewModel) {
 
 @Composable
 fun CourseDetailCard(
-    course: CourseDetails,
+    course: Course,
     onIncrement: (Int) -> Unit,
     navController: NavController
 ) {
     var count by remember { mutableIntStateOf(0) }
+    Log.d("CourseViewModel", "CourseID o home: ${course.id}")
 
     Surface(
         shadowElevation = 4.dp,
         shape = RoundedCornerShape(8.dp),
         modifier = Modifier.padding(8.dp)
-            .clickable { navController.navigate(Routes.DishDescriptionScreen.route) }
+            .clickable {
+                navController.navigate(Routes.DishDescriptionScreen.createRoute(course.id!!))
+            }
     ) {
         Row(
             modifier = Modifier.height(IntrinsicSize.Max) // Ensure the height of the Row matches its tallest child
         ) {
-            Image(
-                painter = painterResource(course.imageResId),
+            AsyncImage(
+                model = "https://res.cloudinary.com/dp2ag1ljd/image/upload/v1733730231/ce0tm4gmwwa72lrfdd8d.png",
                 contentDescription = "item image",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -205,7 +221,7 @@ fun CourseDetailCard(
             ) {
                 Text(text = course.title, fontSize = 22.sp, fontWeight = FontWeight.Bold, maxLines = 2, overflow = TextOverflow.Ellipsis)
                 Text(
-                    text = course.mealType,
+                    text = course.typeCourse,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
@@ -214,7 +230,7 @@ fun CourseDetailCard(
                         .background(Color.LightGray)
                         .padding(horizontal = 8.dp)
                 )
-                Text(text = course.price, fontSize = 14.sp, color = Color.Gray)
+                Text(text = course.price.toString(), fontSize = 14.sp, color = Color.Gray)
             }
             Spacer(modifier = Modifier.width(8.dp))
             Row(

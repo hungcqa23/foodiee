@@ -32,7 +32,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.navigation.NavController
-import coil3.compose.rememberAsyncImagePainter
+import coil.compose.rememberAsyncImagePainter
 import com.example.foodiee.R
 import com.example.foodiee.data.models.User.UserViewModel
 import com.example.foodiee.ui.components.*

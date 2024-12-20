@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.*
 import com.example.foodiee.Navigation.FoodieeeNavHost
+import com.example.foodiee.data.models.Course.CourseViewModel
 import com.example.foodiee.data.models.CourseDetails
 import com.example.foodiee.data.models.User.UserModel
 import com.example.foodiee.data.models.User.UserViewModel
@@ -29,13 +30,13 @@ class MainActivity : ComponentActivity() {
         val userModel = UserModel(applicationContext)
         val userViewModelFactory = UserViewModelFactory(userModel)
         val userViewModel: UserViewModel by viewModels { userViewModelFactory }
-
+        val courseViewModel: CourseViewModel by viewModels()
         enableEdgeToEdge()
         setContent {
             FoodieeeTheme {
                 Surface(modifier = Modifier.fillMaxSize()) {
                     val navController = rememberNavController()
-                    FoodieeeNavHost(navController = navController, userViewModel)
+                    FoodieeeNavHost(navController = navController, userViewModel, courseViewModel)
                 }
             }
         }

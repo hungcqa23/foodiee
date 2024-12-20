@@ -1,5 +1,6 @@
 package com.example.foodiee.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,6 +20,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,8 +36,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import coil3.compose.AsyncImage
+import coil.compose.AsyncImage
 import com.example.foodiee.R
+import com.example.foodiee.data.models.Course.CourseViewModel
 import com.example.foodiee.data.models.CourseDetails
 import com.example.foodiee.data.models.User.UserViewModel
 import com.example.foodiee.ui.components.BackButton
@@ -41,7 +46,14 @@ import com.example.foodiee.ui.components.Footer
 import com.example.foodiee.ui.theme.FoodieeeColors
 
 @Composable
-fun DishDescriptionScreen(navController: NavController, userViewModel: UserViewModel, course: CourseDetails) {
+fun DishDescriptionScreen(navController: NavController, userViewModel: UserViewModel, courseViewModel: CourseViewModel, courseID: Int) {
+
+    val course by courseViewModel.courseDetail.collectAsState()
+    LaunchedEffect(Unit) {
+        Log.e("CourseViewModel", "CourseID da lay: ${courseID}")
+        courseViewModel.getCourseById(courseID)
+        Log.e("CourseViewModel", "CourseID da lay: ${courseViewModel.courseDetail.value}")
+    }
     Scaffold(
         topBar = {
             BackButton(navController = navController)
@@ -57,7 +69,7 @@ fun DishDescriptionScreen(navController: NavController, userViewModel: UserViewM
         ) {
             item {
                 AsyncImage(
-                    model = "https://plus.unsplash.com/premium_photo-1661596686441-611034b8077e?q=80&w=2874&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                    model = course?.image,
                     contentDescription = "Dish Image",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -68,12 +80,14 @@ fun DishDescriptionScreen(navController: NavController, userViewModel: UserViewM
             }
 
             item {
-                Text(
-                    text = "Beef Pho",
-                    fontSize = 32.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
+                course?.let {
+                    Text(
+                        text = it.title,
+                        fontSize = 32.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+                }
             }
 
             item {
@@ -85,7 +99,7 @@ fun DishDescriptionScreen(navController: NavController, userViewModel: UserViewM
                         .fillMaxWidth()
                 ) {
                     Text(
-                        text = "$5.99",
+                        text = course?.price.toString(),
                         fontSize = 24.sp,
                         fontWeight = FontWeight.SemiBold,
                     )
@@ -107,11 +121,13 @@ fun DishDescriptionScreen(navController: NavController, userViewModel: UserViewM
             }
 
             item {
-                Text(
-                    text = "Vulputate tincidunt convallis pulvinar egestas consequat, aliquam lectus nibh. Leo purus nisi, nibh condimentum aliquam eu quis. Ultrices arcu pharetra.",
-                    fontSize = 16.sp,
-                    modifier = Modifier.padding(16.dp)
-                )
+                course?.let {
+                    Text(
+                        text = it.description,
+                        fontSize = 16.sp,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
             }
             item{
                 Column(
@@ -127,10 +143,12 @@ fun DishDescriptionScreen(navController: NavController, userViewModel: UserViewM
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Medium,
                         )
-                        Text(
-                            text = course.ingredients.joinToString(", "),
-                            color = FoodieeeColors.slate500
-                        )
+                        course?.ingredients?.let {
+                            Text(
+                                text = it.joinToString(", "),
+                                color = FoodieeeColors.slate500
+                            )
+                        }
                     }
 
                     Row(
@@ -143,10 +161,12 @@ fun DishDescriptionScreen(navController: NavController, userViewModel: UserViewM
                             fontWeight = FontWeight.Medium,
 
                             )
-                        Text(
-                            text = course.mealType,
-                            color = FoodieeeColors.slate500
-                        )
+                        course?.let {
+                            Text(
+                                text = it.title,
+                                color = FoodieeeColors.slate500
+                            )
+                        }
                     }
                 }
             }
@@ -181,7 +201,8 @@ fun CommentCard(){
                 )
                 Column(
                     horizontalAlignment = Alignment.Start,
-                    modifier = Modifier.wrapContentHeight()
+                    modifier = Modifier
+                        .wrapContentHeight()
                         .padding(start = 8.dp)
                 ) {
                     Text(
@@ -193,7 +214,8 @@ fun CommentCard(){
                         Icon(
                             painter = painterResource(R.drawable.star_half_full),
                             contentDescription = "Star Icon",
-                            modifier = Modifier.padding(end = 1.dp)
+                            modifier = Modifier
+                                .padding(end = 1.dp)
                                 .size(12.dp)
                         )
                         Text(

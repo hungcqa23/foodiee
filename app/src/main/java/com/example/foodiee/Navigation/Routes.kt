@@ -21,6 +21,8 @@ sealed class Routes(val route: String) {
 //    object InventoryScreen: Routes("inventoryScreen")
     object OrdersManagementScreen: Routes("ordersManagementScreen")
     object PeopleManagementScreen: Routes("peopleManagementScreen")
-    object DishDescriptionScreen: Routes("dishDescriptionScreen/{dishId}")
+    object DishDescriptionScreen : Routes("dishDescriptionScreen/{dishId}") {
+        fun createRoute(dishId: Int) = "dishDescriptionScreen/$dishId"
+    }
     object AddItemScreen: Routes("addItemScreen")
 }

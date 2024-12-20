@@ -2,7 +2,10 @@ package com.example.foodiee.Navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
+import com.example.foodiee.data.models.Course.CourseViewModel
 import com.example.foodiee.data.models.CourseDetails
 import com.example.foodiee.data.models.User.UserViewModel
 import com.example.foodiee.ui.screens.DishDescriptionScreen
@@ -13,7 +16,8 @@ import com.example.foodiee.ui.screens.ProfileScreen
 
 fun NavGraphBuilder.sharedNavGraph(
     navController: NavController,
-    userViewModel: UserViewModel
+    userViewModel: UserViewModel,
+    courseViewModel: CourseViewModel
 ) {
 
     val mockCourse = CourseDetails(
@@ -32,9 +36,12 @@ fun NavGraphBuilder.sharedNavGraph(
         mealType = "Main Course"
 
     )
-    composable(Routes.DishDescriptionScreen.route){ backStackEntry ->
-        val courseId = backStackEntry.arguments?.getString("courseId") ?: ""
-        DishDescriptionScreen(navController, userViewModel, mockCourse)
+    composable(
+        route = Routes.DishDescriptionScreen.route,
+        arguments = listOf(navArgument("dishId") { type = NavType.IntType })
+    ) { backStackEntry ->
+        val courseId = backStackEntry.arguments?.getInt("dishId") ?: 0
+        DishDescriptionScreen(navController, userViewModel, courseViewModel, courseId)
     }
     composable(Routes.OrderDetailScreen.route) { backStackEntry ->
         val orderId = backStackEntry.arguments?.getString("orderId") ?: ""
