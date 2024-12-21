@@ -10,6 +10,7 @@ data class Customer(
 )
 
 enum class Role {
-    CUSTOMER,
-    EMPLOYEE
+    USER,
+    STAFF,
+    ADMIN
 }
