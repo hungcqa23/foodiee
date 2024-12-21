@@ -18,10 +18,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.foodiee.Navigation.Routes
 import com.example.foodiee.data.models.Role
+import com.example.foodiee.data.models.User.UserAPI.UserAPIViewModel
 import com.example.foodiee.data.models.User.UserViewModel
 
 @Composable
-fun LoginScreen(navController: NavController, userViewModel: UserViewModel) {
+fun LoginScreen(navController: NavController, userViewModel: UserViewModel, userAPIViewmodel: UserAPIViewModel) {
     // State to store user input
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -30,13 +31,23 @@ fun LoginScreen(navController: NavController, userViewModel: UserViewModel) {
     // handle login logic
     fun handleLogin() {
         if (username == "admin" && password == "password") {
-            userViewModel.login(Role.EMPLOYEE)
+            userViewModel.login(Role.STAFF)
             navController.navigate(Routes.OrdersManagementScreen.route)
         } else if(username == "client" && password == "password"){
-            userViewModel.login(Role.CUSTOMER)
+            userViewModel.login(Role.USER)
             navController.navigate(Routes.HomeScreen.route)
         }
         else {
+            errorMessage = "Invalid username or password"
+        }
+    }
+
+    fun login(){
+        userAPIViewmodel.loginUser(username, password)
+        if(userAPIViewmodel.currentUser.value != null){
+            userViewModel.login(Role.USER)
+            navController.navigate(Routes.HomeScreen.route)
+        }else{
             errorMessage = "Invalid username or password"
         }
     }

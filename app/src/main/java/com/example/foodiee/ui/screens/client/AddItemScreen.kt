@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Environment
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -34,6 +35,7 @@ import androidx.compose.ui.unit.times
 import androidx.compose.ui.window.Dialog
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.net.toFile
 import androidx.core.net.toUri
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
@@ -55,6 +57,7 @@ fun AddItemScreen(
     courseViewModel: CourseViewModel,
     courseID: String? = null,
 ) {
+    val context = LocalContext.current
     val course by courseViewModel.courseDetail.collectAsState()
     var newItemImage: Uri? by remember { mutableStateOf(null) }
     var newItemName by remember { mutableStateOf("") }
@@ -67,7 +70,9 @@ fun AddItemScreen(
     Log.d("AddItemScreen", "course outside: $course")
 
     LaunchedEffect(courseID) {
+        courseViewModel.flushCourseDetail()
         if (courseID != null) {
+            Log.d("AddItemScreen", "Fetching course with ID: $courseID")
             courseViewModel.getCourseById(courseID.toInt())
         } else {
             Log.d("AddItemScreen", "Course ID not provided")
@@ -76,6 +81,7 @@ fun AddItemScreen(
 
     // Update variables whenever the course changes
     LaunchedEffect(course) {
+        courseViewModel.flushCourseDetail()
         course?.let {
             newItemImage = it.image?.toUri()
             newItemName = it.title ?: ""
@@ -85,6 +91,7 @@ fun AddItemScreen(
             selectedIngredients = it.ingredients?.toSet() ?: emptySet()
 
             Log.d("AddItemScreen", "Updated new item variables")
+            Log.d("AddItemScreen", "new item image: ${course!!.id}")
             Log.d("AddItemScreen", "new item image: $newItemImage")
             Log.d("AddItemScreen", "new item name: $newItemName")
             Log.d("AddItemScreen", "new item price: $newItemPrice")
@@ -179,25 +186,52 @@ fun AddItemScreen(
             Spacer(modifier = Modifier.weight(1f))
             if (showAddImageDialog) {
                 AddImageDialog(
-                    onNewImageAdded = { newItemImage = it; showAddImageDialog = false },
+                    onNewImageAdded = {
+                        newItemImage = it
+                        showAddImageDialog = false
+                        if (it != null) {
+                            val file = if (it.scheme == "file") {
+                                it.toFile()
+                            } else {
+                                getFileFromUri(context, it)
+                            }
+
+                            if (file != null) {
+                                courseViewModel.uploadFile(
+                                    file,
+                                    onSuccess = { uri ->
+                                        newItemImage = uri.toUri()
+                                    },
+                                    onError = {
+                                        Toast.makeText(context, "File upload failed", Toast.LENGTH_SHORT).show()
+                                    }
+                                )
+                            } else {
+                                Toast.makeText(context, "Failed to process image", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    },
                     onDismiss = { showAddImageDialog = false }
                 )
             }
             ActionButton(text = "Add new item", onClick = {
                 val newCourse = Course(
+                    id = courseID?.toInt(),
                     title = newItemName,
                     description = "",
                     typeCourse = newItemType,
                     quantity = newItemQuantity.toInt(),
                     price = newItemPrice.toDouble(),
                     ingredients = selectedIngredients.toList(),
-                    image = newItemImage.toString()
+                    image = newItemImage?.let { getFileFromUri(context, it).toString() }
                 )
                 if(courseID != null) {
+                    Log.d("AddItemScreen", "Updating course with ID: $courseID")
                     courseViewModel.updateCourse(courseID.toInt(), newCourse) {
                         navController.popBackStack()
                     }
                 }else {
+                    Log.d("AddItemScreen", "Creating new course")
                     courseViewModel.createCourse(newCourse) {
                         navController.popBackStack()
                     }
@@ -501,20 +535,47 @@ fun AddImageDialog(
 }
 
 // Utility function to create a unique image file URI for camera capture
-fun createImageUri(context: Context): Uri {
-    val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-    val imageFileName = "JPEG_" + timeStamp + "_"
-    val image = File.createTempFile(
-        imageFileName,  /* prefix */
-        ".jpg",         /* suffix */
-        context.externalCacheDir      /* directory */
-    )
+fun createImageUri(context: Context): Uri? {
+    return try {
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val imageFileName = "JPEG_${timeStamp}_"
+        val storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
 
-    return FileProvider.getUriForFile(
-        context,
-        "${context.packageName}.fileprovider",
-        image
-    )
+        // Create a file in the Pictures directory
+        val image = File.createTempFile(
+            imageFileName, /* prefix */
+            ".jpg",        /* suffix */
+            storageDir     /* directory */
+        )
+
+        // Return a content URI for the file
+        FileProvider.getUriForFile(
+            context,
+            "${context.packageName}.fileprovider",
+            image
+        )
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
+    }
 }
 
 
+fun getFileFromUri(context: Context, uri: Uri): File? {
+    return try {
+        val contentResolver = context.contentResolver
+        val fileName = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date()) + ".jpg"
+        val tempFile = File.createTempFile("temp", fileName, context.cacheDir)
+
+        contentResolver.openInputStream(uri)?.use { inputStream ->
+            tempFile.outputStream().use { outputStream ->
+                inputStream.copyTo(outputStream)
+            }
+        }
+
+        tempFile
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
+    }
+}
