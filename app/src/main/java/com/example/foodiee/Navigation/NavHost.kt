@@ -5,14 +5,16 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.example.foodiee.data.models.Course.CourseViewModel
 import com.example.foodiee.data.models.Role
+import com.example.foodiee.data.models.User.UserAPI.UserAPIViewModel
 import com.example.foodiee.data.models.User.UserViewModel
 
 @Composable
-fun FoodieeeNavHost(navController: NavHostController, userViewModel: UserViewModel, courseViewModel: CourseViewModel) {
+fun FoodieeeNavHost(navController: NavHostController, userViewModel: UserViewModel, courseViewModel: CourseViewModel, userAPIViewmodel: UserAPIViewModel) {
     val startDestination = if(userViewModel.getUserStatus().isLoggedIn){
        when(userViewModel.getUserStatus().role){
-           Role.CUSTOMER -> Routes.HomeScreen.route
-           Role.EMPLOYEE -> Routes.OrdersManagementScreen.route
+           Role.USER -> Routes.HomeScreen.route
+           Role.STAFF -> Routes.OrdersManagementScreen.route
+           Role.ADMIN -> Routes.OrdersManagementScreen.route
        }
     }else{
         Routes.LoginScreen.route
@@ -22,7 +24,7 @@ fun FoodieeeNavHost(navController: NavHostController, userViewModel: UserViewMod
         startDestination = startDestination
     ) {
         // Authentication Flow
-        authNavGraph(navController, userViewModel)
+        authNavGraph(navController, userViewModel, userAPIViewmodel)
 
         // Shared Route (accessible by both Admin and Client)
         sharedNavGraph(navController, userViewModel, courseViewModel)
