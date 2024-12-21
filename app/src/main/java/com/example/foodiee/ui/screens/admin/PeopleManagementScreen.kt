@@ -12,10 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.foodiee.data.models.Customer
 import com.example.foodiee.data.models.Role
@@ -27,7 +25,7 @@ import com.example.foodiee.ui.components.people_screens.PersonCard
 @Composable
 fun PeopleManagementScreen(navController: NavController, userViewModel: UserViewModel) {
     var searchQuery by remember { mutableStateOf("") }
-    var tabs: Role by remember { mutableStateOf(Role.CUSTOMER) }
+    var tabs: Role by remember { mutableStateOf(Role.USER) }
     val navigationBarInsets = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
     val statusBarInsets = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
 
@@ -126,7 +124,7 @@ private fun getSampleCustomers(): List<Customer> {
             cccd = "034886599",
             phone = "098 812 3456",
             address = "Số 10, Phạm Văn Bạch, P. Yên Hoà, Q. Cầu Giấy, Hà Nội",
-            type = Role.CUSTOMER
+            type = Role.USER
         ),
         Customer(
             id = "HNH406551",
@@ -134,7 +132,7 @@ private fun getSampleCustomers(): List<Customer> {
             cccd = "034886599",
             phone = "098 812 3456",
             address = "Số 10, Phạm Văn Bạch, P. Yên Hoà, Q. Cầu Giấy, Hà Nội",
-            type = Role.CUSTOMER
+            type = Role.USER
         ),
         Customer(
             id = "HNH406551",
@@ -142,7 +140,7 @@ private fun getSampleCustomers(): List<Customer> {
             cccd = "034886599",
             phone = "098 812 3456",
             address = "Số 10, Phạm Văn Bạch, P. Yên Hoà, Q. Cầu Giấy, Hà Nội",
-            type = Role.EMPLOYEE
+            type = Role.STAFF
         ),
         Customer(
             id = "HNH406551",
@@ -150,7 +148,7 @@ private fun getSampleCustomers(): List<Customer> {
             cccd = "034886599",
             phone = "098 812 3456",
             address = "Số 10, Phạm Văn Bạch, P. Yên Hoà, Q. Cầu Giấy, Hà Nội",
-            type = Role.EMPLOYEE
+            type = Role.STAFF
         ),
         Customer(
             id = "HNH406551",
@@ -158,7 +156,7 @@ private fun getSampleCustomers(): List<Customer> {
             cccd = "034886599",
             phone = "098 812 3456",
             address = "Số 10, Phạm Văn Bạch, P. Yên Hoà, Q. Cầu Giấy, Hà Nội",
-            type = Role.EMPLOYEE
+            type = Role.STAFF
         )
     )
 }

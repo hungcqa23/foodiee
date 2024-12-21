@@ -15,8 +15,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import com.example.foodiee.Navigation.Routes
 import com.example.foodiee.data.models.Role
 
 
@@ -33,16 +31,16 @@ fun PeopleNavigationHeader(currentPeopleSubPage: Role, onClick: (Role) -> Unit) 
         Text("Customer",
             fontSize = 18.sp,
             color = Color.Black,
-            textDecoration = if (currentPeopleSubPage == Role.CUSTOMER) TextDecoration.Underline else TextDecoration.None,
-            fontWeight = if (currentPeopleSubPage == Role.CUSTOMER) FontWeight.Bold else FontWeight.Normal,
-            modifier = Modifier.clickable { onClick(Role.CUSTOMER) }
+            textDecoration = if (currentPeopleSubPage == Role.USER) TextDecoration.Underline else TextDecoration.None,
+            fontWeight = if (currentPeopleSubPage == Role.USER) FontWeight.Bold else FontWeight.Normal,
+            modifier = Modifier.clickable { onClick(Role.USER) }
         )
         Text("Employee",
             fontSize = 18.sp,
             color = Color.Black,
-            textDecoration = if (currentPeopleSubPage == Role.EMPLOYEE) TextDecoration.Underline else TextDecoration.None,
-            fontWeight = if (currentPeopleSubPage == Role.EMPLOYEE) FontWeight.Bold else FontWeight.Normal,
-            modifier = Modifier.clickable { onClick(Role.EMPLOYEE) }
+            textDecoration = if (currentPeopleSubPage == Role.STAFF) TextDecoration.Underline else TextDecoration.None,
+            fontWeight = if (currentPeopleSubPage == Role.STAFF) FontWeight.Bold else FontWeight.Normal,
+            modifier = Modifier.clickable { onClick(Role.STAFF) }
         )
 
     }

@@ -1,6 +1,5 @@
 package com.example.foodiee.ui.components
 
-import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -20,13 +19,12 @@ import androidx.navigation.NavController
 import com.example.foodiee.Navigation.Routes
 import com.example.foodiee.R
 import com.example.foodiee.data.models.Role
-import com.example.foodiee.data.models.User.UserModel
 import com.example.foodiee.data.models.User.UserViewModel
 import com.example.foodiee.ui.theme.FoodieeeColors
 
 @Composable
 fun Footer(navController: NavController, userViewModel: UserViewModel) {
-    val userRole = userViewModel.userRole.observeAsState(initial = Role.CUSTOMER)
+    val userRole = userViewModel.userRole.observeAsState(initial = Role.USER)
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -41,12 +39,18 @@ fun Footer(navController: NavController, userViewModel: UserViewModel) {
             .padding(bottom = WindowInsets.systemBars.asPaddingValues().calculateBottomPadding())
     ) {
         when (userRole.value) {
-            Role.CUSTOMER -> {
+            Role.USER -> {
                 FooterItem(navController, R.drawable.home, "Home", listOf(Routes.HomeScreen.route, Routes.DishDescriptionScreen.route))
                 FooterItem(navController, R.drawable.orders, "Orders", listOf(Routes.OrdersManagementScreen.route))
                 FooterItem(navController, R.drawable.profile, "Profile", listOf(Routes.ProfileScreen.route, Routes.PersonalInformationScreen.route))
             }
-            Role.EMPLOYEE -> {
+            Role.STAFF -> {
+                FooterItem(navController, R.drawable.orders, "Orders", listOf(Routes.OrdersManagementScreen.route))
+                FooterItem(navController, R.drawable.file_cog, "Config", listOf(Routes.StatisticScreen.route, Routes.EditDishScreen.route))
+                FooterItem(navController, R.drawable.people, "People", listOf(Routes.PeopleManagementScreen.route))
+                FooterItem(navController, R.drawable.profile, "Profile", listOf(Routes.ProfileScreen.route, Routes.PersonalInformationScreen.route))
+            }
+            Role.ADMIN -> {
                 FooterItem(navController, R.drawable.orders, "Orders", listOf(Routes.OrdersManagementScreen.route))
                 FooterItem(navController, R.drawable.file_cog, "Config", listOf(Routes.StatisticScreen.route, Routes.EditDishScreen.route))
                 FooterItem(navController, R.drawable.people, "People", listOf(Routes.PeopleManagementScreen.route))
