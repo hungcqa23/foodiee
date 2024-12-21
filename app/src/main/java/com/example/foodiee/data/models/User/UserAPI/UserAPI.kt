@@ -1,5 +1,6 @@
 package com.example.foodiee.data.models.User.UserAPI
 
+import com.example.foodiee.data.models.Role
 import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.POST
@@ -7,9 +8,14 @@ import retrofit2.http.Path
 
 
 data class User(
-    val fullname: String,
+    val id: String,
+    val fullName: String,
+    val phoneNumber: String? = null,
+    val address: String? = null,
     val email: String,
-    val password: String
+    val password: String,
+    val role: Role = Role.USER,
+    val profileImage: String? = null
 )
 
 interface UserApiService {

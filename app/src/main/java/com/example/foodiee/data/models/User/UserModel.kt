@@ -25,7 +25,7 @@ class UserModel(context: Context) {
     }
 
     fun getUserRole(): Role {
-        val roleName = sharedPreferences.getString(KEY_USER_ROLE, Role.CUSTOMER.name)
+        val roleName = sharedPreferences.getString(KEY_USER_ROLE, Role.USER.name)
         return Role.valueOf(roleName!!)
     }
 

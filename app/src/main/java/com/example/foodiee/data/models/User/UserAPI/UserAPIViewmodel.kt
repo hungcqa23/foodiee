@@ -7,25 +7,17 @@ import androidx.lifecycle.viewModelScope
 import com.example.foodiee.data.models.RetrofitInstance
 import kotlinx.coroutines.launch
 
-class UserAPIViewmodel : ViewModel(){
+class UserAPIViewModel : ViewModel(){
     private val _users = MutableLiveData<List<User>>()
     val users: LiveData<List<User>> = _users
+    private val _currentUser = MutableLiveData<User>()
+    val currentUser: LiveData<User> = _currentUser
 
     fun getAllUsers(){
         viewModelScope.launch {
             try {
                 val response = RetrofitInstance.UserApi.getAllUsers()
                 _users.value = response
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-    }
-    fun getCurrentUser(id: Int){
-        viewModelScope.launch {
-            try {
-                val response = RetrofitInstance.UserApi.getCurrentUser(id)
-                _users.value = listOf(response)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -45,7 +37,7 @@ class UserAPIViewmodel : ViewModel(){
         viewModelScope.launch {
             try {
                 val response = RetrofitInstance.UserApi.loginUser(email, password)
-                _users.value = listOf(response)
+                _currentUser.value = response
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -55,7 +47,7 @@ class UserAPIViewmodel : ViewModel(){
         viewModelScope.launch {
             try {
                 val response = RetrofitInstance.UserApi.signUpUser(user)
-                _users.value = listOf(response)
+                _currentUser.value = response
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -65,7 +57,7 @@ class UserAPIViewmodel : ViewModel(){
         viewModelScope.launch {
             try {
                 val response = RetrofitInstance.UserApi.getCurrentUser(user)
-                _users.value = listOf(response)
+                _currentUser.value = response
             } catch (e: Exception) {
                 e.printStackTrace()
             }

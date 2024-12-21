@@ -27,12 +27,12 @@ class UserViewModel(private val userModel: UserModel) : ViewModel() {
     fun logout() {
         userModel.clearLoginState()
         _isLoggedIn.value = false
-        _userRole.value = Role.CUSTOMER
+        _userRole.value = Role.USER
     }
     fun getUserStatus(): UserStatus {
         return UserStatus(
             isLoggedIn = _isLoggedIn.value ?: false,
-            role = _userRole.value ?: Role.CUSTOMER
+            role = _userRole.value ?: Role.USER
         )
     }
 }
