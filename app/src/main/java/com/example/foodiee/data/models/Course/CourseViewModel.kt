@@ -7,6 +7,11 @@ import com.example.foodiee.data.models.RetrofitInstance
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import org.json.JSONObject
+import java.io.File
 
 class CourseViewModel : ViewModel() {
     private val _courses = MutableStateFlow<List<Course>>(emptyList())
@@ -29,8 +34,8 @@ class CourseViewModel : ViewModel() {
     fun getAllCourses() {
         viewModelScope.launch {
             try {
-//                val response = RetrofitInstance.CourseApi.getAllCourses()
-                val response = getMockCourseResponse()
+                val response = RetrofitInstance.CourseApi.getAllCourses()
+//                val response = getMockCourseResponse()
                 _courses.value = response.data
                 Log.d("CourseViewModel", "lay dc course roi:\n ${response.status} \n ${response.data}")
             } catch (e: Exception) {
@@ -43,8 +48,8 @@ class CourseViewModel : ViewModel() {
     fun getCourseById(id: Int) {
         viewModelScope.launch {
             try {
-//                val response = RetrofitInstance.CourseApi.getCourseById(id)
-                val response = getMockCourseResponseDetail()
+                val response = RetrofitInstance.CourseApi.getCourseById(id)
+//                val response = getMockCourseResponseDetail()
                 Log.d("CourseViewModel", "lay dc course roi:${response.status} \n ${response.data}")
                 _courseDetail.value = response.data
             } catch (e: Exception) {
@@ -58,10 +63,39 @@ class CourseViewModel : ViewModel() {
     fun updateCourse(id: Int, updatedCourse: Course, onSuccess: () -> Unit) {
         viewModelScope.launch {
             try {
+                Log.d("CourseViewModel", "course moi: $updatedCourse")
                 RetrofitInstance.CourseApi.updateCourse(id, updatedCourse)
+                Log.d("CourseViewModel", "update anh nay: ${updatedCourse.image}")
                 onSuccess()
             } catch (e: Exception) {
+                Log.e("CourseViewModel", "course moi: $updatedCourse")
+                Log.e("CourseViewModel", "bug update roi: ${e.localizedMessage}")
+                Log.e("CourseViewModel", "update anh nay: ${updatedCourse.image}")
+
                 e.printStackTrace()
+            }
+        }
+    }
+
+    fun flushCourseDetail() {
+        _courseDetail.value = null
+    }
+
+    fun uploadFile(file: File, onSuccess: (String) -> Unit, onError: (String) -> Unit) {
+        viewModelScope.launch {
+            try {
+                // Prepare the file part for uploading
+                val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
+                val multipartBody = MultipartBody.Part.createFormData("file", file.name, requestFile)
+
+                // Make the API call
+                val response = RetrofitInstance.CourseApi.uploadFile(multipartBody)
+
+                // Pass the URL to the onSuccess callback
+                onSuccess(response.url)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                onError("Exception: ${e.localizedMessage}")
             }
         }
     }

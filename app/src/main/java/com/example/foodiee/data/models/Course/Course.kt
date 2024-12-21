@@ -1,11 +1,14 @@
 package com.example.foodiee.data.models.Course
 
 import com.example.foodiee.data.models.User.UserAPI.UserApiService
+import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.http.*
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import okhttp3.OkHttpClient
+import okhttp3.ResponseBody
+import java.io.File
 
 
 data class CourseResponse(
@@ -28,6 +31,10 @@ data class Course(
     val image: String? = null
 )
 
+data class FileUploadResponse(
+    val url: String
+)
+
 interface CourseApiService {
     @POST("courses")
     suspend fun createCourse(@Body course: Course): Course
@@ -40,6 +47,12 @@ interface CourseApiService {
 
     @PATCH("courses/{id}")
     suspend fun updateCourse(@Path("id") id: Int, @Body updatedCourse: Course): Course
+
+    @Multipart
+    @POST("files/upload")
+    suspend fun uploadFile(
+        @Part file: MultipartBody.Part
+    ): FileUploadResponse
 }
 
 
