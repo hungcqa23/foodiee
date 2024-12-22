@@ -1,5 +1,6 @@
 package com.example.foodiee.ui.screens.auth
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -7,6 +8,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.*
@@ -20,6 +22,7 @@ import com.example.foodiee.Navigation.Routes
 import com.example.foodiee.data.models.Role
 import com.example.foodiee.data.models.User.UserAPI.UserAPIViewModel
 import com.example.foodiee.data.models.User.UserViewModel
+import kotlinx.coroutines.delay
 
 @Composable
 fun LoginScreen(navController: NavController, userViewModel: UserViewModel, userAPIViewmodel: UserAPIViewModel) {
@@ -27,28 +30,18 @@ fun LoginScreen(navController: NavController, userViewModel: UserViewModel, user
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf("") }
-
-    // handle login logic
-    fun handleLogin() {
-        if (username == "admin" && password == "password") {
-            userViewModel.login(Role.STAFF)
-            navController.navigate(Routes.OrdersManagementScreen.route)
-        } else if(username == "client" && password == "password"){
-            userViewModel.login(Role.USER)
-            navController.navigate(Routes.HomeScreen.route)
-        }
-        else {
-            errorMessage = "Invalid username or password"
-        }
-    }
+    val isLoggedIn by userAPIViewmodel.isLoggedIn.observeAsState()
+    Log.d("login", isLoggedIn.toString())
 
     fun login(){
         userAPIViewmodel.loginUser(username, password)
-        if(userAPIViewmodel.currentUser.value != null){
+        if(userAPIViewmodel.isLoggedIn.value == true){
             userViewModel.login(Role.USER)
             navController.navigate(Routes.HomeScreen.route)
-        }else{
+        }else if(userAPIViewmodel.isLoggedIn.value == false){
             errorMessage = "Invalid username or password"
+        } else{
+            errorMessage = "Something went wrong"
         }
     }
 
@@ -112,7 +105,7 @@ fun LoginScreen(navController: NavController, userViewModel: UserViewModel, user
         }
 
         Button(
-            onClick = { handleLogin() },
+            onClick = { login() },
             modifier = Modifier
                 .fillMaxWidth(),
             shape = RoundedCornerShape(4.dp),

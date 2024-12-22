@@ -17,12 +17,13 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.foodiee.Navigation.Routes
 import com.example.foodiee.R
+import com.example.foodiee.data.models.User.UserAPI.UserAPIViewModel
 import com.example.foodiee.data.models.User.UserViewModel
 import com.example.foodiee.ui.components.Footer
 import com.example.foodiee.ui.theme.FoodieeeColors
 
 @Composable
-fun ProfileScreen(navController: NavController, userViewModel: UserViewModel) {
+fun ProfileScreen(navController: NavController, userViewModel: UserViewModel, userAPIViewModel: UserAPIViewModel) {
     Scaffold(
         bottomBar = { Footer(navController = navController, userViewModel) }
     ) { paddingValues: PaddingValues ->
@@ -98,7 +99,7 @@ fun ProfileScreen(navController: NavController, userViewModel: UserViewModel) {
                 Box(modifier = Modifier.fillMaxWidth()) {
                     Button(
                         onClick = {
-                            userViewModel.logout()
+                            userAPIViewModel.logout()
                             navController.navigate(Routes.LoginScreen.route){
                                 popUpTo(Routes.LoginScreen.route) { inclusive = true }
                             }

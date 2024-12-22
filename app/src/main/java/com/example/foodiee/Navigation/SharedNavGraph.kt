@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.foodiee.data.models.Course.CourseViewModel
 import com.example.foodiee.data.models.CourseDetails
+import com.example.foodiee.data.models.User.UserAPI.UserAPIViewModel
 import com.example.foodiee.data.models.User.UserViewModel
 import com.example.foodiee.ui.screens.DishDescriptionScreen
 import com.example.foodiee.ui.screens.EditProfileScreen
@@ -17,7 +18,8 @@ import com.example.foodiee.ui.screens.ProfileScreen
 fun NavGraphBuilder.sharedNavGraph(
     navController: NavController,
     userViewModel: UserViewModel,
-    courseViewModel: CourseViewModel
+    courseViewModel: CourseViewModel,
+    userAPIViewModel: UserAPIViewModel
 ) {
 
     val mockCourse = CourseDetails(
@@ -48,7 +50,7 @@ fun NavGraphBuilder.sharedNavGraph(
         OrderDetailScreen(navController, userViewModel, orderId)
     }
     composable(Routes.ProfileScreen.route) {
-        ProfileScreen(navController, userViewModel)
+        ProfileScreen(navController, userViewModel, userAPIViewModel)
     }
     composable(Routes.EditProfileScreen.route) {
         EditProfileScreen(navController, userViewModel)

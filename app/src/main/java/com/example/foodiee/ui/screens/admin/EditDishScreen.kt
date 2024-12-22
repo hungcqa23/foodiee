@@ -1,5 +1,6 @@
 package com.example.foodiee.ui.screens.admin
 
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -41,6 +42,7 @@ fun EditDishScreen(
     val courses by courseViewModel.courses.collectAsState()
     LaunchedEffect(Unit) {
         courseViewModel.getAllCourses()
+        Log.d("course", courses.toString())
     }
     Scaffold(
         topBar = {
