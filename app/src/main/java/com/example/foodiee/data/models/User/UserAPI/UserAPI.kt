@@ -29,19 +29,28 @@ data class LoginRequest(
     val email: String,
     val password: String
 )
+data class SignUpRequest(
+    val fullName: String,
+    val email: String,
+    val password: String
+)
+data class ApiRespond<T>(
+    val status: String,
+    val data: List<T>
+)
 
 interface UserApiService {
     @POST("users")
     suspend fun CurrentUser(@Body user: User): User
 
     @GET("users")
-    suspend fun getAllUsers(): List<User>
+    suspend fun getAllUsers(): ApiRespond<List<User>>
 
     @POST("users/login")
     suspend fun loginUser(@Body request: LoginRequest): LoginResponse  // Added @Body annotation
 
     @POST("users/sign-up")
-    suspend fun signUpUser(@Body user: User): User  // Added @Body annotation
+    suspend fun signUpUser(@Body request: SignUpRequest): User  // Added @Body annotation
 
     @PATCH("users/current")
     suspend fun updateUser(@Body user: User): User  // Added @Body annotation

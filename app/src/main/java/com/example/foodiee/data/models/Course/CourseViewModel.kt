@@ -35,7 +35,7 @@ class CourseViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val response = RetrofitInstance.CourseApi.getAllCourses()
-//                val response = getMockCourseResponse()
+            //    val response = getMockCourseResponse()
                 _courses.value = response.data
                 Log.d("CourseViewModel", "lay dc course roi:\n ${response.status} \n ${response.data}")
             } catch (e: Exception) {
@@ -49,7 +49,7 @@ class CourseViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val response = RetrofitInstance.CourseApi.getCourseById(id)
-//                val response = getMockCourseResponseDetail()
+            //    val response = getMockCourseResponseDetail()
                 Log.d("CourseViewModel", "lay dc course roi:${response.status} \n ${response.data}")
                 _courseDetail.value = response.data
             } catch (e: Exception) {
@@ -97,6 +97,19 @@ class CourseViewModel : ViewModel() {
                 e.printStackTrace()
                 onError("Exception: ${e.localizedMessage}")
             }
+        }
+    }
+    suspend fun getReviewsByID(id:Int): List<Review>{
+        return try{
+            val respond = CourseViewModel.getReviews(id)
+            if(respond.status == "success"){
+                respond.data
+            }
+            else{
+                throw Exception("No Success")
+            }
+        } catch(e: Exception){
+            throw Exception("server error")
         }
     }
 }

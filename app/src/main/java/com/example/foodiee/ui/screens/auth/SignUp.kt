@@ -33,7 +33,7 @@ import com.example.foodiee.Navigation.Routes
 import com.example.foodiee.data.models.User.UserViewModel
 
 @Composable
-fun SignUpScreen(navController: NavController, userViewModel: UserViewModel) {
+fun SignUpScreen(navController: NavController, userViewModel: UserViewModel, userAPIViewModel: UserAPIViewModel) {
 // State to store user input
     var fullName by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }
@@ -42,7 +42,17 @@ fun SignUpScreen(navController: NavController, userViewModel: UserViewModel) {
 
     // handle login logic
     fun handleSignUp() {
-        navController.navigate(Routes.HomeScreen.route)
+        if(fullName != null && username != null && password != null){
+            userAPIViewModel.signUpUser(fullName, username, password)
+            val currentUser = userAPIViewModel.currentUser.observeAsState()
+            if(currentUser != null){
+                navController.navigate(Routes.HomeScreen.route)
+            }else{
+             errorMessage ="Error signing up"
+            }  
+        }else{
+            errorMessage = "No blank field"
+        }
     }
     Column(
         modifier = Modifier

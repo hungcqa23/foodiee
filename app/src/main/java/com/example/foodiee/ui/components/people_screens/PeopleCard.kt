@@ -18,7 +18,7 @@ import com.example.foodiee.data.models.Customer
 import com.example.foodiee.ui.screens.admin.CustomerInfoRow
 
 @Composable
-fun PersonCard(person: Customer) {
+fun PersonCard(person: User) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -62,19 +62,19 @@ fun PersonCard(person: Customer) {
 
             CustomerInfoRow(
                 icon = Icons.Default.Person,
-                text = person.name
+                text = person.fullName
             )
 
             CustomerInfoRow(
                 icon = Icons.Default.DateRange,
-                text = person.cccd,
+                text = person.email,
                 textColor = Color(0xFFF37021),
                 weight = FontWeight.Medium
             )
 
             CustomerInfoRow(
                 icon = Icons.Default.Phone,
-                text = person.phone
+                text = person.phoneNumber
             )
 
             CustomerInfoRow(

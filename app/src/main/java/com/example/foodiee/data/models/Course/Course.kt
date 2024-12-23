@@ -30,6 +30,13 @@ data class Course(
     val ingredients: List<String>,
     val image: String? = null
 )
+data class Review(
+    val id: Int,
+    val text: String,
+    val rating: Int,
+    val user: User,
+    val course: Course
+)
 
 data class FileUploadResponse(
     val url: String
@@ -53,6 +60,16 @@ interface CourseApiService {
     suspend fun uploadFile(
         @Part file: MultipartBody.Part
     ): FileUploadResponse
+
+    @GET(reviews/{id})
+    suspend fun getReviews(
+        @Path("id") id:Int
+    ) : ApiRespond<List<Review>>
+    
+    @POST
+    suspend fun postReview(
+
+    )
 }
 
 

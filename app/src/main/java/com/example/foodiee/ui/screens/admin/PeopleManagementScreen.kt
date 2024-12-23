@@ -23,18 +23,20 @@ import com.example.foodiee.ui.components.PeopleNavigationHeader
 import com.example.foodiee.ui.components.people_screens.PersonCard
 
 @Composable
-fun PeopleManagementScreen(navController: NavController, userViewModel: UserViewModel) {
+fun PeopleManagementScreen(navController: NavController, userViewModel: UserViewModel, userAPIViewModel: UserAPIViewModel) {
     var searchQuery by remember { mutableStateOf("") }
     var tabs: Role by remember { mutableStateOf(Role.USER) }
     val navigationBarInsets = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
     val statusBarInsets = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
-
+    val users = userAPIViewModel.users.observeAsState()
     val queryResult = getSampleCustomers()
         .filter {
             it.type == tabs &&
                     it.name.contains(searchQuery, ignoreCase = true)
         }
-
+    LaunchedEffect(Unit){
+        userAPIViewModel.getAllUsers()
+    }
 
     Scaffold(
         topBar = {
@@ -82,8 +84,8 @@ fun PeopleManagementScreen(navController: NavController, userViewModel: UserView
                 )
             }
 
-            items(queryResult) { customer ->
-                PersonCard(person = customer)
+            items(users) { user ->
+                PersonCard(person = user)
             }
         }
     }

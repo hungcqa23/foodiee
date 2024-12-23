@@ -48,11 +48,26 @@ import com.example.foodiee.ui.theme.FoodieeeColors
 @Composable
 fun DishDescriptionScreen(navController: NavController, userViewModel: UserViewModel, courseViewModel: CourseViewModel, courseID: Int) {
 
+    // Observe course details from the ViewModel
     val course by courseViewModel.courseDetail.collectAsState()
-    LaunchedEffect(Unit) {
-        Log.e("CourseViewModel", "CourseID da lay: ${courseID}")
+
+    // State to hold reviews
+    val reviews = remember { mutableStateOf(emptyList<Review>()) }
+
+    LaunchedEffect(courseID) { // Use courseID as the key for LaunchedEffect
+        Log.e("CourseViewModel", "CourseID retrieved: $courseID")
+        
+        // Fetch course details
         courseViewModel.getCourseById(courseID)
-        Log.e("CourseViewModel", "CourseID da lay: ${courseViewModel.courseDetail.value}")
+        Log.e("CourseViewModel", "Course details retrieved: ${courseViewModel.courseDetail.value}")
+        
+        // Fetch reviews and update the state
+        try {
+            val fetchedReviews = courseViewModel.getReviews(courseID) // Ensure this is a suspend function
+            reviews.value = fetchedReviews
+        } catch (e: Exception) {
+            Log.e("CourseViewModel", "Error fetching reviews: ${e.message}")
+        }
     }
     Scaffold(
         topBar = {
@@ -176,15 +191,15 @@ fun DishDescriptionScreen(navController: NavController, userViewModel: UserViewM
             item{
                 Text("Reviews:", fontWeight = FontWeight.Medium, fontSize = 24.sp, modifier = Modifier.padding(start = 16.dp,top = 24.dp))
             }
-            items(5){ item ->
-                CommentCard()
+            items(reviews){ item ->
+                CommentCard(item)
             }
         }
     }
 }
 
 @Composable
-fun CommentCard(){
+fun CommentCard(review: Review){
     Card(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
         Column(modifier = Modifier
             .fillMaxWidth()
@@ -195,7 +210,7 @@ fun CommentCard(){
                 verticalAlignment = Alignment.CenterVertically
             ){
                 AsyncImage(
-                    model = R.drawable.circle_user_round,
+                    model = review.user.profileImage ?: R.drawable.circle_user_round,
                     contentDescription = "User Image",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -209,7 +224,7 @@ fun CommentCard(){
                         .padding(start = 8.dp)
                 ) {
                     Text(
-                        text = "Alice Johnson",
+                        text = review.user.Fullname,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold,
                     )
@@ -222,7 +237,7 @@ fun CommentCard(){
                                 .size(12.dp)
                         )
                         Text(
-                            text = "4.5",
+                            text = review.rating.toString(),
                             fontSize = 12.sp,
                             fontWeight = FontWeight.SemiBold,
                         )
@@ -230,7 +245,7 @@ fun CommentCard(){
                 }
             }
             Text(
-                text = "Vulputate tincidunt convallis pulvinar egestas consequat, aliquam lectus nibh. Leo purus nisi, nibh condimentum aliquam eu quis. Ultrices arcu pharetra.",
+                text = review.text,
                 fontSize = 16.sp,
             )
             Text(

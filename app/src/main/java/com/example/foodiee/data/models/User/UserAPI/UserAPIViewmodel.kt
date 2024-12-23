@@ -25,7 +25,7 @@ class UserAPIViewModel : ViewModel(){
         viewModelScope.launch {
             try {
                 val response = RetrofitInstance.UserApi.getAllUsers()
-                _users.value = response
+                _users.value = response.data
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -60,10 +60,11 @@ class UserAPIViewModel : ViewModel(){
     private fun saveToken(token: String) {
         // Implement token storage in SharedPreferences or other secure storage
     }
-    fun signUpUser(user: User){
+    fun signUpUser(fullName: String, email: String, password:String){
         viewModelScope.launch {
             try {
-                val response = RetrofitInstance.UserApi.signUpUser(user)
+                val request = SignUpRequest(fullName,email,password)
+                val response = RetrofitInstance.UserApi.signUpUser(received)
                 _currentUser.value = response
             } catch (e: Exception) {
                 e.printStackTrace()

@@ -14,12 +14,12 @@ import com.example.foodiee.ui.screens.admin.PeopleManagementScreen
 import com.example.foodiee.ui.screens.admin.StatisticsScreen
 import com.example.foodiee.ui.screens.client.AddItemScreen
 
-fun NavGraphBuilder.adminNavGraph(navController: NavController, userViewModel: UserViewModel, courseViewModel: CourseViewModel) {
+fun NavGraphBuilder.adminNavGraph(navController: NavController, userViewModel: UserViewModel, courseViewModel: CourseViewModel, userAPIViewModel: UserAPIViewModel) {
     composable(Routes.OrdersManagementScreen.route) {
         OrdersManagementScreen(navController, userViewModel)
     }
     composable(Routes.PeopleManagementScreen.route) {
-        PeopleManagementScreen(navController, userViewModel)
+        PeopleManagementScreen(navController, userViewModel, userAPIViewModel)
     }
     composable(Routes.StatisticScreen.route) {
         StatisticsScreen(navController, userViewModel)
