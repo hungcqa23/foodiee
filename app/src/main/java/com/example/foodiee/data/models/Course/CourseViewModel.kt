@@ -99,6 +99,30 @@ class CourseViewModel : ViewModel() {
             }
         }
     }
+
+    fun postReview(courseId: Int, text: String, rating: Int) {
+        viewModelScope.launch {
+            val token = getToken()
+            if (token.isNullOrEmpty()) {
+                _reviewError.postValue("Authorization token is missing")
+                return@launch
+            }
+
+            try {
+                val reviewRequest = ReviewRequest(text = text, rating = rating, courseId = courseId)
+                val response = RetrofitInstance.CourseApi.postReview(
+                    token = "Bearer $token",
+                    id = courseId,
+                    review = reviewRequest
+                )
+                _reviewResponse.postValue(response)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                _reviewError.postValue(e.localizedMessage)
+            }
+        }
+    }
+
     suspend fun getReviewsByID(id:Int): List<Review>{
         return try{
             val respond = CourseViewModel.getReviews(id)

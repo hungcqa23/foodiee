@@ -25,6 +25,7 @@ import com.example.foodiee.ui.components.order_detail_screen.Header
 fun OrderDetailScreen(
     navController: NavController,
     userViewModel: UserViewModel,
+    courseViewModel: CourseViewModel
     orderId: String
 ) {
     val order = Order(

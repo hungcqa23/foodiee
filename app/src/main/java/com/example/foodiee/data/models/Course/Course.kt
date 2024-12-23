@@ -38,6 +38,18 @@ data class Review(
     val course: Course
 )
 
+data class ReviewRequest(
+    val text: String,
+    val rating: Int,
+    val courseId: Int
+)
+
+data class ReviewResponse(
+    val status: String,
+    val data: Review
+)
+
+
 data class FileUploadResponse(
     val url: String
 )
@@ -65,11 +77,13 @@ interface CourseApiService {
     suspend fun getReviews(
         @Path("id") id:Int
     ) : ApiRespond<List<Review>>
-    
-    @POST
-    suspend fun postReview(
 
-    )
+    @POST("reviews/{id}")
+    suspend fun postReview(
+        @Header("Authorization") token: String,
+        @Path("id") id: Int,
+        @Body review: ReviewRequest
+    ): ReviewResponse
 }
 
 

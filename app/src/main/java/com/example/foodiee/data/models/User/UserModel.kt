@@ -11,12 +11,14 @@ class UserModel(context: Context) {
     companion object {
         private const val KEY_IS_LOGGED_IN = "is_logged_in"
         private const val KEY_USER_ROLE = "user_role"
+        private const val KEY_TOKEN = "token"
     }
 
-    fun setLoginState(isLoggedIn: Boolean, role: Role) {
+    fun setLoginState(isLoggedIn: Boolean, role: Role, token: String) {
         sharedPreferences.edit()
             .putBoolean(KEY_IS_LOGGED_IN, isLoggedIn)
             .putString(KEY_USER_ROLE, role.name)
+            .putString(KEY_TOKEN, token)
             .apply()
     }
 
@@ -27,6 +29,10 @@ class UserModel(context: Context) {
     fun getUserRole(): Role {
         val roleName = sharedPreferences.getString(KEY_USER_ROLE, Role.USER.name)
         return Role.valueOf(roleName!!)
+    }
+
+    fun getToken(): String? {
+        return sharedPreferences.getString(KEY_TOKEN, null)
     }
 
     fun clearLoginState() {

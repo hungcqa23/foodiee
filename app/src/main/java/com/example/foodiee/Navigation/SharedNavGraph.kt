@@ -47,7 +47,7 @@ fun NavGraphBuilder.sharedNavGraph(
     }
     composable(Routes.OrderDetailScreen.route) { backStackEntry ->
         val orderId = backStackEntry.arguments?.getString("orderId") ?: ""
-        OrderDetailScreen(navController, userViewModel, orderId)
+        OrderDetailScreen(navController, userViewModel, courseViewModel, orderId)
     }
     composable(Routes.ProfileScreen.route) {
         ProfileScreen(navController, userViewModel, userAPIViewModel)

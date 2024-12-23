@@ -11,17 +11,29 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 
-class UserAPIViewModel : ViewModel(){
+import android.content.Context
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKey
+import androidx.lifecycle.*
+import kotlinx.coroutines.launch
+
+class UserAPIViewModel(context: Context) : ViewModel() {
+    private val sharedPreferences = createEncryptedSharedPreferences(context)
+
     private val _users = MutableLiveData<List<User>>()
     val users: LiveData<List<User>> = _users
+
     private val _currentUser = MutableLiveData<User?>()
     val currentUser: LiveData<User?> = _currentUser
+
     private val _token = MutableLiveData<String?>()
     val token: LiveData<String?> = _token
+
     private val _isLoggedIn = MutableLiveData<Boolean>()
     val isLoggedIn: LiveData<Boolean> = _isLoggedIn
 
-    fun getAllUsers(){
+    // Get all users
+    fun getAllUsers() {
         viewModelScope.launch {
             try {
                 val response = RetrofitInstance.UserApi.getAllUsers()
@@ -31,7 +43,9 @@ class UserAPIViewModel : ViewModel(){
             }
         }
     }
-    fun updateUser(user: User){
+
+    // Update a user
+    fun updateUser(user: User) {
         viewModelScope.launch {
             try {
                 val response = RetrofitInstance.UserApi.updateUser(user)
@@ -41,37 +55,37 @@ class UserAPIViewModel : ViewModel(){
             }
         }
     }
+
+    // Login a user and save token
     fun loginUser(email: String, password: String) {
         viewModelScope.launch {
             try {
                 val loginRequest = LoginRequest(email, password)
-                Log.d("login", "Starting API call: $loginRequest")
                 val response = RetrofitInstance.UserApi.loginUser(loginRequest)
-                Log.d("login", "Response received: $response")
                 saveToken(response.data.token)
                 _isLoggedIn.postValue(true)
             } catch (e: Exception) {
-                Log.e("login", "API call failed: ${e.localizedMessage}")
+                e.printStackTrace()
                 _isLoggedIn.postValue(false)
             }
         }
     }
 
-    private fun saveToken(token: String) {
-        // Implement token storage in SharedPreferences or other secure storage
-    }
-    fun signUpUser(fullName: String, email: String, password:String){
+    // Sign up a user
+    fun signUpUser(fullName: String, email: String, password: String) {
         viewModelScope.launch {
             try {
-                val request = SignUpRequest(fullName,email,password)
-                val response = RetrofitInstance.UserApi.signUpUser(received)
+                val request = SignUpRequest(fullName, email, password)
+                val response = RetrofitInstance.UserApi.signUpUser(request)
                 _currentUser.value = response
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
     }
-    fun getCurrentUser(user: User){
+
+    // Get current user by ID
+    fun getCurrentUser(user: User) {
         viewModelScope.launch {
             try {
                 val response = RetrofitInstance.UserApi.getCurrentUser(user.id.toInt())
@@ -79,10 +93,45 @@ class UserAPIViewModel : ViewModel(){
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-         }
+        }
     }
-    fun logout(){
+
+    // Logout and clear token
+    fun logout() {
+        clearToken()
         _currentUser.value = null
         _isLoggedIn.value = false
+    }
+
+    // Save token in EncryptedSharedPreferences
+    private fun saveToken(token: String) {
+        sharedPreferences.edit().putString("TOKEN", token).apply()
+        _token.postValue(token)
+    }
+
+    // Retrieve token from SharedPreferences
+    fun getToken(): String? {
+        return sharedPreferences.getString("TOKEN", null)
+    }
+
+    // Clear token from SharedPreferences
+    private fun clearToken() {
+        sharedPreferences.edit().remove("TOKEN").apply()
+        _token.postValue(null)
+    }
+
+    // Initialize EncryptedSharedPreferences
+    private fun createEncryptedSharedPreferences(context: Context): SharedPreferences {
+        val masterKey = MasterKey.Builder(context)
+            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+            .build()
+
+        return EncryptedSharedPreferences.create(
+            context,
+            "user_preferences",
+            masterKey,
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        )
     }
 }
