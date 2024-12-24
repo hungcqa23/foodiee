@@ -7,6 +7,7 @@ import com.google.gson.JsonElement
 import java.lang.reflect.Type
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -49,6 +50,10 @@ data class ApiRespond<T>(
     val status: String,
     val data: List<T>
 )
+data class currentUser(
+    val status: String,
+    val data: User
+)
 
 interface UserApiService {
     @POST("users")
@@ -66,6 +71,6 @@ interface UserApiService {
     @PATCH("users/current")
     suspend fun updateUser(@Body user: User): User  // Added @Body annotation
 
-    @GET("users/{id}")
-    suspend fun getCurrentUser(@Path("id") id: Int): User
+    @GET("users/current")
+    suspend fun getCurrentUser(@Header("Authorization") token:String): currentUser
 }

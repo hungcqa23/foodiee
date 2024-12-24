@@ -33,15 +33,26 @@ fun LoginScreen(navController: NavController, userViewModel: UserViewModel, user
     val isLoggedIn by userAPIViewmodel.isLoggedIn.observeAsState()
     Log.d("login", isLoggedIn.toString())
 
-    fun login(){
+
+    fun login() {
         userAPIViewmodel.loginUser(username, password)
-        if(userAPIViewmodel.isLoggedIn.value == true){
-            userAPIViewmodel.getToken()?.let { userViewModel.login(Role.USER, it) }
-            navController.navigate(Routes.HomeScreen.route)
-        }else if(userAPIViewmodel.isLoggedIn.value == false){
-            errorMessage = "Invalid username or password"
-        } else{
-            errorMessage = "Something went wrong"
+
+        when (isLoggedIn) {
+            true -> {
+                val token = userAPIViewmodel.getToken()
+                if (token != null) {
+                    userViewModel.login(Role.ADMIN, token)
+                    navController.navigate(Routes.HomeScreen.route)
+                } else {
+                    errorMessage = "Failed to retrieve token"
+                }
+            }
+            false -> {
+                errorMessage = "Invalid username or password"
+            }
+            null -> {
+                errorMessage = "Something went wrong"
+            }
         }
     }
 

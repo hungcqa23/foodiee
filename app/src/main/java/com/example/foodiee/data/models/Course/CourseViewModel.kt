@@ -3,6 +3,7 @@ package com.example.foodiee.data.models.Course
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.foodiee.data.models.Order
 import com.example.foodiee.data.models.RetrofitInstance
 import com.example.foodiee.data.models.User.UserAPI.UserAPIViewModel
 import kotlinx.coroutines.launch
@@ -20,6 +21,12 @@ class CourseViewModel : ViewModel() {
 
     private val _courseDetail = MutableStateFlow<Course?>(null)
     val courseDetail: StateFlow<Course?> = _courseDetail
+
+    private val _cart = MutableStateFlow<CartInfo?>(null)
+    val cart: StateFlow<CartInfo?> = _cart
+
+    private val _orders = MutableStateFlow<List<Order>>(emptyList())
+    val orders: StateFlow<List<Order>> = _orders
 
     fun createCourse(course: Course, onSuccess: () -> Unit) {
         viewModelScope.launch {
@@ -139,6 +146,43 @@ class CourseViewModel : ViewModel() {
             respond.second
         }catch(e:Exception){
             0
+        }
+    }
+
+    fun addToCart(courses: List<Pair<Int, Int>>, token: String) {
+        viewModelScope.launch {
+            try {
+                val cartItems = courses.map { (courseId, quantity) ->
+                    CartItem(courseId, quantity)
+                }
+                val cartRequest = CartRequest(items = cartItems)
+
+                RetrofitInstance.CourseApi.addToCart("Bearer $token", cartRequest)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    fun getCartInfo(token: String) {
+        viewModelScope.launch {
+            try {
+                val response = RetrofitInstance.CourseApi.getCartInfo("Bearer $token")
+                _cart.value = response.data
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+    fun getOrders(token: String, param: String){
+        viewModelScope.launch {
+            try {
+                val standard = param.lowercase()
+                val response = RetrofitInstance.CourseApi.getOrders("Bearer $token", standard)
+                _orders.value = response.data
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 }

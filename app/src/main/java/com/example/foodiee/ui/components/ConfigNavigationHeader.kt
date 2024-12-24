@@ -25,7 +25,7 @@ fun ConfigNavigationHeader(currentConfigSubPage: ConfigSubPage, navController: N
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
-            .padding(8.dp)
+            .padding(top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()-4.dp)
             .fillMaxWidth()
             .height(64.dp)
     ) {

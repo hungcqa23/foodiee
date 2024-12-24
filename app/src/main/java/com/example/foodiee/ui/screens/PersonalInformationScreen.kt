@@ -30,6 +30,9 @@ import com.example.foodiee.ui.theme.FoodieeeColors
 
 @Composable
 fun PersonalInformationScreen(navController: NavController, userViewModel: UserViewModel, userAPIViewModel: UserAPIViewModel) {
+    var newEmail by remember { mutableStateOf( userAPIViewModel.currentUser.value?.email ?: "") }
+    var newPhoneNumber by remember { mutableStateOf(userAPIViewModel.currentUser.value?.phoneNumber ?: "") }
+    var newAddress by remember { mutableStateOf(userAPIViewModel.currentUser.value?.address ?: "") }
     Scaffold(
         topBar = { BackButton(navController)},
         bottomBar = {
@@ -76,25 +79,36 @@ fun PersonalInformationScreen(navController: NavController, userViewModel: UserV
                     ProfileItem(
                         title = "Email",
                         icon = R.drawable.mail,
-                        displayText = "john.doe@example.com",
-                        onChange = { }
+                        displayText = newEmail,
+                        onChange = { newEmail = it }
                     )
                     ProfileItem(
                         title = "Phone",
                         icon = R.drawable.phone,
-                        displayText = "+123 456 789",
-                        onChange = { }
+                        displayText = "+$newPhoneNumber",
+                        onChange = { newPhoneNumber = it }
                     )
                     ProfileItem(
                         title = "Address",
                         icon = R.drawable.map_pin,
-                        displayText = "123 Main Street, City",
-                        onChange = { }
+                        displayText = newAddress,
+                        onChange = { newAddress = it }
                     )
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 Button(
-                    onClick = { },
+                    onClick = {
+                        val newUser = User(
+                            id = userAPIViewModel.currentUser.value!!.id,
+                            fullName = userAPIViewModel.currentUser.value!!.fullName,
+                            phoneNumber = newPhoneNumber,
+                            address = newAddress,
+                            email = newEmail,
+                            password = userAPIViewModel.currentUser.value!!.password,
+                            role = userAPIViewModel.currentUser.value!!.role,
+                            profileImage = userAPIViewModel.currentUser.value?.profileImage
+                        )
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(56.dp),

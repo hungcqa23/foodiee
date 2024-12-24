@@ -27,21 +27,36 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.foodiee.R
+import com.example.foodiee.data.models.Course.Course
+import com.example.foodiee.data.models.Course.CourseViewModel
 import com.example.foodiee.data.models.InventoryItem
 import com.example.foodiee.data.models.MockInventoryItems
+import com.example.foodiee.data.models.User.UserAPI.UserAPIViewModel
 import com.example.foodiee.data.models.User.UserViewModel
 import com.example.foodiee.ui.components.BackButton
 import com.example.foodiee.ui.components.Footer
 import com.example.foodiee.ui.theme.FoodieeeColors
 
 @Composable
-fun CartScreen(navController: NavController,userViewModel: UserViewModel, cartId: String) {
+fun CartScreen(navController: NavController,userViewModel: UserViewModel, cartId: String, courseViewModel: CourseViewModel, userAPIViewModel: UserAPIViewModel) {
 
     val radioOptions = listOf("Eat at Restaurant", "Delivery")
     val (selectedOrderOption, onOrderOptionSelected) = remember { mutableStateOf(radioOptions[0]) }
     val options = listOf("Cash", "Credit Card", "E-Wallet")
     var selectedPaymentOption by remember { mutableStateOf("") }
     var address by remember { mutableStateOf("") }
+    var cartInfo = courseViewModel.cart.collectAsState().value
+    val courses = mutableListOf<Course>()
+
+    LaunchedEffect(Unit) {
+        userAPIViewModel.getToken()?.let { courseViewModel.getCartInfo(it) }
+    }
+    LaunchedEffect(cartInfo) {
+        for(id in cartInfo?.cartItemIds ?: emptyList()) {
+            courseViewModel.getCourseById(id)
+            courses += courseViewModel.courseDetail.value!!
+        }
+    }
 
     Scaffold(
         bottomBar = { Footer(navController = navController, userViewModel) },
@@ -62,11 +77,11 @@ fun CartScreen(navController: NavController,userViewModel: UserViewModel, cartId
                 )
             }
 
-            items(MockInventoryItems()) { item ->
+            items(courses) { item ->
                 CartItemCard(
                     item = item,
-                    onQuantityClick = { },
-                    onRemoveClick = { }
+                    onQuantityClick = { item.quantity = it},
+                    onRemoveClick = { courses.removeIf { item == it } }
                 )
             }
             item {
@@ -254,9 +269,9 @@ fun CartScreen(navController: NavController,userViewModel: UserViewModel, cartId
 
 @Composable
 fun CartItemCard(
-    item: InventoryItem,
+    item: Course,
     onQuantityClick: (Int) -> Unit,
-    onRemoveClick: () -> Unit,
+    onRemoveClick: (Int) -> Unit,
 ) {
     Surface(
         shadowElevation = 4.dp,
@@ -269,8 +284,8 @@ fun CartItemCard(
             modifier = Modifier.padding(16.dp),
         ) {
             Column {
-                Text(item.name, fontSize = 22.sp, fontWeight = FontWeight.Bold)
-                Text(item.price, fontSize = 14.sp, color = Color.Gray)
+                Text(item.title, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+                Text(item.price.toString(), fontSize = 14.sp, color = Color.Gray)
             }
             Spacer(modifier = Modifier.weight(1f))
             Row(
@@ -306,7 +321,7 @@ fun CartItemCard(
                 }
                 Box(
                     modifier = Modifier
-                        .clickable { onRemoveClick() }
+                        .clickable { onRemoveClick(item.id!!) }
                         .background(Color.White, RoundedCornerShape(4.dp))
                         .border(1.dp, FoodieeeColors.slate300, RoundedCornerShape(4.dp))
                         .padding(8.dp)

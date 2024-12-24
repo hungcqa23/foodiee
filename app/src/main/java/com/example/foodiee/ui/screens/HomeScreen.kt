@@ -33,6 +33,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -63,29 +64,55 @@ import com.example.foodiee.ui.components.Footer
 import com.example.foodiee.ui.theme.FoodieeeColors
 
 @Composable
-fun HomeScreen(navController: NavController, userViewModel: UserViewModel, courseViewModel: CourseViewModel, userAPIViewModel: UserAPIViewModel) {
+fun HomeScreen(
+    navController: NavController,
+    userViewModel: UserViewModel,
+    courseViewModel: CourseViewModel,
+    userAPIViewModel: UserAPIViewModel
+) {
     var searchQuery by remember { mutableStateOf("") }
-    var selectedCategory by remember { mutableStateOf("main_course") }  // For managing selected category
+    var selectedCategory by remember { mutableStateOf("main_course") } // For managing selected category
     val allCourse by courseViewModel.courses.collectAsState()
     var cartNumber by remember { mutableStateOf(0) }
+    var selectedCourses by remember { mutableStateOf(mutableMapOf<Int, Int>()) } // Map of courseId to quantity
+    val user by userAPIViewModel.currentUser.observeAsState()
+
+    // Fetch courses and cart number on initialization
     LaunchedEffect(Unit) {
-        Log.d("CourseViewModel", "dang lay course")
+        Log.d("CourseViewModel", "Fetching courses")
         courseViewModel.getAllCourses()
-        cartNumber = if(userAPIViewModel.getToken() != null){
+        userAPIViewModel.getToken()?.let { userAPIViewModel.getCurrentUser(it) }
+        Log.d("user", user.toString())
+        cartNumber = if (userAPIViewModel.getToken() != null) {
             courseViewModel.getCardNumber(userAPIViewModel.getToken()!!)
-        }else{
+        } else {
             0
         }
     }
-    Log.d("CourseViewModel", "Lay xong roi ${allCourse}")
+
+    // Update the cart whenever selectedCourses changes
+    LaunchedEffect(selectedCourses) {
+        Log.d("CourseViewModel", "Updating cart")
+        val token = userAPIViewModel.getToken()
+        if (token != null) {
+            val coursesList = selectedCourses.map { Pair(it.key, it.value) }
+            try {
+                courseViewModel.addToCart(coursesList, token)
+                cartNumber = courseViewModel.getCardNumber(token)
+            } catch (e: Exception) {
+                Log.e("CourseViewModel", "Failed to update cart: ${e.localizedMessage}")
+            }
+        }
+    }
+
     Scaffold(
         bottomBar = {
             Footer(navController, userViewModel)
         },
     ) { innerPadding ->
         LazyColumn(modifier = Modifier.padding(innerPadding)) {
+            // Header with Delivery info
             item {
-                // Header with Delivery info
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
@@ -95,20 +122,20 @@ fun HomeScreen(navController: NavController, userViewModel: UserViewModel, cours
                     Column {
                         Row {
                             Text("Delivery to:", modifier = Modifier.padding(end = 4.dp))
-                            Text("John Doe", fontWeight = FontWeight.SemiBold)
+                            Text(user?.fullName ?: "Guest", fontWeight = FontWeight.SemiBold)
                         }
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.padding(top = 4.dp)
                         ) {
                             Icon(painterResource(R.drawable.locationpin), contentDescription = "Location", modifier = Modifier.padding(end = 4.dp))
-                            Text("123 Main Street, District 1, HCMC")
+                            Text(user?.address ?: "Please Add Your Address")
                         }
                     }
                     Spacer(modifier = Modifier.weight(1f))
                     BadgedBox(
                         badge = {
-                            if(cartNumber != 0){
+                            if (cartNumber != 0) {
                                 Badge {
                                     Text(cartNumber.toString())
                                 }
@@ -123,12 +150,16 @@ fun HomeScreen(navController: NavController, userViewModel: UserViewModel, cours
                     }
                 }
             }
+
+            // Search box
             item {
                 SearchBox({ searchQuery = it })
             }
+
+            // Category selection or search results
             item {
                 if (searchQuery.isNotEmpty()) {
-                    Text("Result for: ${searchQuery}", fontSize = 24.sp, modifier = Modifier
+                    Text("Result for: $searchQuery", fontSize = 24.sp, modifier = Modifier
                         .padding(start = 16.dp, top = 16.dp)
                         .height(48.dp))
                 } else {
@@ -167,24 +198,46 @@ fun HomeScreen(navController: NavController, userViewModel: UserViewModel, cours
                 }
             }
 
+            // Filter and display courses
             val filteredCourses = allCourse.filter {
-                it.typeCourse == selectedCategory || selectedCategory == "All"
+                it.typeCourse == selectedCategory
             }
-
             val searchedCourses = allCourse.filter {
                 it.title.contains(searchQuery, ignoreCase = true)
             }
 
-            if(searchedCourses.isEmpty()){
-                item{
-                    Box(modifier = Modifier.fillMaxSize()){
-                        Text("Oops! We don't currently serve that dish :(", fontSize = 64.sp, lineHeight = 64.sp ,modifier = Modifier.fillMaxSize())
+            if (searchedCourses.isEmpty()) {
+                item {
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        Text(
+                            "Oops! We don't have that dish :(",
+                            fontSize = 64.sp,
+                            lineHeight = 64.sp,
+                            modifier = Modifier.fillMaxSize()
+                        )
                     }
                 }
-            }
-            else{
-                items(if (searchQuery.isNotEmpty()) searchedCourses else filteredCourses) { dish ->
-                    CourseDetailCard(course = dish, onIncrement = {}, navController)
+            } else {
+                items(
+                    items = allCourse.filter { it.typeCourse == selectedCategory && it.title.contains(searchQuery, ignoreCase = true) },
+                    key = { it.id!! } // Use the unique ID of each course as the key
+                ) { dish ->
+                    CourseDetailCard(
+                        course = dish,
+                        onIncrement = { courseId ->
+                            selectedCourses[courseId] = (selectedCourses[courseId] ?: 0) + 1
+                        },
+                        onDecrement = { courseId ->
+                            val currentQuantity = selectedCourses[courseId] ?: 0
+                            if (currentQuantity > 0) {
+                                selectedCourses[courseId] = currentQuantity - 1
+                                if (selectedCourses[courseId] == 0) {
+                                    selectedCourses.remove(courseId) // Remove if quantity reaches 0
+                                }
+                            }
+                        },
+                        navController
+                    )
                 }
             }
         }
@@ -195,6 +248,7 @@ fun HomeScreen(navController: NavController, userViewModel: UserViewModel, cours
 fun CourseDetailCard(
     course: Course,
     onIncrement: (Int) -> Unit,
+    onDecrement: (Int) -> Unit,
     navController: NavController
 ) {
     var count by remember { mutableIntStateOf(0) }
@@ -253,7 +307,7 @@ fun CourseDetailCard(
             ) {
                 Box(
                     modifier = Modifier
-                        .clickable { if (count > 0) count--; onIncrement(count) }
+                        .clickable { if (count > 0) count--; onDecrement(course.id!!) }
                         .background(Color.White, RoundedCornerShape(4.dp))
                         .border(1.dp, FoodieeeColors.slate300, RoundedCornerShape(4.dp))
                         .padding(8.dp)
@@ -267,7 +321,7 @@ fun CourseDetailCard(
                 Text(count.toString(), fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
                 Box(
                     modifier = Modifier
-                        .clickable { count++; onIncrement(count) }
+                        .clickable { count++; onIncrement(course.id!!) }
                         .background(Color.White, RoundedCornerShape(4.dp))
                         .border(1.dp, FoodieeeColors.slate300, RoundedCornerShape(4.dp))
                         .padding(8.dp)

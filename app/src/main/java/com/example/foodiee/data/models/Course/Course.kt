@@ -1,5 +1,6 @@
 package com.example.foodiee.data.models.Course
 
+import com.example.foodiee.data.models.Order
 import com.example.foodiee.data.models.User.UserAPI.ApiRespond
 import com.example.foodiee.data.models.User.UserAPI.User
 import com.example.foodiee.data.models.User.UserAPI.UserApiService
@@ -27,7 +28,7 @@ data class Course(
     val title: String,
     val description: String,
     val typeCourse: String,
-    val quantity: Int,
+    var quantity: Int,
     val price: Double,
     val ingredients: List<String>,
     val image: String? = null
@@ -51,10 +52,50 @@ data class ReviewResponse(
     val data: Review
 )
 
-
-data class FileUploadResponse(
-    val url: String
+data class CartItem(
+    val courseId: Int,
+    val quantity: Int
 )
+
+data class CartRequest(
+    val items: List<CartItem>
+)
+
+data class Asset(
+    val asset_id: String,
+    val public_id: String,
+    val version: Long,
+    val version_id: String,
+    val signature: String,
+    val width: Int,
+    val height: Int,
+    val format: String,
+    val resource_type: String,
+    val created_at: String,
+    val tags: List<String>,
+    val bytes: Int,
+    val type: String,
+    val etag: String,
+    val placeholder: Boolean,
+    val url: String,
+    val secure_url: String,
+    val asset_folder: String,
+    val display_name: String,
+    val original_filename: String,
+    val api_key: String
+)
+
+data class CartInfo(
+    val cartItemIds: List<Int>,
+    val user: User,
+    val id: Int
+)
+
+data class CartRespond(
+    val status: String,
+    val data: CartInfo
+)
+
 
 interface CourseApiService {
     @POST("courses")
@@ -73,7 +114,7 @@ interface CourseApiService {
     @POST("files/upload")
     suspend fun uploadFile(
         @Part file: MultipartBody.Part
-    ): FileUploadResponse
+    ): Asset
 
     @GET("reviews/{id}")
     suspend fun getReviews(
@@ -91,6 +132,23 @@ interface CourseApiService {
     suspend fun getCartNumber(
         @Header("Authorization") token: String
     ): Pair<String, Int>
+
+    @POST("carts")
+    suspend fun addToCart(
+        @Header("Authorization") token: String,
+        @Body cartRequest: CartRequest
+    ): ResponseBody
+
+    @GET("carts/current")
+    suspend fun getCartInfo(
+        @Header("Authorization") token: String
+    ): CartRespond
+
+    @GET("orders")
+    suspend fun getOrders(
+        @Header("Authorization") token: String,
+        @Query("type") param: String
+    ): ApiRespond<Order>
 }
 
 

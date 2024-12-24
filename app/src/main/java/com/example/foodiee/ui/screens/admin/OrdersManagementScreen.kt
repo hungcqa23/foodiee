@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -15,40 +16,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.foodiee.data.models.Course.CourseViewModel
 import com.example.foodiee.data.models.Order
 import com.example.foodiee.data.models.OrderStatus
+import com.example.foodiee.data.models.User.UserAPI.UserAPIViewModel
 import com.example.foodiee.data.models.User.UserViewModel
 import com.example.foodiee.ui.components.Footer
 import com.example.foodiee.ui.theme.Slate500
 
 @Composable
-fun OrdersManagementScreen(navController: NavController, userViewModel: UserViewModel) {
+fun OrdersManagementScreen(navController: NavController, userViewModel: UserViewModel, courseViewModel: CourseViewModel, userAPIViewModel: UserAPIViewModel) {
     val tabs = listOf("Pending", "Completed")
     var selectedTabIndex by remember { mutableIntStateOf(0) }
-    val ordersData = mapOf(
-        "Pending" to listOf(
-            Order(
-                "1",
-                "John Doe",
-                OrderStatus.PENDING,
-                "Burger, Fries, Soda",
-                "$15.99",
-                "10:30 AM"
-            ),
-            Order("2", "Jane Smith", OrderStatus.PENDING, "Pizza, Salad", "$12.49", "11:00 AM")
-        ),
-        "Completed" to listOf(
-            Order(
-                "1",
-                "Alice Johnson",
-                OrderStatus.COMPLETED,
-                "Pasta, Garlic Bread",
-                "$18.75",
-                "9:45 AM"
-            ),
-            Order("2", "Bob Brown", OrderStatus.COMPLETED, "Steak, Fries", "$22.99", "8:30 AM")
-        )
-    )
+    val ordersData = courseViewModel.orders.collectAsState().value
+    LaunchedEffect(selectedTabIndex) {
+        courseViewModel.getOrders(userAPIViewModel.getToken()!!, tabs[selectedTabIndex])
+    }
 
     Scaffold(
         bottomBar = { Footer(navController = navController, userViewModel) }
@@ -78,11 +61,9 @@ fun OrdersManagementScreen(navController: NavController, userViewModel: UserView
                     modifier = Modifier
                         .fillMaxSize()
                 ) {
-                    val selectedTab = tabs[selectedTabIndex]
-                    val orders = ordersData[selectedTab] ?: emptyList()
 
-                    items(orders.size) { index ->
-                        OrderItem(order = orders[index], navController = navController)
+                    items(ordersData) { item ->
+                        OrderItem(order = item, navController = navController)
                     }
                 }
             }
