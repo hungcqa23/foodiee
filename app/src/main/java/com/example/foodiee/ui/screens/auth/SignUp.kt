@@ -18,6 +18,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -30,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.foodiee.Navigation.Routes
+import com.example.foodiee.data.models.User.UserAPI.UserAPIViewModel
 import com.example.foodiee.data.models.User.UserViewModel
 
 @Composable
@@ -44,7 +46,7 @@ fun SignUpScreen(navController: NavController, userViewModel: UserViewModel, use
     fun handleSignUp() {
         if(fullName != null && username != null && password != null){
             userAPIViewModel.signUpUser(fullName, username, password)
-            val currentUser = userAPIViewModel.currentUser.observeAsState()
+            val currentUser = userAPIViewModel.currentUser.value
             if(currentUser != null){
                 navController.navigate(Routes.HomeScreen.route)
             }else{

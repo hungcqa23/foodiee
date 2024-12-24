@@ -33,7 +33,7 @@ fun FoodieeeNavHost(navController: NavHostController, userViewModel: UserViewMod
         sharedNavGraph(navController, userViewModel, courseViewModel, userAPIViewmodel)
 
         // Admin Route
-        adminNavGraph(navController, userViewModel, courseViewModel)
+        adminNavGraph(navController, userViewModel,courseViewModel, userAPIViewmodel )
 
         // Client Route
         clientNavGraph(navController, userViewModel, courseViewModel)

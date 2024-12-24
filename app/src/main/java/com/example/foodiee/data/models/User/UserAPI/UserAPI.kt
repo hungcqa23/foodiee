@@ -1,6 +1,10 @@
 package com.example.foodiee.data.models.User.UserAPI
 
 import com.example.foodiee.data.models.Role
+import com.google.gson.JsonDeserializationContext
+import com.google.gson.JsonDeserializer
+import com.google.gson.JsonElement
+import java.lang.reflect.Type
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.PATCH
@@ -18,6 +22,13 @@ data class User(
     val role: Role = Role.USER,
     val profileImage: String? = null
 )
+
+class RoleDeserializer : JsonDeserializer<Role> {
+    override fun deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext): Role {
+        return Role.fromString(json.asString)
+    }
+}
+
 data class LoginResponse(
     val status: String,
     val data: LoginData
@@ -44,7 +55,7 @@ interface UserApiService {
     suspend fun CurrentUser(@Body user: User): User
 
     @GET("users")
-    suspend fun getAllUsers(): ApiRespond<List<User>>
+    suspend fun getAllUsers(): ApiRespond<User>
 
     @POST("users/login")
     suspend fun loginUser(@Body request: LoginRequest): LoginResponse  // Added @Body annotation

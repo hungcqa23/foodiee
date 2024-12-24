@@ -15,21 +15,23 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.foodiee.R
+import com.example.foodiee.data.models.Course.CourseViewModel
 import com.example.foodiee.data.models.Order
 import com.example.foodiee.data.models.OrderStatus
 import com.example.foodiee.data.models.User.UserViewModel
 import com.example.foodiee.ui.components.Footer
 import com.example.foodiee.ui.components.order_detail_screen.Header
+import com.example.foodiee.ui.theme.FoodieeeColors
 
 @Composable
 fun OrderDetailScreen(
     navController: NavController,
     userViewModel: UserViewModel,
-    courseViewModel: CourseViewModel
+    courseViewModel: CourseViewModel,
     orderId: String
 ) {
     val order = Order(
-        "1", "John Doe", OrderStatus.COMPLETED, listOf("Burger", "Fries", "Soda"), "$15.99", "10:30 AM",
+        "1", "John Doe", OrderStatus.COMPLETED, "Burger, Fries, Soda", "$15.99", "10:30 AM",
         note = "Please deliver without ketchup"
     )
 
@@ -59,7 +61,7 @@ fun OrderDetailScreen(
 
             MarkAsCompletedButton(
                 modifier = Modifier.align(Alignment.BottomCenter),
-                isFinished = order.orderStatus == OrderStatus.FINISHED
+                isFinished = order.orderStatus == OrderStatus.COMPLETED
             )
         }
     }
@@ -103,10 +105,10 @@ fun OrderDetailRow(imageRes: Int, text: String) {
 fun OrderItemsWithReviews(order: Order) {
     Text("Order Items", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
 
-    order.items.forEachIndexed { index, item ->
+    order.orderDetails.forEachIndexed() { index, item ->
         var isReviewed by remember { mutableStateOf(false) }
         OrderItemRowWithReview(
-            item = item,
+            item = item.toString(),
             price = "$5.33", // Adjust price as needed
             orderStatus = order.orderStatus,
             isReviewed = isReviewed,
@@ -180,7 +182,8 @@ fun ReviewSection(onReviewSubmitted: () -> Unit) {
                     modifier = Modifier.size(24.dp)
                 ) {
                     Icon(
-                        painter = painterResource(id = if (rating > index) R.drawable.ic_star_filled else R.drawable.ic_star_outline),
+                        painter = painterResource(id = if (rating > index) R.drawable.star else R.drawable.star_filled),
+                        tint = Color(0xFFffb84a),
                         contentDescription = "Star Rating"
                     )
                 }
@@ -269,7 +272,7 @@ fun MarkAsCompletedButton(modifier: Modifier, isFinished: Boolean) {
             .then(modifier),
         shape = RoundedCornerShape(8.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = if (isFinished) FoodieeeColors.Green600 else Color.Black
+            containerColor = if (isFinished) FoodieeeColors.green500 else Color.Black
         )
     ) {
         Text(

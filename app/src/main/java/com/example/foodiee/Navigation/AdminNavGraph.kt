@@ -7,6 +7,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.foodiee.data.models.Course.CourseViewModel
+import com.example.foodiee.data.models.User.UserAPI.UserAPIViewModel
 import com.example.foodiee.data.models.User.UserViewModel
 import com.example.foodiee.ui.screens.admin.EditDishScreen
 import com.example.foodiee.ui.screens.admin.OrdersManagementScreen

@@ -12,5 +12,11 @@ data class Customer(
 enum class Role {
     USER,
     STAFF,
-    ADMIN
+    ADMIN;
+    companion object {
+        fun fromString(value: String): Role {
+            return entries.firstOrNull { it.name.equals(value, ignoreCase = true) }
+                ?: throw IllegalArgumentException("Unknown role: $value")
+        }
+    }
 }

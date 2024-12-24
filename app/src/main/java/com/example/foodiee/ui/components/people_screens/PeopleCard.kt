@@ -15,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.foodiee.data.models.Customer
+import com.example.foodiee.data.models.User.UserAPI.User
 import com.example.foodiee.ui.screens.admin.CustomerInfoRow
 
 @Composable
@@ -74,12 +75,12 @@ fun PersonCard(person: User) {
 
             CustomerInfoRow(
                 icon = Icons.Default.Phone,
-                text = person.phoneNumber
+                text = person.phoneNumber ?: "No Phone Number"
             )
 
             CustomerInfoRow(
                 icon = Icons.Default.LocationOn,
-                text = person.address
+                text = person.address ?: "Unknown address"
             )
         }
     }

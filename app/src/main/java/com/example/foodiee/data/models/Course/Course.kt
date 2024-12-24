@@ -1,5 +1,7 @@
 package com.example.foodiee.data.models.Course
 
+import com.example.foodiee.data.models.User.UserAPI.ApiRespond
+import com.example.foodiee.data.models.User.UserAPI.User
 import com.example.foodiee.data.models.User.UserAPI.UserApiService
 import okhttp3.MultipartBody
 import retrofit2.Call
@@ -73,10 +75,10 @@ interface CourseApiService {
         @Part file: MultipartBody.Part
     ): FileUploadResponse
 
-    @GET(reviews/{id})
+    @GET("reviews/{id}")
     suspend fun getReviews(
         @Path("id") id:Int
-    ) : ApiRespond<List<Review>>
+    ) : ApiRespond<Review>
 
     @POST("reviews/{id}")
     suspend fun postReview(

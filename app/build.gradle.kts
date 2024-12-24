@@ -83,6 +83,7 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.6.0"))
     implementation("com.google.firebase:firebase-messaging:24.1.0")
     implementation("com.google.firebase:firebase-analytics")
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
 
     // Google Fonts support in Compose
     implementation("androidx.compose.ui:ui-text-google-fonts:1.7.5")

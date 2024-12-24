@@ -1,5 +1,6 @@
 package com.example.foodiee.ui.screens.admin
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -7,6 +8,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -17,6 +19,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.foodiee.data.models.Customer
 import com.example.foodiee.data.models.Role
+import com.example.foodiee.data.models.User.UserAPI.User
+import com.example.foodiee.data.models.User.UserAPI.UserAPIViewModel
 import com.example.foodiee.data.models.User.UserViewModel
 import com.example.foodiee.ui.components.Footer
 import com.example.foodiee.ui.components.PeopleNavigationHeader
@@ -28,16 +32,21 @@ fun PeopleManagementScreen(navController: NavController, userViewModel: UserView
     var tabs: Role by remember { mutableStateOf(Role.USER) }
     val navigationBarInsets = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
     val statusBarInsets = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
-    val users = userAPIViewModel.users.observeAsState()
-    val queryResult = getSampleCustomers()
-        .filter {
-            it.type == tabs &&
-                    it.name.contains(searchQuery, ignoreCase = true)
-        }
+    var usersRepo = remember { mutableStateOf(emptyList<User>()) }
+    val queryResult = usersRepo.value.filter {
+            Role.fromString(it.role.toString()) == tabs &&
+                    it.fullName.contains(searchQuery, ignoreCase = true)
+    }
+    LaunchedEffect(userAPIViewModel.users.value) {
+        usersRepo.value = userAPIViewModel.users.value ?: emptyList()
+        Log.d("user", usersRepo.toString())
+    }
     LaunchedEffect(Unit){
         userAPIViewModel.getAllUsers()
+        Log.d("user", usersRepo.toString())
     }
 
+    Log.d("user", queryResult.toString())
     Scaffold(
         topBar = {
             Column {
@@ -84,7 +93,7 @@ fun PeopleManagementScreen(navController: NavController, userViewModel: UserView
                 )
             }
 
-            items(users) { user ->
+            items(queryResult) { user ->
                 PersonCard(person = user)
             }
         }

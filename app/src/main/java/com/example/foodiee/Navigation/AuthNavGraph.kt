@@ -14,7 +14,7 @@ fun NavGraphBuilder.authNavGraph(navController: NavController, userViewModel: Us
         RoleSelectionScreen(navController, userViewModel)
     }
     composable(Routes.SignUpScreen.route) {
-        SignUpScreen(navController, userViewModel)
+        SignUpScreen(navController, userViewModel, userAPIViewModel)
     }
     composable(Routes.LoginScreen.route) {
         LoginScreen(navController, userViewModel, userAPIViewModel)

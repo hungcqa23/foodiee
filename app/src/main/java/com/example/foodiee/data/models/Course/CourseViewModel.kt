@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.foodiee.data.models.RetrofitInstance
+import com.example.foodiee.data.models.User.UserAPI.UserAPIViewModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -100,32 +101,28 @@ class CourseViewModel : ViewModel() {
         }
     }
 
-    fun postReview(courseId: Int, text: String, rating: Int) {
+    fun postReview(courseId: Int, text: String, rating: Int, token: String) {
         viewModelScope.launch {
-            val token = getToken()
-            if (token.isNullOrEmpty()) {
-                _reviewError.postValue("Authorization token is missing")
-                return@launch
+            if (token.isEmpty()) {
+                Log.e("review", "token empty")
             }
 
             try {
                 val reviewRequest = ReviewRequest(text = text, rating = rating, courseId = courseId)
-                val response = RetrofitInstance.CourseApi.postReview(
+                RetrofitInstance.CourseApi.postReview(
                     token = "Bearer $token",
                     id = courseId,
                     review = reviewRequest
                 )
-                _reviewResponse.postValue(response)
             } catch (e: Exception) {
                 e.printStackTrace()
-                _reviewError.postValue(e.localizedMessage)
             }
         }
     }
 
     suspend fun getReviewsByID(id:Int): List<Review>{
         return try{
-            val respond = CourseViewModel.getReviews(id)
+            val respond = RetrofitInstance.CourseApi.getReviews(id)
             if(respond.status == "success"){
                 respond.data
             }
