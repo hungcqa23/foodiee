@@ -195,8 +195,12 @@ fun DishDescriptionScreen(navController: NavController, userViewModel: UserViewM
             item{
                 Text("Reviews:", fontWeight = FontWeight.Medium, fontSize = 24.sp, modifier = Modifier.padding(start = 16.dp,top = 24.dp))
             }
-            items(reviews.value){ item ->
-                CommentCard(item)
+            if(reviews.value.isNotEmpty()){
+                items(reviews.value) { item ->
+                    CommentCard(item)
+                }
+            }else item{
+                Text("Be the first to review", fontSize = 32.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(16.dp))
             }
         }
     }

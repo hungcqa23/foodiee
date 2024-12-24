@@ -86,6 +86,11 @@ interface CourseApiService {
         @Path("id") id: Int,
         @Body review: ReviewRequest
     ): ReviewResponse
+
+    @GET("cart/current-cart-number")
+    suspend fun getCartNumber(
+        @Header("Authorization") token: String
+    ): Pair<String, Int>
 }
 
 

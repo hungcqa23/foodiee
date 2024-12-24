@@ -1,5 +1,6 @@
 package com.example.foodiee.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -24,6 +25,7 @@ import com.example.foodiee.ui.theme.FoodieeeColors
 
 @Composable
 fun ProfileScreen(navController: NavController, userViewModel: UserViewModel, userAPIViewModel: UserAPIViewModel) {
+    userAPIViewModel.getToken()?.let { Log.d("token", it) }
     Scaffold(
         bottomBar = { Footer(navController = navController, userViewModel) }
     ) { paddingValues: PaddingValues ->
@@ -60,7 +62,7 @@ fun ProfileScreen(navController: NavController, userViewModel: UserViewModel, us
                 Spacer(modifier = Modifier.height(24.dp))
 
                 Text(
-                    text = "John Doe",
+                    text = userAPIViewModel.currentUser.value?.fullName ?: "Guest",
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
@@ -127,18 +129,11 @@ fun ProfileScreen(navController: NavController, userViewModel: UserViewModel, us
 
 @Composable
 fun ProfileImage(imageUrl: String?, modifier: Modifier = Modifier) {
-    if (!imageUrl.isNullOrEmpty()) {
         AsyncImage(
-            model = imageUrl,
+            model = imageUrl ?: R.drawable.circle_user_round,
             contentDescription = "Profile Image",
             modifier = modifier
         )
-    } else {
-        Box(
-            modifier = modifier
-                .background(FoodieeeColors.slate200, shape = CircleShape)
-        )
-    }
 }
 
 

@@ -21,13 +21,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.foodiee.R
+import com.example.foodiee.data.models.User.UserAPI.User
+import com.example.foodiee.data.models.User.UserAPI.UserAPIViewModel
 import com.example.foodiee.data.models.User.UserViewModel
 import com.example.foodiee.ui.components.BackButton
 import com.example.foodiee.ui.components.Footer
 import com.example.foodiee.ui.theme.FoodieeeColors
 
 @Composable
-fun PersonalInformationScreen(navController: NavController, userViewModel: UserViewModel) {
+fun PersonalInformationScreen(navController: NavController, userViewModel: UserViewModel, userAPIViewModel: UserAPIViewModel) {
     Scaffold(
         topBar = { BackButton(navController)},
         bottomBar = {
@@ -52,7 +54,7 @@ fun PersonalInformationScreen(navController: NavController, userViewModel: UserV
                         .align(Alignment.CenterHorizontally)
                 )
                 Text(
-                    text = "John Doe",
+                    text = userAPIViewModel.currentUser.value?.fullName ?: "Guest",
                     fontWeight = FontWeight.Bold,
                     fontSize = 24.sp,
                     modifier = Modifier.padding(top = 16.dp)
@@ -61,7 +63,7 @@ fun PersonalInformationScreen(navController: NavController, userViewModel: UserV
                 Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
-                    text = "Employee",
+                    text = userAPIViewModel.currentUser.value?.role.toString() ?: "User",
                     color = FoodieeeColors.slate500,
                     fontSize = 16.sp
                 )

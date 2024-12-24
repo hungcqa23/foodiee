@@ -36,7 +36,7 @@ fun LoginScreen(navController: NavController, userViewModel: UserViewModel, user
     fun login(){
         userAPIViewmodel.loginUser(username, password)
         if(userAPIViewmodel.isLoggedIn.value == true){
-            userAPIViewmodel.getToken()?.let { userViewModel.login(Role.ADMIN, it) }
+            userAPIViewmodel.getToken()?.let { userViewModel.login(Role.USER, it) }
             navController.navigate(Routes.HomeScreen.route)
         }else if(userAPIViewmodel.isLoggedIn.value == false){
             errorMessage = "Invalid username or password"

@@ -57,21 +57,26 @@ import com.example.foodiee.R
 import com.example.foodiee.data.models.Course.Course
 import com.example.foodiee.data.models.Course.CourseViewModel
 import com.example.foodiee.data.models.CourseDetails
+import com.example.foodiee.data.models.User.UserAPI.UserAPIViewModel
 import com.example.foodiee.data.models.User.UserViewModel
 import com.example.foodiee.ui.components.Footer
 import com.example.foodiee.ui.theme.FoodieeeColors
 
 @Composable
-fun HomeScreen(navController: NavController, userViewModel: UserViewModel, courseViewModel: CourseViewModel) {
+fun HomeScreen(navController: NavController, userViewModel: UserViewModel, courseViewModel: CourseViewModel, userAPIViewModel: UserAPIViewModel) {
     var searchQuery by remember { mutableStateOf("") }
     var selectedCategory by remember { mutableStateOf("main_course") }  // For managing selected category
     val allCourse by courseViewModel.courses.collectAsState()
-
+    var cartNumber by remember { mutableStateOf(0) }
     LaunchedEffect(Unit) {
         Log.d("CourseViewModel", "dang lay course")
         courseViewModel.getAllCourses()
+        cartNumber = if(userAPIViewModel.getToken() != null){
+            courseViewModel.getCardNumber(userAPIViewModel.getToken()!!)
+        }else{
+            0
+        }
     }
-
     Log.d("CourseViewModel", "Lay xong roi ${allCourse}")
     Scaffold(
         bottomBar = {
@@ -103,8 +108,10 @@ fun HomeScreen(navController: NavController, userViewModel: UserViewModel, cours
                     Spacer(modifier = Modifier.weight(1f))
                     BadgedBox(
                         badge = {
-                            Badge {
-                                Text("3")
+                            if(cartNumber != 0){
+                                Badge {
+                                    Text(cartNumber.toString())
+                                }
                             }
                         },
                         modifier = Modifier.clickable { navController.navigate(Routes.CartScreen.route) }

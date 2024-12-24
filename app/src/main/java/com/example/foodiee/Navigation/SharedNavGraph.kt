@@ -56,6 +56,6 @@ fun NavGraphBuilder.sharedNavGraph(
         EditProfileScreen(navController, userViewModel)
     }
     composable(Routes.PersonalInformationScreen.route) {
-        PersonalInformationScreen(navController, userViewModel)
+        PersonalInformationScreen(navController, userViewModel, userAPIViewModel)
     }
 }

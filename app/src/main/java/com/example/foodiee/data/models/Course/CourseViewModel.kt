@@ -133,4 +133,12 @@ class CourseViewModel : ViewModel() {
             throw Exception("server error")
         }
     }
+    suspend fun getCardNumber(token:String): Int{
+        return try{
+            val respond = RetrofitInstance.CourseApi.getCartNumber("Bearer $token")
+            respond.second
+        }catch(e:Exception){
+            0
+        }
+    }
 }
