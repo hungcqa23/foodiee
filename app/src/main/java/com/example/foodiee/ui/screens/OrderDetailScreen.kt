@@ -1,8 +1,10 @@
 package com.example.foodiee.ui.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -45,7 +47,8 @@ fun OrderDetailScreen(
                 .padding(28.dp)
         ) {
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize()
+                    .verticalScroll(ScrollState(1)),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Header(
@@ -57,6 +60,7 @@ fun OrderDetailScreen(
                 OrderItemsWithReviews(order)
                 TotalAmount(totalAmount = "$45.97")
                 NoteSection(note = order.note)
+                Spacer(modifier = Modifier.height(48.dp))
             }
 
             MarkAsCompletedButton(
@@ -105,11 +109,13 @@ fun OrderDetailRow(imageRes: Int, text: String) {
 fun OrderItemsWithReviews(order: Order) {
     Text("Order Items", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
 
-    order.orderDetails.forEachIndexed() { index, item ->
+    val items = order.orderDetails.split(",").map { it.trim() }
+
+    items.forEachIndexed { index, item ->
         var isReviewed by remember { mutableStateOf(false) }
         OrderItemRowWithReview(
-            item = item.toString(),
-            price = "$5.33", // Adjust price as needed
+            item = item,  // Pass the individual item
+            price = "$5.33", // Adjust price dynamically if needed
             orderStatus = order.orderStatus,
             isReviewed = isReviewed,
             onReviewSubmitted = { isReviewed = true }
@@ -182,7 +188,7 @@ fun ReviewSection(onReviewSubmitted: () -> Unit) {
                     modifier = Modifier.size(24.dp)
                 ) {
                     Icon(
-                        painter = painterResource(id = if (rating > index) R.drawable.star else R.drawable.star_filled),
+                        painter = painterResource(id = if (rating > index) R.drawable.star_filled else R.drawable.star),
                         tint = Color(0xFFffb84a),
                         contentDescription = "Star Rating"
                     )
