@@ -141,12 +141,15 @@ fun OrderDetailScreen(
 //                    orderStatus = OrderStatus.PENDING
 //                )
                 OrderDetails(order.value)
-                OrderItemsWithReviews(order.value)
+                OrderItemsWithReviews(
+                    order.value,
+                    userAPIViewModel.currentUser.value?.role ?: Role.USER
+                )
                 TotalAmount(totalAmount = totalAmount)
 //                NoteSection(note = order.note)
                 Spacer(modifier = Modifier.height(48.dp))
             }
-            
+
             if (userAPIViewModel.currentUser.value?.role != Role.USER) {
                 MarkAsCompletedButton(
                     modifier = Modifier.align(Alignment.BottomCenter),
@@ -204,7 +207,7 @@ fun OrderDetailRow(imageRes: Int, text: String) {
 }
 
 @Composable
-fun OrderItemsWithReviews(order: OrderRespond) {
+fun OrderItemsWithReviews(order: OrderRespond, userRole: Role) {
     Text("Order Items", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
 
     val items = order.cartItems
@@ -214,10 +217,12 @@ fun OrderItemsWithReviews(order: OrderRespond) {
             var isReviewed by remember { mutableStateOf(false) }
             OrderItemRowWithReview(
                 item = item.course.title,  // Pass the individual item
-                price = "$5.33", // Adjust price dynamically if needed
+                price = "$${item.course.price}", // Adjust price dynamically if needed
+                quantity = item.quantity,
 //                orderStatus = order.status?.let { OrderStatus.valueOf(it) } ?: OrderStatus.PENDING,
                 isReviewed = isReviewed,
-                onReviewSubmitted = { isReviewed = true }
+                onReviewSubmitted = { isReviewed = true },
+                userRole = userRole
             )
         }
     }
@@ -229,10 +234,14 @@ fun OrderItemsWithReviews(order: OrderRespond) {
 fun OrderItemRowWithReview(
     item: String,
     price: String,
+    quantity: Number,
 //    orderStatus: OrderStatus,
     isReviewed: Boolean,
-    onReviewSubmitted: () -> Unit
+    onReviewSubmitted: () -> Unit,
+    userRole: Role
 ) {
+    val formattedPrice = "$price x $quantity"
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -250,20 +259,22 @@ fun OrderItemRowWithReview(
                 fontWeight = FontWeight.Medium
             )
             Text(
-                text = price,
+                text = formattedPrice,
                 fontSize = 18.sp
             )
         }
 
-        if (!isReviewed) {
-            ReviewSection(onReviewSubmitted = onReviewSubmitted)
-        } else if (isReviewed) {
-            Text(
-                text = "Review Submitted",
-                color = Color.Gray,
-                fontSize = 14.sp,
-                modifier = Modifier.padding(start = 16.dp)
-            )
+        if (userRole !== Role.ADMIN) {
+            if (!isReviewed) {
+                ReviewSection(onReviewSubmitted = onReviewSubmitted)
+            } else if (isReviewed) {
+                Text(
+                    text = "Review Submitted",
+                    color = Color.Gray,
+                    fontSize = 14.sp,
+                    modifier = Modifier.padding(start = 16.dp)
+                )
+            }
         }
     }
 }
