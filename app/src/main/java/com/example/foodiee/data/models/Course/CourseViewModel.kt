@@ -44,9 +44,12 @@ class CourseViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val response = RetrofitInstance.CourseApi.getAllCourses()
-            //    val response = getMockCourseResponse()
+                //    val response = getMockCourseResponse()
                 _courses.value = response.data
-                Log.d("CourseViewModel", "lay dc course roi:\n ${response.status} \n ${response.data}")
+                Log.d(
+                    "CourseViewModel",
+                    "lay dc course roi:\n ${response.status} \n ${response.data}"
+                )
             } catch (e: Exception) {
                 e.printStackTrace()
                 Log.e("CourseViewModel", "bug get all roi: ${e.localizedMessage}")
@@ -58,7 +61,7 @@ class CourseViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val response = RetrofitInstance.CourseApi.getCourseById(id)
-            //    val response = getMockCourseResponseDetail()
+                //    val response = getMockCourseResponseDetail()
                 Log.d("CourseViewModel", "lay dc course roi:${response.status} \n ${response.data}")
                 _courseDetail.value = response.data
             } catch (e: Exception) {
@@ -95,7 +98,8 @@ class CourseViewModel : ViewModel() {
             try {
                 // Prepare the file part for uploading
                 val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
-                val multipartBody = MultipartBody.Part.createFormData("file", file.name, requestFile)
+                val multipartBody =
+                    MultipartBody.Part.createFormData("file", file.name, requestFile)
 
                 // Make the API call
                 val response = RetrofitInstance.CourseApi.uploadFile(multipartBody)
@@ -128,24 +132,24 @@ class CourseViewModel : ViewModel() {
         }
     }
 
-    suspend fun getReviewsByID(id:Int): List<Review>{
-        return try{
+    suspend fun getReviewsByID(id: Int): List<Review> {
+        return try {
             val respond = RetrofitInstance.CourseApi.getReviews(id)
-            if(respond.status == "success"){
+            if (respond.status == "success") {
                 respond.data
-            }
-            else{
+            } else {
                 throw Exception("No Success")
             }
-        } catch(e: Exception){
+        } catch (e: Exception) {
             throw Exception("server error")
         }
     }
-    suspend fun getCardNumber(token:String): Int{
-        return try{
+
+    suspend fun getCardNumber(token: String): Int {
+        return try {
             val respond = RetrofitInstance.CourseApi.getCartNumber("Bearer $token")
             respond.second
-        }catch(e:Exception){
+        } catch (e: Exception) {
             0
         }
     }
@@ -206,26 +210,35 @@ class CourseViewModel : ViewModel() {
                         order.time.isNullOrEmpty()
                 )
     }
-    fun getOrderById(token: String, id: Int, onSuccess: (OrderRespond) -> Unit) {
+
+    fun getOrderById(token: String, orderId: String, onSuccess: (OrderRespond) -> Unit) {
         viewModelScope.launch {
             try {
-                val idd = CreateOrderRequest(id)
-                val response = RetrofitInstance.CourseApi.getOrderById("Bearer $token",idd)
+                val response = RetrofitInstance.CourseApi.getOrderById("Bearer $token", orderId)
+                Log.d(
+                    "Order Response",
+                    response.toString()
+                )  // Log the response to check its structure
+
                 if (response.status == "success") {
-                    onSuccess(response.order)
+                    Log.d("Order Success", "Order fetched successfully")
+                    onSuccess(response.data)
+                } else {
+                    Log.e("Order Error", "Failed to fetch order: ${response.status}")
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
+                Log.e("Order Error", "Exception occurred: ${e.localizedMessage}")
             }
         }
     }
 
-    fun createOrder(token: String, cartID: Int, onSuccess: () -> Unit){
+    fun createOrder(token: String, cartID: Int, onSuccess: () -> Unit) {
         viewModelScope.launch {
             try {
                 Log.d("create", "creating order")
                 val request = CreateOrderRequest(cartID)
-                val response = RetrofitInstance.CourseApi.createOrder("Bearer $token",request)
+                val response = RetrofitInstance.CourseApi.createOrder("Bearer $token", request)
                 Log.d("create", "created order")
                 onSuccess()
             } catch (e: Exception) {
@@ -233,18 +246,20 @@ class CourseViewModel : ViewModel() {
             }
         }
     }
-    fun updateOrder(token: String, id: Int, updatedOrder: String, onSuccess: () -> Unit){
+
+    fun updateOrder(token: String, id: Int, updatedOrder: String, onSuccess: () -> Unit) {
         viewModelScope.launch {
             try {
                 val update = SString(updatedOrder)
-                val response = RetrofitInstance.CourseApi.updateOrder("Bearer $token",id,update)
+                val response = RetrofitInstance.CourseApi.updateOrder("Bearer $token", id, update)
                 onSuccess()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
     }
-    fun getStatistic(token: String, onSuccess: (statResponse) -> Unit){
+
+    fun getStatistic(token: String, onSuccess: (statResponse) -> Unit) {
         viewModelScope.launch {
             try {
                 val response = RetrofitInstance.CourseApi.getStatistic("Bearer $token")

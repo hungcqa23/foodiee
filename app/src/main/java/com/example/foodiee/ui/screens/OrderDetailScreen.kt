@@ -3,17 +3,40 @@ package com.example.foodiee.ui.screens
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.*
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -22,13 +45,10 @@ import com.example.foodiee.data.models.Course.CartItem
 import com.example.foodiee.data.models.Course.Course
 import com.example.foodiee.data.models.Course.CourseViewModel
 import com.example.foodiee.data.models.Course.OrderRespond
-import com.example.foodiee.data.models.Order
-import com.example.foodiee.data.models.OrderStatus
 import com.example.foodiee.data.models.User.UserAPI.User
 import com.example.foodiee.data.models.User.UserAPI.UserAPIViewModel
 import com.example.foodiee.data.models.User.UserViewModel
 import com.example.foodiee.ui.components.Footer
-import com.example.foodiee.ui.components.order_detail_screen.Header
 import com.example.foodiee.ui.theme.FoodieeeColors
 
 @Composable
@@ -40,42 +60,51 @@ fun OrderDetailScreen(
     orderId: String
 ) {
     val token = userAPIViewModel.getToken()
-    var order = remember { mutableStateOf(OrderRespond(
-        id = 0,
-        paymentType = "Credit Card",
-        status = "Pending",
-        createdAt = "Now",
-        user = User(
-            id = "0",
-            fullName = "Unknown",
-            email = "",
-            password = ""
-        ),
-        cartItems = listOf(
-            CartItem(
+    var order = remember {
+        mutableStateOf(
+            OrderRespond(
                 id = 0,
-                course = Course(
-                    id = 0,
-                    title = "Unknown",
-                    description = "Unknown",
-                    price = 0.0,
-                    typeCourse = "Unknown",
-                    quantity = 0,
-                    ingredients = listOf(),
-                    image = ""
+                paymentType = "Credit Card",
+                status = "Pending",
+                createdAt = "Now",
+                user = User(
+                    id = "0",
+                    fullName = "Unknown",
+                    email = "",
+                    password = ""
                 ),
-                quantity = 0
+                cartItems = listOf(
+                    CartItem(
+                        id = 0,
+                        course = Course(
+                            id = 0,
+                            title = "Unknown",
+                            description = "Unknown",
+                            price = 0.0,
+                            typeCourse = "Unknown",
+                            quantity = 0,
+                            ingredients = listOf(),
+                            image = ""
+                        ),
+                        quantity = 0
+                    )
+                )
             )
         )
-    )) }
+    }
+    var totalAmount by remember { mutableStateOf("0.00") }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(orderId) {
         Log.d("orderfatal", "fetching order")
-        userAPIViewModel.getToken()?.let {  courseViewModel.getOrderById(it, orderId.toInt(), { item ->
-            order.value = item
-        }) }
-        Log.d("orderfatal", "fetched order")
-        Log.d("orderfatal", order.value.toString())
+        Log.d("order ID: ", orderId)  // Log the value of orderId to check if it's correct
+        userAPIViewModel.getToken()?.let { token ->
+            courseViewModel.getOrderById(token, orderId) { item ->
+                Log.d("test: ", "Order fetched: ${item}")
+                order.value = item
+                totalAmount = calculateTotalAmount(order.value.cartItems)
+            }
+        }
+        Log.d("orderfatal", "Order fetched: ${order.value}")
     }
 
 
@@ -89,7 +118,8 @@ fun OrderDetailScreen(
                 .padding(28.dp)
         ) {
             Column(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
                     .verticalScroll(ScrollState(1)),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
@@ -100,19 +130,23 @@ fun OrderDetailScreen(
 //                )
                 OrderDetails(order.value)
                 OrderItemsWithReviews(order.value)
-                TotalAmount(totalAmount = "$45.97")
+                TotalAmount(totalAmount = totalAmount)
 //                NoteSection(note = order.note)
                 Spacer(modifier = Modifier.height(48.dp))
             }
 
             MarkAsCompletedButton(
                 modifier = Modifier.align(Alignment.BottomCenter),
-                isFinished = if(order.value.status == "Completed") true else false,
+                isFinished = if (order.value.status == "Completed") true else false,
                 update = {
                     if (token != null) {
-                        courseViewModel.updateOrder(token, orderId.toInt(), "completed", onSuccess = {
-                            navController.popBackStack()
-                        })
+                        courseViewModel.updateOrder(
+                            token,
+                            orderId.toInt(),
+                            "completed",
+                            onSuccess = {
+                                navController.popBackStack()
+                            })
                     }
                 }
             )
@@ -338,4 +372,10 @@ fun MarkAsCompletedButton(modifier: Modifier, isFinished: Boolean, update: () ->
             fontSize = 18.sp
         )
     }
+}
+
+fun calculateTotalAmount(cartItems: List<CartItem>?): String {
+    // Safely handle nullable cartItems, return 0.00 if null or empty
+    val total = cartItems?.sumOf { it.quantity * it.course.price } ?: 0.0
+    return "$${"%.2f".format(total)}"
 }

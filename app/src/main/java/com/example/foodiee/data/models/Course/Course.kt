@@ -20,6 +20,7 @@ data class CourseResponse(
     val status: String,
     val data: List<Course>
 )
+
 data class CourseResponseDetail(
     val status: String,
     val data: Course
@@ -35,6 +36,7 @@ data class Course(
     val ingredients: List<String>,
     val image: String? = null
 )
+
 data class Review(
     val id: Int,
     val text: String,
@@ -104,6 +106,7 @@ data class CartRespond(
     val status: String,
     val data: CartInfo
 )
+
 data class CreateOrderRequest(
     val cartId: Int  // Cart ID
 )
@@ -117,9 +120,15 @@ data class OrderRespond(
     @SerializedName("user") val user: User?,
     @SerializedName("cartItems") val cartItems: List<CartItem>?
 )
+
 data class orderCreate(
     val status: String,
     val order: OrderRespond
+)
+
+data class OrderGetById(
+    val status: String,
+    val data: OrderRespond
 )
 
 data class updateOrderRespond(
@@ -127,6 +136,7 @@ data class updateOrderRespond(
     val raw: List<Any>,
     val affected: Int
 )
+
 data class SString(
     val status: String
 )
@@ -163,8 +173,8 @@ interface CourseApiService {
 
     @GET("reviews/{id}")
     suspend fun getReviews(
-        @Path("id") id:Int
-    ) : ApiRespond<Review>
+        @Path("id") id: Int
+    ): ApiRespond<Review>
 
     @POST("reviews/{id}")
     suspend fun postReview(
@@ -204,8 +214,9 @@ interface CourseApiService {
     @GET("orders/{id}")
     suspend fun getOrderById(
         @Header("Authorization") token: String,
-        @Path("id") id: CreateOrderRequest
-    ): orderCreate
+        @Path("id") id: String
+    ): OrderGetById
+
     @PATCH("orders/{id}")
     suspend fun updateOrder(
         @Header("Authorization") token: String,
@@ -229,7 +240,13 @@ fun getMockCourses(): List<Course> {
             typeCourse = "main_course",
             quantity = 10,
             price = 12.99,
-            ingredients = listOf("Spaghetti", "Eggs", "Pancetta", "Parmesan Cheese", "Black Pepper"),
+            ingredients = listOf(
+                "Spaghetti",
+                "Eggs",
+                "Pancetta",
+                "Parmesan Cheese",
+                "Black Pepper"
+            ),
             image = "https://www.allrecipes.com/thmb/SZjdgaXhmkrRNLoOvdxuAktwk3E=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/228443-authentic-pho-DDMFS-4x3-0523f6531ccf4dbeb4b5bde52e007b1e.jpg"
         ),
         Course(
@@ -239,7 +256,12 @@ fun getMockCourses(): List<Course> {
             typeCourse = "appetizer",
             quantity = 15,
             price = 8.99,
-            ingredients = listOf("Romaine Lettuce", "Croutons", "Parmesan Cheese", "Caesar Dressing"),
+            ingredients = listOf(
+                "Romaine Lettuce",
+                "Croutons",
+                "Parmesan Cheese",
+                "Caesar Dressing"
+            ),
             image = "https://www.allrecipes.com/thmb/SZjdgaXhmkrRNLoOvdxuAktwk3E=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/228443-authentic-pho-DDMFS-4x3-0523f6531ccf4dbeb4b5bde52e007b1e.jpg"
         ),
         Course(
@@ -274,12 +296,14 @@ fun getMockCourses(): List<Course> {
         )
     )
 }
+
 fun getMockCourseResponse(): CourseResponse {
     return CourseResponse(
         status = "success",
         data = getMockCourses()
     )
 }
+
 fun getMockCourseResponseDetail(): CourseResponseDetail {
     return CourseResponseDetail(
         status = "success",
