@@ -30,7 +30,7 @@ import com.example.foodiee.ui.components.Footer
 import com.example.foodiee.ui.theme.FoodieeeColors
 
 @Composable
-fun PersonalInformationScreen(navController: NavController, userAPIViewModel: UserAPIViewModel, userAPIViewModel: UserAPIViewModel) {
+fun PersonalInformationScreen(navController: NavController, userViewModel: UserViewModel, userAPIViewModel: UserAPIViewModel) {
     var newEmail by remember { mutableStateOf( userAPIViewModel.currentUser.value?.email ?: "") }
     var newPhoneNumber by remember { mutableStateOf(userAPIViewModel.currentUser.value?.phoneNumber ?: "") }
     var newAddress by remember { mutableStateOf(userAPIViewModel.currentUser.value?.address ?: "") }
@@ -38,7 +38,7 @@ fun PersonalInformationScreen(navController: NavController, userAPIViewModel: Us
     Scaffold(
         topBar = { BackButton(navController)},
         bottomBar = {
-            Footer(navController, userViewModel)
+            Footer(navController, userAPIViewModel)
         }
     ) { paddingValues: PaddingValues ->
         Box(

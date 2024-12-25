@@ -27,7 +27,7 @@ import com.example.foodiee.ui.components.PeopleNavigationHeader
 import com.example.foodiee.ui.components.people_screens.PersonCard
 
 @Composable
-fun PeopleManagementScreen(navController: NavController, userAPIViewModel: UserAPIViewModel, userAPIViewModel: UserAPIViewModel) {
+fun PeopleManagementScreen(navController: NavController, userViewModel: UserViewModel, userAPIViewModel: UserAPIViewModel) {
     var searchQuery by remember { mutableStateOf("") }
     var tabs: Role by remember { mutableStateOf(Role.USER) }
     val navigationBarInsets = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
@@ -74,7 +74,7 @@ fun PeopleManagementScreen(navController: NavController, userAPIViewModel: UserA
             }
         },
         bottomBar = {
-            Footer(navController, userViewModel)
+            Footer(navController, userAPIViewModel)
             Spacer(modifier = Modifier.height(navigationBarInsets))
         },
         containerColor = Color(0xFFFDFCFB)

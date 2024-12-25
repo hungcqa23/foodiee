@@ -68,7 +68,7 @@ import com.example.foodiee.ui.theme.FoodieeeColors
 @Composable
 fun HomeScreen(
     navController: NavController,
-    userAPIViewModel: UserAPIViewModel,
+    userViewModel: UserViewModel,
     courseViewModel: CourseViewModel,
     userAPIViewModel: UserAPIViewModel
 ) {
@@ -111,7 +111,7 @@ fun HomeScreen(
 
     Scaffold(
         bottomBar = {
-            Footer(navController, userViewModel)
+            Footer(navController, userAPIViewModel)
         },
         floatingActionButton = {
             Button(

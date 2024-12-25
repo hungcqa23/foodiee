@@ -9,7 +9,7 @@ import com.example.foodiee.ui.screens.auth.LoginScreen
 import com.example.foodiee.ui.screens.auth.RoleSelectionScreen
 import com.example.foodiee.ui.screens.auth.SignUpScreen
 
-fun NavGraphBuilder.authNavGraph(navController: NavController, userAPIViewModel: UserAPIViewModel, userAPIViewModel: UserAPIViewModel) {
+fun NavGraphBuilder.authNavGraph(navController: NavController, userViewModel: UserViewModel, userAPIViewModel: UserAPIViewModel) {
     composable(Routes.RoleSelectionScreen.route) {
         RoleSelectionScreen(navController, userViewModel)
     }

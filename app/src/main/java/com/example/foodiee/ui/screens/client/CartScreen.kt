@@ -43,7 +43,7 @@ import com.example.foodiee.ui.theme.FoodieeeColors
 import java.lang.Double.sum
 
 @Composable
-fun CartScreen(navController: NavController,userAPIViewModel: UserAPIViewModel, cartId: String, courseViewModel: CourseViewModel, userAPIViewModel: UserAPIViewModel) {
+fun CartScreen(navController: NavController,userViewModel: UserViewModel, cartId: String, courseViewModel: CourseViewModel, userAPIViewModel: UserAPIViewModel) {
 
     val radioOptions = listOf("Eat at Restaurant", "Delivery")
     val context = LocalContext.current

@@ -11,7 +11,7 @@ import com.example.foodiee.data.models.User.UserAPI.UserAPIViewModel
 import com.example.foodiee.data.models.User.UserViewModel
 
 @Composable
-fun FoodieeeNavHost(navController: NavHostController, userAPIViewModel: UserAPIViewModel, courseViewModel: CourseViewModel, userAPIViewmodel: UserAPIViewModel) {
+fun FoodieeeNavHost(navController: NavHostController, userViewModel: UserViewModel, courseViewModel: CourseViewModel, userAPIViewmodel: UserAPIViewModel) {
     val isLoggedIn by userViewModel.isLoggedIn.observeAsState()
     val startDestination = if(isLoggedIn == true){
        when(userViewModel.getUserStatus().role){

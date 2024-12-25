@@ -17,7 +17,7 @@ import com.example.foodiee.ui.screens.ProfileScreen
 
 fun NavGraphBuilder.sharedNavGraph(
     navController: NavController,
-    userAPIViewModel: UserAPIViewModel,
+    userViewModel: UserViewModel,
     courseViewModel: CourseViewModel,
     userAPIViewModel: UserAPIViewModel
 ) {

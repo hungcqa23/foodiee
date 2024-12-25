@@ -21,7 +21,7 @@ import com.example.foodiee.data.models.User.UserViewModel
 import com.example.foodiee.ui.theme.FoodieeeColors
 
 @Composable
-fun RoleSelectionScreen(navController: NavController, userAPIViewModel: UserAPIViewModel) {
+fun RoleSelectionScreen(navController: NavController, userViewModel: UserViewModel) {
     val primaryColor = MaterialTheme.colorScheme.primary
 
     // Remember the border color state for each button

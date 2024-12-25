@@ -53,7 +53,7 @@ import java.util.Locale
 @Composable
 fun AddItemScreen(
     navController: NavController,
-    userAPIViewModel: UserAPIViewModel,
+    userViewModel: UserViewModel,
     courseViewModel: CourseViewModel,
     courseID: String? = null,
 ) {
@@ -102,7 +102,7 @@ fun AddItemScreen(
     }
     Scaffold(
         bottomBar = {
-            Footer(navController, userViewModel)
+            Footer(navController, userAPIViewModel)
         },
         topBar = {
             BackButton(navController)

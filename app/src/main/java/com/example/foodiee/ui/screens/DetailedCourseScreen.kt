@@ -28,7 +28,7 @@ cái này xấu quá e làm lại cái khác =))))
 
 
 @Composable
-fun DetailedCourseScreen(navController: NavController, userAPIViewModel: UserAPIViewModel, course: CourseDetails) {
+fun DetailedCourseScreen(navController: NavController, userViewModel: UserViewModel, course: CourseDetails) {
     Box(
         modifier = Modifier
             .fillMaxSize()

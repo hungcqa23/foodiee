@@ -55,7 +55,7 @@ import ir.ehsannarmani.compose_charts.models.Line
 import ir.ehsannarmani.compose_charts.models.Pie
 
 @Composable
-fun StatisticsScreen(navController: NavController, userAPIViewModel: UserAPIViewModel) {
+fun StatisticsScreen(navController: NavController, userViewModel: UserViewModel) {
     val mockData: List<Double> = listOf(245.0, 443.0, 523.0, 314.0, 566.0, 693.0, 482.0)
     var mockDataCustomer by remember {
         mutableStateOf(
@@ -83,7 +83,7 @@ fun StatisticsScreen(navController: NavController, userAPIViewModel: UserAPIView
             }
         },
         bottomBar = {
-            Footer(navController, userViewModel)
+            Footer(navController, userAPIViewModel)
         }
     ) { padding ->
         LazyColumn(

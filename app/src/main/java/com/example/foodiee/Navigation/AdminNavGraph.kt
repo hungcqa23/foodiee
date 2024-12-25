@@ -15,7 +15,7 @@ import com.example.foodiee.ui.screens.admin.PeopleManagementScreen
 import com.example.foodiee.ui.screens.admin.StatisticsScreen
 import com.example.foodiee.ui.screens.client.AddItemScreen
 
-fun NavGraphBuilder.adminNavGraph(navController: NavController, userAPIViewModel: UserAPIViewModel, courseViewModel: CourseViewModel, userAPIViewModel: UserAPIViewModel) {
+fun NavGraphBuilder.adminNavGraph(navController: NavController, userViewModel: UserViewModel, courseViewModel: CourseViewModel, userAPIViewModel: UserAPIViewModel) {
     composable(Routes.OrdersManagementScreen.route) {
         OrdersManagementScreen(navController, userViewModel, courseViewModel, userAPIViewModel)
     }

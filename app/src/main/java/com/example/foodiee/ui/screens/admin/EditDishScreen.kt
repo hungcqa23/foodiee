@@ -36,7 +36,7 @@ import com.example.foodiee.ui.theme.Orange500
 @Composable
 fun EditDishScreen(
     navController: NavController,
-    userAPIViewModel: UserAPIViewModel,
+    userViewModel: UserViewModel,
     courseViewModel: CourseViewModel
 ) {
     val courses by courseViewModel.courses.collectAsState()
@@ -51,7 +51,7 @@ fun EditDishScreen(
                 TabBar(navController)
             }
         },
-        bottomBar = { Footer(navController, userViewModel) }
+        bottomBar = { Footer(navController, userAPIViewModel) }
     ) { padding ->
         LazyColumn(
             

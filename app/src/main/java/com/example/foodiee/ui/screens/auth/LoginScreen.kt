@@ -25,7 +25,7 @@ import com.example.foodiee.data.models.User.UserViewModel
 import kotlinx.coroutines.delay
 
 @Composable
-fun LoginScreen(navController: NavController, userAPIViewModel: UserAPIViewModel, userAPIViewmodel: UserAPIViewModel) {
+fun LoginScreen(navController: NavController, userViewModel: UserViewModel, userAPIViewmodel: UserAPIViewModel) {
     // State to store user input
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }

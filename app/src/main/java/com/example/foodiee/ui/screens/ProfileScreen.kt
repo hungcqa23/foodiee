@@ -30,7 +30,7 @@ import com.example.foodiee.ui.screens.client.getFileFromUri
 import com.example.foodiee.ui.theme.FoodieeeColors
 
 @Composable
-fun ProfileScreen(navController: NavController, userAPIViewModel: UserAPIViewModel, userAPIViewModel: UserAPIViewModel) {
+fun ProfileScreen(navController: NavController, userViewModel: UserViewModel, userAPIViewModel: UserAPIViewModel) {
     userAPIViewModel.getToken()?.let { Log.d("token", it) }
 
     LaunchedEffect(Unit) {

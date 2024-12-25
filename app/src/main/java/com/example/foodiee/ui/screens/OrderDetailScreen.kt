@@ -34,7 +34,7 @@ import com.example.foodiee.ui.theme.FoodieeeColors
 @Composable
 fun OrderDetailScreen(
     navController: NavController,
-    userAPIViewModel: UserAPIViewModel,
+    userViewModel: UserViewModel,
     courseViewModel: CourseViewModel,
     userAPIViewModel: UserAPIViewModel,
     orderId: String
@@ -80,7 +80,7 @@ fun OrderDetailScreen(
 
 
     Scaffold(
-        bottomBar = { Footer(navController, userViewModel) }
+        bottomBar = { Footer(navController, userAPIViewModel) }
     ) { paddingValues ->
         Box(
             modifier = Modifier
