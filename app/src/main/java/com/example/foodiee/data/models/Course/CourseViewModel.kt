@@ -206,6 +206,19 @@ class CourseViewModel : ViewModel() {
                         order.time.isNullOrEmpty()
                 )
     }
+    fun getOrderById(token: String, id: Int, onSuccess: (OrderRespond) -> Unit) {
+        viewModelScope.launch {
+            try {
+                val idd = CreateOrderRequest(id)
+                val response = RetrofitInstance.CourseApi.getOrderById("Bearer $token",idd)
+                if (response.status == "success") {
+                    onSuccess(response.order)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
 
     fun createOrder(token: String, cartID: Int, onSuccess: () -> Unit){
         viewModelScope.launch {
@@ -214,6 +227,17 @@ class CourseViewModel : ViewModel() {
                 val request = CreateOrderRequest(cartID)
                 val response = RetrofitInstance.CourseApi.createOrder("Bearer $token",request)
                 Log.d("create", "created order")
+                onSuccess()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+    fun updateOrder(token: String, id: Int, updatedOrder: String, onSuccess: () -> Unit){
+        viewModelScope.launch {
+            try {
+                val update = SString(updatedOrder)
+                val response = RetrofitInstance.CourseApi.updateOrder("Bearer $token",id,update)
                 onSuccess()
             } catch (e: Exception) {
                 e.printStackTrace()

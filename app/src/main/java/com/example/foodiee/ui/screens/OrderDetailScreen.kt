@@ -1,5 +1,6 @@
 package com.example.foodiee.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
@@ -17,9 +18,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.foodiee.R
+import com.example.foodiee.data.models.Course.CartItem
+import com.example.foodiee.data.models.Course.Course
 import com.example.foodiee.data.models.Course.CourseViewModel
+import com.example.foodiee.data.models.Course.OrderRespond
 import com.example.foodiee.data.models.Order
 import com.example.foodiee.data.models.OrderStatus
+import com.example.foodiee.data.models.User.UserAPI.User
+import com.example.foodiee.data.models.User.UserAPI.UserAPIViewModel
 import com.example.foodiee.data.models.User.UserViewModel
 import com.example.foodiee.ui.components.Footer
 import com.example.foodiee.ui.components.order_detail_screen.Header
@@ -30,12 +36,48 @@ fun OrderDetailScreen(
     navController: NavController,
     userViewModel: UserViewModel,
     courseViewModel: CourseViewModel,
+    userAPIViewModel: UserAPIViewModel,
     orderId: String
 ) {
-    val order = Order(
-        "1", "John Doe", OrderStatus.COMPLETED, "Burger, Fries, Soda", "$15.99", "10:30 AM",
-        note = "Please deliver without ketchup"
-    )
+    val token = userAPIViewModel.getToken()
+    var order = remember { mutableStateOf(OrderRespond(
+        id = 0,
+        paymentType = "Credit Card",
+        status = "Pending",
+        createdAt = "Now",
+        user = User(
+            id = "0",
+            fullName = "Unknown",
+            email = "",
+            password = ""
+        ),
+        cartItems = listOf(
+            CartItem(
+                id = 0,
+                course = Course(
+                    id = 0,
+                    title = "Unknown",
+                    description = "Unknown",
+                    price = 0.0,
+                    typeCourse = "Unknown",
+                    quantity = 0,
+                    ingredients = listOf(),
+                    image = ""
+                ),
+                quantity = 0
+            )
+        )
+    )) }
+
+    LaunchedEffect(Unit) {
+        Log.d("orderfatal", "fetching order")
+        userAPIViewModel.getToken()?.let {  courseViewModel.getOrderById(it, orderId.toInt(), { item ->
+            order.value = item
+        }) }
+        Log.d("orderfatal", "fetched order")
+        Log.d("orderfatal", order.value.toString())
+    }
+
 
     Scaffold(
         bottomBar = { Footer(navController, userViewModel) }
@@ -53,28 +95,35 @@ fun OrderDetailScreen(
             ) {
                 Header(
                     orderId = orderId,
-                    customerName = order.customerName ?: "Unknown",
-                    orderStatus = order.orderStatus ?: OrderStatus.PENDING
+                    customerName = order.value.user?.fullName ?: "Unknown",
+                    orderStatus = OrderStatus.PENDING
                 )
-                OrderDetails(order)
-                OrderItemsWithReviews(order)
+                OrderDetails(order.value)
+                OrderItemsWithReviews(order.value)
                 TotalAmount(totalAmount = "$45.97")
-                NoteSection(note = order.note)
+//                NoteSection(note = order.note)
                 Spacer(modifier = Modifier.height(48.dp))
             }
 
             MarkAsCompletedButton(
                 modifier = Modifier.align(Alignment.BottomCenter),
-                isFinished = order.orderStatus == OrderStatus.COMPLETED
+                isFinished = if(order.value.status == "Completed") true else false,
+                update = {
+                    if (token != null) {
+                        courseViewModel.updateOrder(token, orderId.toInt(), "completed", onSuccess = {
+                            navController.popBackStack()
+                        })
+                    }
+                }
             )
         }
     }
 }
 
 @Composable
-fun OrderDetails(order: Order) {
+fun OrderDetails(order: OrderRespond) {
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        order.time?.let { OrderDetailRow(imageRes = R.drawable.clock, text = it) }
+        order.createdAt?.let { OrderDetailRow(imageRes = R.drawable.clock, text = it) }
         OrderDetailRow(imageRes = R.drawable.map_pin, text = "123 Main St, Anytown, AN 12345")
     }
 
@@ -106,18 +155,18 @@ fun OrderDetailRow(imageRes: Int, text: String) {
 }
 
 @Composable
-fun OrderItemsWithReviews(order: Order) {
+fun OrderItemsWithReviews(order: OrderRespond) {
     Text("Order Items", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
 
-    val items = order.orderDetails?.split(",")?.map { it.trim() }
+    val items = order.cartItems
 
     if (items != null) {
         items.forEachIndexed { index, item ->
             var isReviewed by remember { mutableStateOf(false) }
             OrderItemRowWithReview(
-                item = item,  // Pass the individual item
+                item = item.course.title,  // Pass the individual item
                 price = "$5.33", // Adjust price dynamically if needed
-                orderStatus = order.orderStatus ?: OrderStatus.PENDING,
+//                orderStatus = order.status?.let { OrderStatus.valueOf(it) } ?: OrderStatus.PENDING,
                 isReviewed = isReviewed,
                 onReviewSubmitted = { isReviewed = true }
             )
@@ -131,7 +180,7 @@ fun OrderItemsWithReviews(order: Order) {
 fun OrderItemRowWithReview(
     item: String,
     price: String,
-    orderStatus: OrderStatus,
+//    orderStatus: OrderStatus,
     isReviewed: Boolean,
     onReviewSubmitted: () -> Unit
 ) {
@@ -157,7 +206,7 @@ fun OrderItemRowWithReview(
             )
         }
 
-        if (orderStatus != OrderStatus.PENDING && !isReviewed) {
+        if (!isReviewed) {
             ReviewSection(onReviewSubmitted = onReviewSubmitted)
         } else if (isReviewed) {
             Text(
@@ -271,9 +320,9 @@ fun NoteSection(note: String?) {
 }
 
 @Composable
-fun MarkAsCompletedButton(modifier: Modifier, isFinished: Boolean) {
+fun MarkAsCompletedButton(modifier: Modifier, isFinished: Boolean, update: () -> Unit) {
     Button(
-        onClick = { /* Handle button click */ },
+        onClick = { update() },
         modifier = Modifier
             .fillMaxWidth()
             .height(50.dp)

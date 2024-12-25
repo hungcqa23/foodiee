@@ -122,6 +122,15 @@ data class orderCreate(
     val order: OrderRespond
 )
 
+data class updateOrderRespond(
+    val generatedMaps: List<Any>,
+    val raw: List<Any>,
+    val affected: Int
+)
+data class SString(
+    val status: String
+)
+
 
 interface CourseApiService {
     @POST("courses")
@@ -181,6 +190,18 @@ interface CourseApiService {
         @Header("Authorization") token: String,
         @Body cardId: CreateOrderRequest
     ): orderCreate
+
+    @GET("orders/{id}")
+    suspend fun getOrderById(
+        @Header("Authorization") token: String,
+        @Path("id") id: CreateOrderRequest
+    ): orderCreate
+    @PATCH("orders/{id}")
+    suspend fun updateOrder(
+        @Header("Authorization") token: String,
+        @Path("id") id: Int,
+        @Body updatedOrder: SString
+    ): updateOrderRespond
 }
 
 
