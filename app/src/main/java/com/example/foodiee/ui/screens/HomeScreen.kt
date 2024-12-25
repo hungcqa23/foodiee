@@ -24,6 +24,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.Button
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -72,10 +74,11 @@ fun HomeScreen(
 ) {
     var searchQuery by remember { mutableStateOf("") }
     var selectedCategory by remember { mutableStateOf("main_course") } // For managing selected category
-    val allCourse by courseViewModel.courses.collectAsState()
+    val allCourse = courseViewModel.courses.collectAsState().value
     var cartNumber by remember { mutableStateOf(0) }
     var selectedCourses by remember { mutableStateOf(mutableMapOf<Int, Int>()) } // Map of courseId to quantity
     val user by userAPIViewModel.currentUser.observeAsState()
+    val cart by courseViewModel.cart.collectAsState()
 
     // Fetch courses and cart number on initialization
     LaunchedEffect(Unit) {
@@ -98,6 +101,7 @@ fun HomeScreen(
             val coursesList = selectedCourses.map { Pair(it.key, it.value) }
             try {
                 courseViewModel.addToCart(coursesList, token)
+
                 cartNumber = courseViewModel.getCardNumber(token)
             } catch (e: Exception) {
                 Log.e("CourseViewModel", "Failed to update cart: ${e.localizedMessage}")
@@ -109,6 +113,23 @@ fun HomeScreen(
         bottomBar = {
             Footer(navController, userViewModel)
         },
+        floatingActionButton = {
+            Button(
+                onClick = {
+                    val token = userAPIViewModel.getToken()!!
+                    val coursesList = selectedCourses.map { Pair(it.key, it.value) }
+                    courseViewModel.addToCart(coursesList, token)
+                },
+                modifier = Modifier
+                    .fillMaxWidth() // Spans the entire width
+                    .clip(RoundedCornerShape(16.dp)) // Rounded corners with 16.dp radius
+                    .padding(16.dp) // Add padding around the button
+                    .height(64.dp)
+            ) {
+                Text("Add to Cart", fontSize = 32.sp) // Button text
+            }
+        },
+        floatingActionButtonPosition = FabPosition.Center
     ) { innerPadding ->
         LazyColumn(modifier = Modifier.padding(innerPadding)) {
             // Header with Delivery info
@@ -224,6 +245,7 @@ fun HomeScreen(
                 ) { dish ->
                     CourseDetailCard(
                         course = dish,
+                        currentQuantity = selectedCourses[dish.id] ?: 0,
                         onIncrement = { courseId ->
                             selectedCourses[courseId] = (selectedCourses[courseId] ?: 0) + 1
                         },
@@ -247,11 +269,12 @@ fun HomeScreen(
 @Composable
 fun CourseDetailCard(
     course: Course,
+    currentQuantity: Int,
     onIncrement: (Int) -> Unit,
     onDecrement: (Int) -> Unit,
     navController: NavController
 ) {
-    var count by remember { mutableIntStateOf(0) }
+    var count by remember { mutableIntStateOf(currentQuantity) }
     Log.d("CourseViewModel", "CourseID o home: ${course.id}")
 
     Surface(

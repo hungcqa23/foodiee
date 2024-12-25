@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.foodiee.R
+import com.example.foodiee.data.models.Course.CartItem
 import com.example.foodiee.data.models.Course.Course
 import com.example.foodiee.data.models.Course.CourseViewModel
 import com.example.foodiee.data.models.InventoryItem
@@ -36,6 +37,7 @@ import com.example.foodiee.data.models.User.UserViewModel
 import com.example.foodiee.ui.components.BackButton
 import com.example.foodiee.ui.components.Footer
 import com.example.foodiee.ui.theme.FoodieeeColors
+import java.lang.Double.sum
 
 @Composable
 fun CartScreen(navController: NavController,userViewModel: UserViewModel, cartId: String, courseViewModel: CourseViewModel, userAPIViewModel: UserAPIViewModel) {
@@ -46,17 +48,12 @@ fun CartScreen(navController: NavController,userViewModel: UserViewModel, cartId
     var selectedPaymentOption by remember { mutableStateOf("") }
     var address by remember { mutableStateOf("") }
     var cartInfo = courseViewModel.cart.collectAsState().value
-    val courses = mutableListOf<Course>()
+    val courses = cartInfo?.cartItems
 
     LaunchedEffect(Unit) {
         userAPIViewModel.getToken()?.let { courseViewModel.getCartInfo(it) }
     }
-    LaunchedEffect(cartInfo) {
-        for(id in cartInfo?.cartItemIds ?: emptyList()) {
-            courseViewModel.getCourseById(id)
-            courses += courseViewModel.courseDetail.value!!
-        }
-    }
+
 
     Scaffold(
         bottomBar = { Footer(navController = navController, userViewModel) },
@@ -77,11 +74,11 @@ fun CartScreen(navController: NavController,userViewModel: UserViewModel, cartId
                 )
             }
 
-            items(courses) { item ->
+            items(courses ?: emptyList()) { item ->
                 CartItemCard(
                     item = item,
                     onQuantityClick = { item.quantity = it},
-                    onRemoveClick = { courses.removeIf { item == it } }
+                    onRemoveClick = {  }
                 )
             }
             item {
@@ -236,7 +233,7 @@ fun CartScreen(navController: NavController,userViewModel: UserViewModel, cartId
                     )
                     Spacer(modifier = Modifier.weight(1f))
                     Text(
-                        "$12.99",
+                        (courses?.sumOf { it.course.price * it.quantity } ?: 0.0).toString(),
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(16.dp)
@@ -269,7 +266,7 @@ fun CartScreen(navController: NavController,userViewModel: UserViewModel, cartId
 
 @Composable
 fun CartItemCard(
-    item: Course,
+    item: CartItem,
     onQuantityClick: (Int) -> Unit,
     onRemoveClick: (Int) -> Unit,
 ) {
@@ -284,8 +281,8 @@ fun CartItemCard(
             modifier = Modifier.padding(16.dp),
         ) {
             Column {
-                Text(item.title, fontSize = 22.sp, fontWeight = FontWeight.Bold)
-                Text(item.price.toString(), fontSize = 14.sp, color = Color.Gray)
+                Text(item.course.title, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+                Text(item.course.price.toString(), fontSize = 14.sp, color = Color.Gray)
             }
             Spacer(modifier = Modifier.weight(1f))
             Row(

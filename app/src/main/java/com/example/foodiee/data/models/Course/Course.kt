@@ -53,12 +53,18 @@ data class ReviewResponse(
 )
 
 data class CartItem(
+    val id: Int,
+    var quantity: Int,
+    val course: Course
+)
+
+data class CartItm(
     val courseId: Int,
-    val quantity: Int
+    val quantity: Int,
 )
 
 data class CartRequest(
-    val items: List<CartItem>
+    val items: List<CartItm>
 )
 
 data class Asset(
@@ -88,7 +94,8 @@ data class Asset(
 data class CartInfo(
     val cartItemIds: List<Int>,
     val user: User,
-    val id: Int
+    val id: Int,
+    val cartItems: List<CartItem>
 )
 
 data class CartRespond(
@@ -128,7 +135,7 @@ interface CourseApiService {
         @Body review: ReviewRequest
     ): ReviewResponse
 
-    @GET("cart/current-cart-number")
+    @GET("carts/current-cart-number")
     suspend fun getCartNumber(
         @Header("Authorization") token: String
     ): Pair<String, Int>

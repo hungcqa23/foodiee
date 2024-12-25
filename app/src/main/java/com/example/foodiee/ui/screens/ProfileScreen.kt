@@ -1,12 +1,14 @@
 package com.example.foodiee.ui.screens
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -14,6 +16,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toFile
+import androidx.core.net.toUri
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.foodiee.Navigation.Routes
@@ -21,11 +25,18 @@ import com.example.foodiee.R
 import com.example.foodiee.data.models.User.UserAPI.UserAPIViewModel
 import com.example.foodiee.data.models.User.UserViewModel
 import com.example.foodiee.ui.components.Footer
+import com.example.foodiee.ui.screens.client.AddImageDialog
+import com.example.foodiee.ui.screens.client.getFileFromUri
 import com.example.foodiee.ui.theme.FoodieeeColors
 
 @Composable
 fun ProfileScreen(navController: NavController, userViewModel: UserViewModel, userAPIViewModel: UserAPIViewModel) {
     userAPIViewModel.getToken()?.let { Log.d("token", it) }
+
+    LaunchedEffect(Unit) {
+        userAPIViewModel.getToken()?.let { userAPIViewModel.getCurrentUser(it) }
+    }
+
     Scaffold(
         bottomBar = { Footer(navController = navController, userViewModel) }
     ) { paddingValues: PaddingValues ->
@@ -91,7 +102,7 @@ fun ProfileScreen(navController: NavController, userViewModel: UserViewModel, us
                 ProfileMenuItem(
                     label = "Orders History",
                     iconResId = R.drawable.circle_user_round,
-                    onClick = { }
+                    onClick = { navController.navigate(Routes.OrdersManagementScreen.route) }
                 )
             }
 

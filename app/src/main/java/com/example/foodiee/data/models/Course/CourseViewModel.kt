@@ -153,7 +153,7 @@ class CourseViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val cartItems = courses.map { (courseId, quantity) ->
-                    CartItem(courseId, quantity)
+                    CartItm(courseId, quantity)
                 }
                 val cartRequest = CartRequest(items = cartItems)
 

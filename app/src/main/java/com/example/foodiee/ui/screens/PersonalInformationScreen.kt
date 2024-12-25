@@ -1,6 +1,7 @@
 package com.example.foodiee.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -33,6 +34,7 @@ fun PersonalInformationScreen(navController: NavController, userViewModel: UserV
     var newEmail by remember { mutableStateOf( userAPIViewModel.currentUser.value?.email ?: "") }
     var newPhoneNumber by remember { mutableStateOf(userAPIViewModel.currentUser.value?.phoneNumber ?: "") }
     var newAddress by remember { mutableStateOf(userAPIViewModel.currentUser.value?.address ?: "") }
+    var newImage by remember { mutableStateOf(userAPIViewModel.currentUser.value?.profileImage ?: "") }
     Scaffold(
         topBar = { BackButton(navController)},
         bottomBar = {
@@ -55,6 +57,7 @@ fun PersonalInformationScreen(navController: NavController, userViewModel: UserV
                     modifier = Modifier
                         .size(80.dp)
                         .align(Alignment.CenterHorizontally)
+                        .clickable {  }
                 )
                 Text(
                     text = userAPIViewModel.currentUser.value?.fullName ?: "Guest",
@@ -108,6 +111,7 @@ fun PersonalInformationScreen(navController: NavController, userViewModel: UserV
                             role = userAPIViewModel.currentUser.value!!.role,
                             profileImage = userAPIViewModel.currentUser.value?.profileImage
                         )
+                        userAPIViewModel.updateUser(newUser)
                     },
                     modifier = Modifier
                         .fillMaxWidth()

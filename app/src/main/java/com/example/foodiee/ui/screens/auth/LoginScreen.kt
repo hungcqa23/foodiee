@@ -41,7 +41,7 @@ fun LoginScreen(navController: NavController, userViewModel: UserViewModel, user
             true -> {
                 val token = userAPIViewmodel.getToken()
                 if (token != null) {
-                    userViewModel.login(Role.ADMIN, token)
+                    userViewModel.login(Role.USER, token)
                     navController.navigate(Routes.HomeScreen.route)
                 } else {
                     errorMessage = "Failed to retrieve token"
