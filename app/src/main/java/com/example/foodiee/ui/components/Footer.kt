@@ -24,7 +24,7 @@ import com.example.foodiee.data.models.User.UserViewModel
 import com.example.foodiee.ui.theme.FoodieeeColors
 
 @Composable
-fun Footer(navController: NavController, userViewModel: UserViewModel) {
+fun Footer(navController: NavController, userAPIViewModel: UserAPIViewModel) {
     val userRole = userAPIViewModel.currentUser.value?.role ?: Role.USER
 
     Row(

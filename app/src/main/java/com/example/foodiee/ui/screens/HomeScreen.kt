@@ -68,7 +68,7 @@ import com.example.foodiee.ui.theme.FoodieeeColors
 @Composable
 fun HomeScreen(
     navController: NavController,
-    userViewModel: UserViewModel,
+    userAPIViewModel: UserAPIViewModel,
     courseViewModel: CourseViewModel,
     userAPIViewModel: UserAPIViewModel
 ) {

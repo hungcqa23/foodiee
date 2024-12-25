@@ -12,7 +12,7 @@ import com.example.foodiee.data.models.User.UserViewModel
 import com.example.foodiee.ui.components.Footer
 
 @Composable
-fun EditProfileScreen(navController: NavController, userViewModel: UserViewModel) {
+fun EditProfileScreen(navController: NavController, userAPIViewModel: UserAPIViewModel) {
     Scaffold(
         bottomBar = {
             Footer(navController, userViewModel)

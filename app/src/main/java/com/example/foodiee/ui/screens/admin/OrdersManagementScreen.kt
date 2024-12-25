@@ -27,7 +27,7 @@ import com.example.foodiee.ui.components.Footer
 import com.example.foodiee.ui.theme.Slate500
 
 @Composable
-fun OrdersManagementScreen(navController: NavController, userViewModel: UserViewModel, courseViewModel: CourseViewModel, userAPIViewModel: UserAPIViewModel) {
+fun OrdersManagementScreen(navController: NavController, userAPIViewModel: UserAPIViewModel, courseViewModel: CourseViewModel, userAPIViewModel: UserAPIViewModel) {
     val tabs = listOf("Pending", "Completed")
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     val ordersData = courseViewModel.orders.collectAsState().value

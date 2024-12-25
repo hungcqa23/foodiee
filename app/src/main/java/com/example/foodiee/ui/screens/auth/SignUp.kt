@@ -35,7 +35,7 @@ import com.example.foodiee.data.models.User.UserAPI.UserAPIViewModel
 import com.example.foodiee.data.models.User.UserViewModel
 
 @Composable
-fun SignUpScreen(navController: NavController, userViewModel: UserViewModel, userAPIViewModel: UserAPIViewModel) {
+fun SignUpScreen(navController: NavController, userAPIViewModel: UserAPIViewModel, userAPIViewModel: UserAPIViewModel) {
 // State to store user input
     var fullName by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }

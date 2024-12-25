@@ -53,7 +53,7 @@ import java.util.Locale
 @Composable
 fun AddItemScreen(
     navController: NavController,
-    userViewModel: UserViewModel,
+    userAPIViewModel: UserAPIViewModel,
     courseViewModel: CourseViewModel,
     courseID: String? = null,
 ) {

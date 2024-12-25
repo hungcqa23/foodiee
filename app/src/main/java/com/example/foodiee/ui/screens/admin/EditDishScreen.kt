@@ -36,7 +36,7 @@ import com.example.foodiee.ui.theme.Orange500
 @Composable
 fun EditDishScreen(
     navController: NavController,
-    userViewModel: UserViewModel,
+    userAPIViewModel: UserAPIViewModel,
     courseViewModel: CourseViewModel
 ) {
     val courses by courseViewModel.courses.collectAsState()

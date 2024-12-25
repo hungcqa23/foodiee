@@ -34,7 +34,7 @@ import com.example.foodiee.ui.theme.FoodieeeColors
 @Composable
 fun OrderDetailScreen(
     navController: NavController,
-    userViewModel: UserViewModel,
+    userAPIViewModel: UserAPIViewModel,
     courseViewModel: CourseViewModel,
     userAPIViewModel: UserAPIViewModel,
     orderId: String

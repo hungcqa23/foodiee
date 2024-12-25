@@ -50,7 +50,7 @@ import com.example.foodiee.ui.components.Footer
 import com.example.foodiee.ui.theme.FoodieeeColors
 
 @Composable
-fun DishDescriptionScreen(navController: NavController, userViewModel: UserViewModel, courseViewModel: CourseViewModel, courseID: Int) {
+fun DishDescriptionScreen(navController: NavController, userAPIViewModel: UserAPIViewModel, courseViewModel: CourseViewModel, courseID: Int) {
 
     // Observe course details from the ViewModel
     val course by courseViewModel.courseDetail.collectAsState()

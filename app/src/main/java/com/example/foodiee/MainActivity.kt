@@ -40,7 +40,7 @@ class MainActivity : ComponentActivity() {
         // Other ViewModels
         val userModel = UserModel(applicationContext)
         val userViewModelFactory = UserViewModelFactory(userModel)
-        val userViewModel: UserViewModel by viewModels { userViewModelFactory }
+        val userAPIViewModel: UserAPIViewModel by viewModels { userViewModelFactory }
         val courseViewModel: CourseViewModel by viewModels()
 
         enableEdgeToEdge()
