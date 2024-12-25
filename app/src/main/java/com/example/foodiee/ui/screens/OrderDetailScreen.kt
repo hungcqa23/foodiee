@@ -93,11 +93,11 @@ fun OrderDetailScreen(
                     .verticalScroll(ScrollState(1)),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Header(
-                    orderId = orderId,
-                    customerName = order.value.user?.fullName ?: "Unknown",
-                    orderStatus = OrderStatus.PENDING
-                )
+//                Header(
+//                    orderId = orderId,
+//                    customerName = order.value.user?.fullName ?: "Unknown",
+//                    orderStatus = OrderStatus.PENDING
+//                )
                 OrderDetails(order.value)
                 OrderItemsWithReviews(order.value)
                 TotalAmount(totalAmount = "$45.97")

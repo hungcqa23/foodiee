@@ -47,10 +47,10 @@ class UserAPIViewModel(context: Context) : ViewModel() {
     }
 
     // Update a user
-    fun updateUser(user: User) {
+    fun updateUser(user: UpdateRequest, token: String) {
         viewModelScope.launch {
             try {
-                val response = RetrofitInstance.UserApi.updateUser(user)
+                val response = RetrofitInstance.UserApi.updateUser(user, "Bearer $token")
                 _users.value = listOf(response)
             } catch (e: Exception) {
                 e.printStackTrace()

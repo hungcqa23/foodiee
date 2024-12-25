@@ -54,6 +54,11 @@ data class currentUser(
     val status: String,
     val data: User
 )
+data class UpdateRequest(
+    val email: String,
+    val phoneNumber: String,
+    val address: String,
+)
 
 interface UserApiService {
     @POST("users")
@@ -69,7 +74,10 @@ interface UserApiService {
     suspend fun signUpUser(@Body request: SignUpRequest): User  // Added @Body annotation
 
     @PATCH("users/current")
-    suspend fun updateUser(@Body user: User): User  // Added @Body annotation
+    suspend fun updateUser(
+        @Body user: UpdateRequest,
+        @Header("Authorization") token: String
+    ): User  // Added @Body annotation
 
     @GET("users/current")
     suspend fun getCurrentUser(@Header("Authorization") token:String): currentUser

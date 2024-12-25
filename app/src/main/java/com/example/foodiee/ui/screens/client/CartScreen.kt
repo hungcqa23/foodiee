@@ -65,15 +65,16 @@ fun CartScreen(navController: NavController,userViewModel: UserViewModel, cartId
     }
 
     Scaffold(
+        topBar = {
+            BackButton(navController = navController)
+        },
         bottomBar = { Footer(navController = navController, userAPIViewModel) },
     ) { padding ->
         LazyColumn(
             modifier = Modifier
                 .padding(padding),
         ) {
-            item {
-                BackButton(navController = navController)
-            }
+
             item {
                 Text(
                     "Your Cart",

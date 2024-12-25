@@ -18,7 +18,7 @@ fun FoodieeeNavHost(navController: NavHostController, userViewModel: UserViewMod
            Role.USER -> Routes.HomeScreen.route
            Role.STAFF -> Routes.OrdersManagementScreen.route
            Role.ADMIN -> Routes.OrdersManagementScreen.route
-              else -> Routes.HomeScreen.route
+              else -> Routes.OrdersManagementScreen.route
        }
     }else{
         Routes.LoginScreen.route

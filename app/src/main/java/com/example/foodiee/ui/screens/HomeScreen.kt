@@ -1,6 +1,7 @@
 package com.example.foodiee.ui.screens
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -46,6 +47,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -79,6 +81,7 @@ fun HomeScreen(
     var selectedCourses by remember { mutableStateOf(mutableMapOf<Int, Int>()) } // Map of courseId to quantity
     val user by userAPIViewModel.currentUser.observeAsState()
     val cart by courseViewModel.cart.collectAsState()
+    val context = LocalContext.current
 
     // Fetch courses and cart number on initialization
     LaunchedEffect(Unit) {
@@ -119,6 +122,8 @@ fun HomeScreen(
                     val token = userAPIViewModel.getToken()!!
                     val coursesList = selectedCourses.map { Pair(it.key, it.value) }
                     courseViewModel.addToCart(coursesList, token)
+                    Toast.makeText(context, "Added to cart", Toast.LENGTH_SHORT).show()
+                    navController.navigate(Routes.CartScreen.route)
                 },
                 modifier = Modifier
                     .fillMaxWidth() // Spans the entire width
@@ -260,6 +265,9 @@ fun HomeScreen(
                         },
                         navController
                     )
+                }
+                item{
+                    Spacer(modifier = Modifier.height(90.dp))
                 }
             }
         }

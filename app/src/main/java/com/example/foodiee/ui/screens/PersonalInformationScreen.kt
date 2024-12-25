@@ -1,5 +1,6 @@
 package com.example.foodiee.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -7,6 +8,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -22,12 +24,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.foodiee.R
+import com.example.foodiee.data.models.User.UserAPI.UpdateRequest
 import com.example.foodiee.data.models.User.UserAPI.User
 import com.example.foodiee.data.models.User.UserAPI.UserAPIViewModel
 import com.example.foodiee.data.models.User.UserViewModel
 import com.example.foodiee.ui.components.BackButton
 import com.example.foodiee.ui.components.Footer
 import com.example.foodiee.ui.theme.FoodieeeColors
+import okhttp3.Route
 
 @Composable
 fun PersonalInformationScreen(navController: NavController, userViewModel: UserViewModel, userAPIViewModel: UserAPIViewModel) {
@@ -35,6 +39,11 @@ fun PersonalInformationScreen(navController: NavController, userViewModel: UserV
     var newPhoneNumber by remember { mutableStateOf(userAPIViewModel.currentUser.value?.phoneNumber ?: "") }
     var newAddress by remember { mutableStateOf(userAPIViewModel.currentUser.value?.address ?: "") }
     var newImage by remember { mutableStateOf(userAPIViewModel.currentUser.value?.profileImage ?: "") }
+
+    LaunchedEffect(Unit) {
+        userAPIViewModel.getToken()?.let { userAPIViewModel.getCurrentUser(it) }
+    }
+
     Scaffold(
         topBar = { BackButton(navController)},
         bottomBar = {
@@ -82,36 +91,34 @@ fun PersonalInformationScreen(navController: NavController, userViewModel: UserV
                     ProfileItem(
                         title = "Email",
                         icon = R.drawable.mail,
-                        displayText = newEmail,
-                        onChange = { newEmail = it }
+                        initialText = newEmail, // Initialize with the current value
+                        onChange = { newEmail = it } // Update the state when text changes
                     )
                     ProfileItem(
                         title = "Phone",
                         icon = R.drawable.phone,
-                        displayText = "+$newPhoneNumber",
-                        onChange = { newPhoneNumber = it }
+                        initialText = newPhoneNumber, // Initialize with the current value
+                        onChange = { newPhoneNumber = it } // Update the state when text changes
                     )
                     ProfileItem(
                         title = "Address",
                         icon = R.drawable.map_pin,
-                        displayText = newAddress,
-                        onChange = { newAddress = it }
+                        initialText = newAddress, // Initialize with the current value
+                        onChange = { newAddress = it } // Update the state when text changes
                     )
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 Button(
                     onClick = {
-                        val newUser = User(
-                            id = userAPIViewModel.currentUser.value!!.id,
-                            fullName = userAPIViewModel.currentUser.value!!.fullName,
+                        val newUser = UpdateRequest(
                             phoneNumber = newPhoneNumber,
                             address = newAddress,
                             email = newEmail,
-                            password = userAPIViewModel.currentUser.value!!.password,
-                            role = userAPIViewModel.currentUser.value!!.role,
-                            profileImage = userAPIViewModel.currentUser.value?.profileImage
                         )
-                        userAPIViewModel.updateUser(newUser)
+                        Log.d("newUser", newUser.toString())
+                        userAPIViewModel.getToken()
+                            ?.let { userAPIViewModel.updateUser(newUser, it) }
+//                        navController.navigate(Route.ProfileScreen.route)
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -125,14 +132,54 @@ fun PersonalInformationScreen(navController: NavController, userViewModel: UserV
                         fontWeight = FontWeight.SemiBold
                     )
                 }
+
             }
         }
     }
 }
 
+//@Composable
+//fun ProfileItem(title: String, icon: Int, displayText: String, onChange: (String) -> Unit) {
+//    var input by remember { mutableStateOf(displayText) }
+//    Column(
+//        verticalArrangement = Arrangement.spacedBy(8.dp)
+//    ) {
+//        Text(
+//            text = title,
+//            fontWeight = FontWeight.SemiBold,
+//            fontSize = 16.sp,
+//            letterSpacing = (-0.2).sp
+//        )
+//
+//        Row(
+//            horizontalArrangement = Arrangement.spacedBy(10.dp),
+//            verticalAlignment = Alignment.CenterVertically,
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .clip(RoundedCornerShape(10.dp)) // Add border radius
+//                .background(FoodieeeColors.slate200)
+//                .padding(vertical = 12.dp, horizontal = 14.dp)
+//        ) {
+//            Icon(
+//                painter = painterResource(id = icon),
+//                contentDescription = "$title icon",
+//                modifier = Modifier.size(20.dp)
+//            )
+//            BasicTextField(
+//                value = input,
+//                onValueChange = {input = it},
+//                singleLine = true,
+//                textStyle = TextStyle(
+//                    fontSize = 18.sp
+//                )
+//            )
+//        }
+//    }
+//}
+
 @Composable
-fun ProfileItem(title: String, icon: Int, displayText: String, onChange: (String) -> Unit) {
-    var input by remember { mutableStateOf(displayText) }
+fun ProfileItem(title: String, icon: Int, initialText: String, onChange: (String) -> Unit) {
+    var input by remember { mutableStateOf(initialText) } // Initialize with the data from the API
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
@@ -159,7 +206,10 @@ fun ProfileItem(title: String, icon: Int, displayText: String, onChange: (String
             )
             BasicTextField(
                 value = input,
-                onValueChange = {input = it},
+                onValueChange = { newValue ->
+                    input = newValue // Update the local state
+                    onChange(newValue) // Propagate the change to the parent
+                },
                 singleLine = true,
                 textStyle = TextStyle(
                     fontSize = 18.sp

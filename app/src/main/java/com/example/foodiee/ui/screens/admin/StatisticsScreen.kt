@@ -81,16 +81,14 @@ fun StatisticsScreen(navController: NavController, userViewModel: UserViewModel,
     }
 
 
-    var stats by remember { mutableStateOf(mutableListOf(0.0,0)) }
+    var stats by remember { mutableStateOf(listOf(0.0, 0.0)) }
 
 
     LaunchedEffect(Unit) {
         courseViewModel.getStatistic(userAPIViewModel.token.toString(), onSuccess = { response ->
-            stats[0] = response.data.todayTotalPrice
-            stats[1] = response.data.todayOrdersCount
-            Log.d("stats", response.data.toString())
-
-        } )
+            stats = mutableListOf(response.data.todayTotalPrice, response.data.todayOrdersCount.toDouble())
+            Log.d("stats", stats.toString())
+        })
     }
 
     Scaffold(

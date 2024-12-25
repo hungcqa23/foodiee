@@ -68,7 +68,7 @@ fun LoginScreen(navController: NavController, userViewModel: UserViewModel, user
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "Username",
+            text = "Email",
             style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold),
             modifier = Modifier.padding(bottom = 16.dp)
         )
