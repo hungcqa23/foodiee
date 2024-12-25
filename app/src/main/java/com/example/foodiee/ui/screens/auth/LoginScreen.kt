@@ -31,6 +31,7 @@ fun LoginScreen(navController: NavController, userViewModel: UserViewModel, user
     var password by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf("") }
     val isLoggedIn by userAPIViewmodel.isLoggedIn.observeAsState()
+    val user by userAPIViewmodel.currentUser.observeAsState()
     Log.d("login", isLoggedIn.toString())
 
 
@@ -41,7 +42,10 @@ fun LoginScreen(navController: NavController, userViewModel: UserViewModel, user
             true -> {
                 val token = userAPIViewmodel.getToken()
                 if (token != null) {
-                    userViewModel.login(Role.USER, token)
+                    user?.let { userViewModel.login(it.role, token) }
+                    if(user?.role == Role.ADMIN){
+                        navController.navigate(Routes.OrdersManagementScreen.route)
+                    } else
                     navController.navigate(Routes.HomeScreen.route)
                 } else {
                     errorMessage = "Failed to retrieve token"

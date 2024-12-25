@@ -19,12 +19,13 @@ import androidx.navigation.NavController
 import com.example.foodiee.Navigation.Routes
 import com.example.foodiee.R
 import com.example.foodiee.data.models.Role
+import com.example.foodiee.data.models.User.UserAPI.UserAPIViewModel
 import com.example.foodiee.data.models.User.UserViewModel
 import com.example.foodiee.ui.theme.FoodieeeColors
 
 @Composable
 fun Footer(navController: NavController, userViewModel: UserViewModel) {
-    val userRole = userViewModel.userRole.observeAsState(initial = Role.USER)
+    val userRole = userAPIViewModel.currentUser.value?.role ?: Role.USER
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -38,7 +39,7 @@ fun Footer(navController: NavController, userViewModel: UserViewModel) {
             )
             .padding(bottom = WindowInsets.systemBars.asPaddingValues().calculateBottomPadding())
     ) {
-        when (userRole.value) {
+        when (userRole) {
             Role.USER -> {
                 FooterItem(navController, R.drawable.home, "Home", listOf(Routes.HomeScreen.route, Routes.DishDescriptionScreen.route))
                 FooterItem(navController, R.drawable.orders, "Orders", listOf(Routes.OrdersManagementScreen.route))
