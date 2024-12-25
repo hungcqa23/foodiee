@@ -8,7 +8,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,21 +26,25 @@ import com.example.foodiee.ui.components.PeopleNavigationHeader
 import com.example.foodiee.ui.components.people_screens.PersonCard
 
 @Composable
-fun PeopleManagementScreen(navController: NavController, userViewModel: UserViewModel, userAPIViewModel: UserAPIViewModel) {
+fun PeopleManagementScreen(
+    navController: NavController,
+    userViewModel: UserViewModel,
+    userAPIViewModel: UserAPIViewModel
+) {
     var searchQuery by remember { mutableStateOf("") }
     var tabs: Role by remember { mutableStateOf(Role.USER) }
     val navigationBarInsets = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
     val statusBarInsets = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
     var usersRepo = remember { mutableStateOf(emptyList<User>()) }
     val queryResult = usersRepo.value.filter {
-            Role.fromString(it.role.toString()) == tabs &&
-                    it.fullName.contains(searchQuery, ignoreCase = true)
+        Role.fromString(it.role.toString()) == tabs &&
+                it.fullName.contains(searchQuery, ignoreCase = true)
     }
     LaunchedEffect(userAPIViewModel.users.value) {
         usersRepo.value = userAPIViewModel.users.value ?: emptyList()
         Log.d("user", usersRepo.toString())
     }
-    LaunchedEffect(Unit){
+    LaunchedEffect(Unit) {
         userAPIViewModel.getAllUsers()
         Log.d("user", usersRepo.toString())
     }
@@ -96,6 +99,7 @@ fun PeopleManagementScreen(navController: NavController, userViewModel: UserView
             items(queryResult) { user ->
                 PersonCard(person = user, onSwapRole = {
                     val newRole = if (user.role == Role.USER) Role.STAFF else Role.USER
+                    Log.d("new role: ", newRole.toString())
                     userAPIViewModel.updateRole(newRole, user.id)
                 })
             }
@@ -127,58 +131,4 @@ fun CustomerInfoRow(
             fontWeight = weight
         )
     }
-}
-
-
-private fun getSampleCustomers(): List<Customer> {
-    return listOf(
-        Customer(
-            id = "HNH406551",
-            name = "Lương Thuỳ Linh",
-            cccd = "034886599",
-            phone = "098 812 3456",
-            address = "Số 10, Phạm Văn Bạch, P. Yên Hoà, Q. Cầu Giấy, Hà Nội",
-            type = Role.USER
-        ),
-        Customer(
-            id = "HNH406551",
-            name = "Lương Thuỳ Loan",
-            cccd = "034886599",
-            phone = "098 812 3456",
-            address = "Số 10, Phạm Văn Bạch, P. Yên Hoà, Q. Cầu Giấy, Hà Nội",
-            type = Role.USER
-        ),
-        Customer(
-            id = "HNH406551",
-            name = "Lương Thuỳ Liên",
-            cccd = "034886599",
-            phone = "098 812 3456",
-            address = "Số 10, Phạm Văn Bạch, P. Yên Hoà, Q. Cầu Giấy, Hà Nội",
-            type = Role.STAFF
-        ),
-        Customer(
-            id = "HNH406551",
-            name = "Lương Thuỳ Link",
-            cccd = "034886599",
-            phone = "098 812 3456",
-            address = "Số 10, Phạm Văn Bạch, P. Yên Hoà, Q. Cầu Giấy, Hà Nội",
-            type = Role.STAFF
-        ),
-        Customer(
-            id = "HNH406551",
-            name = "Lương Thuỳ Lung",
-            cccd = "034886599",
-            phone = "098 812 3456",
-            address = "Số 10, Phạm Văn Bạch, P. Yên Hoà, Q. Cầu Giấy, Hà Nội",
-            type = Role.STAFF
-        )
-    )
-}
-
-@Preview
-@Composable
-fun CustomerListScreenPreview() {
-//    PeopleManagementScreen(
-//        navController = NavController(LocalContext.current),
-//    )
 }

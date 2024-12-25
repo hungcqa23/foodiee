@@ -25,7 +25,11 @@ data class User(
 )
 
 class RoleDeserializer : JsonDeserializer<Role> {
-    override fun deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext): Role {
+    override fun deserialize(
+        json: JsonElement,
+        typeOfT: Type,
+        context: JsonDeserializationContext
+    ): Role {
         return Role.fromString(json.asString)
     }
 }
@@ -34,26 +38,32 @@ data class LoginResponse(
     val status: String,
     val data: LoginData
 )
+
 data class LoginData(
     val token: String
 )
+
 data class LoginRequest(
     val email: String,
     val password: String
 )
+
 data class SignUpRequest(
     val fullName: String,
     val email: String,
     val password: String
 )
+
 data class ApiRespond<T>(
     val status: String,
     val data: List<T>
 )
+
 data class currentUser(
     val status: String,
     val data: User
 )
+
 data class UpdateRequest(
     val email: String,
     val phoneNumber: String,
@@ -80,11 +90,15 @@ interface UserApiService {
     ): User  // Added @Body annotation
 
     @GET("users/current")
-    suspend fun getCurrentUser(@Header("Authorization") token:String): currentUser
+    suspend fun getCurrentUser(@Header("Authorization") token: String): currentUser
 
     @PATCH("users/{id}")
     suspend fun updateRole(
-        @Body role : Role,
-        @Path ("id") id: String
+        @Path("id") id: String,  // The user ID to update
+        @Body role: UpdateRoleRequest  // The role change request
     ): User
 }
+
+data class UpdateRoleRequest(
+    val role: String  // The role to be assigned (e.g., "user", "staff", "admin")
+)

@@ -88,12 +88,12 @@ fun PersonCard(person: User, onSwapRole: () -> Unit) {
             )
             Button(
                 onClick = {
+                    onSwapRole()
                     Toast(context).apply {
                         setText("Role swapped")
                         duration = Toast.LENGTH_SHORT
                         show()
                     }
-
                 },
                 modifier = Modifier
                     .fillMaxWidth()

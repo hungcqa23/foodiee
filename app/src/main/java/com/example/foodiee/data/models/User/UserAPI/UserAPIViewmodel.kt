@@ -108,10 +108,26 @@ class UserAPIViewModel(context: Context) : ViewModel() {
     fun updateRole(role: Role, id: String) {
         viewModelScope.launch {
             try {
-                val response = RetrofitInstance.UserApi.updateRole(role, id)
-                _currentUser.value = response
+
+                if (role == Role.ADMIN) {
+                    val roleRequest = UpdateRoleRequest("admin")
+                    val response = RetrofitInstance.UserApi.updateRole(id, roleRequest)
+                    _currentUser.value = response
+                } else if (role == Role.USER) {
+                    val roleRequest = UpdateRoleRequest("user")
+                    val response = RetrofitInstance.UserApi.updateRole(id, roleRequest)
+                    _currentUser.value = response
+                } else {
+                    Log.d("UpdateRoleRequest", "Role: $role, ID: $id")
+                    val roleRequest = UpdateRoleRequest("staff")
+                    val response = RetrofitInstance.UserApi.updateRole(id, roleRequest)
+                    _currentUser.value = response
+                }
+
             } catch (e: Exception) {
                 e.printStackTrace()
+                // Optionally, log the error
+                Log.e("UpdateRoleError", "Error updating role: ${e.message}")
             }
         }
     }
