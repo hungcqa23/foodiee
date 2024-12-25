@@ -42,6 +42,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.foodiee.R
 import com.example.foodiee.data.models.Course.Course
 import com.example.foodiee.data.models.Course.CourseViewModel
+import com.example.foodiee.data.models.User.UserAPI.UserAPIViewModel
 import com.example.foodiee.data.models.User.UserViewModel
 import com.example.foodiee.ui.components.*
 import com.example.foodiee.ui.theme.Orange400
@@ -55,6 +56,7 @@ fun AddItemScreen(
     navController: NavController,
     userViewModel: UserViewModel,
     courseViewModel: CourseViewModel,
+    userAPIViewModel: UserAPIViewModel,
     courseID: String? = null,
 ) {
     val context = LocalContext.current

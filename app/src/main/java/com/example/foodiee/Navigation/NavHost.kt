@@ -14,10 +14,11 @@ import com.example.foodiee.data.models.User.UserViewModel
 fun FoodieeeNavHost(navController: NavHostController, userViewModel: UserViewModel, courseViewModel: CourseViewModel, userAPIViewmodel: UserAPIViewModel) {
     val isLoggedIn by userViewModel.isLoggedIn.observeAsState()
     val startDestination = if(isLoggedIn == true){
-       when(userViewModel.getUserStatus().role){
+       when(userViewModel.userRole.observeAsState().value){
            Role.USER -> Routes.HomeScreen.route
            Role.STAFF -> Routes.OrdersManagementScreen.route
            Role.ADMIN -> Routes.OrdersManagementScreen.route
+              else -> Routes.HomeScreen.route
        }
     }else{
         Routes.LoginScreen.route

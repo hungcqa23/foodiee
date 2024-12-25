@@ -8,11 +8,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
+import com.example.foodiee.data.models.User.UserAPI.UserAPIViewModel
 import com.example.foodiee.data.models.User.UserViewModel
 import com.example.foodiee.ui.components.Footer
 
 @Composable
-fun EditProfileScreen(navController: NavController, userViewModel: UserViewModel) {
+fun EditProfileScreen(navController: NavController, userViewModel: UserViewModel, userAPIViewModel: UserAPIViewModel) {
     Scaffold(
         bottomBar = {
             Footer(navController, userAPIViewModel)

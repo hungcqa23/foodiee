@@ -29,6 +29,7 @@ import com.example.foodiee.data.models.Course.Course
 import com.example.foodiee.data.models.Course.CourseViewModel
 import com.example.foodiee.data.models.Course.getMockCourses
 import com.example.foodiee.data.models.MockInventoryItems
+import com.example.foodiee.data.models.User.UserAPI.UserAPIViewModel
 import com.example.foodiee.data.models.User.UserViewModel
 import com.example.foodiee.ui.components.*
 import com.example.foodiee.ui.theme.Orange500
@@ -37,6 +38,7 @@ import com.example.foodiee.ui.theme.Orange500
 fun EditDishScreen(
     navController: NavController,
     userViewModel: UserViewModel,
+    userAPIViewModel: UserAPIViewModel,
     courseViewModel: CourseViewModel
 ) {
     val courses by courseViewModel.courses.collectAsState()
@@ -46,7 +48,7 @@ fun EditDishScreen(
     }
     Scaffold(
         topBar = {
-            Column {
+            Column() {
                 ConfigNavigationHeader(ConfigSubPage.EDIT_DISH, navController)
                 TabBar(navController)
             }

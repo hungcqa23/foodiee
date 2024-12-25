@@ -43,7 +43,7 @@ fun NavGraphBuilder.sharedNavGraph(
         arguments = listOf(navArgument("dishId") { type = NavType.IntType })
     ) { backStackEntry ->
         val courseId = backStackEntry.arguments?.getInt("dishId") ?: 0
-        DishDescriptionScreen(navController, userViewModel, courseViewModel, courseId)
+        DishDescriptionScreen(navController, userViewModel, courseViewModel,userAPIViewModel, courseId)
     }
     composable(Routes.OrderDetailScreen.route) { backStackEntry ->
         val orderId = backStackEntry.arguments?.getString("orderId") ?: ""
@@ -53,7 +53,7 @@ fun NavGraphBuilder.sharedNavGraph(
         ProfileScreen(navController, userViewModel, userAPIViewModel)
     }
     composable(Routes.EditProfileScreen.route) {
-        EditProfileScreen(navController, userViewModel)
+        EditProfileScreen(navController, userViewModel, userAPIViewModel)
     }
     composable(Routes.PersonalInformationScreen.route) {
         PersonalInformationScreen(navController, userViewModel, userAPIViewModel)

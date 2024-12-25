@@ -1,5 +1,6 @@
 package com.example.foodiee.ui.screens.admin
 
+import android.util.Log
 import androidx.compose.animation.core.EaseInOutCubic
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -27,6 +28,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,7 +45,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.foodiee.R
+import com.example.foodiee.data.models.Course.CourseViewModel
 import com.example.foodiee.data.models.MockInventoryItems
+import com.example.foodiee.data.models.User.UserAPI.UserAPIViewModel
 import com.example.foodiee.data.models.User.UserViewModel
 import com.example.foodiee.ui.components.ConfigNavigationHeader
 import com.example.foodiee.ui.components.Footer
@@ -55,7 +59,7 @@ import ir.ehsannarmani.compose_charts.models.Line
 import ir.ehsannarmani.compose_charts.models.Pie
 
 @Composable
-fun StatisticsScreen(navController: NavController, userViewModel: UserViewModel) {
+fun StatisticsScreen(navController: NavController, userViewModel: UserViewModel, courseViewModel: CourseViewModel, userAPIViewModel: UserAPIViewModel) {
     val mockData: List<Double> = listOf(245.0, 443.0, 523.0, 314.0, 566.0, 693.0, 482.0)
     var mockDataCustomer by remember {
         mutableStateOf(
@@ -76,6 +80,19 @@ fun StatisticsScreen(navController: NavController, userViewModel: UserViewModel)
         )
     }
 
+
+    var stats by remember { mutableStateOf(mutableListOf(0.0,0)) }
+
+
+    LaunchedEffect(Unit) {
+        courseViewModel.getStatistic(userAPIViewModel.token.toString(), onSuccess = { response ->
+            stats[0] = response.data.todayTotalPrice
+            stats[1] = response.data.todayOrdersCount
+            Log.d("stats", response.data.toString())
+
+        } )
+    }
+
     Scaffold(
         topBar = {
             Column {
@@ -91,7 +108,6 @@ fun StatisticsScreen(navController: NavController, userViewModel: UserViewModel)
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            // Header Row with Statistics Tabs
             item {
                 Row(modifier = Modifier.height(IntrinsicSize.Min)) {
                     Column(
@@ -101,200 +117,200 @@ fun StatisticsScreen(navController: NavController, userViewModel: UserViewModel)
                     ) {
                         StatTab(
                             title = "Today's Orders",
-                            value = "123",
+                            value = stats[1].toString(),
                             image = R.drawable.linegraph,
                             modifier = Modifier.weight(1f)
                         )
                         StatTab(
                             title = "Today's Revenue",
-                            value = "$${mockData.last()}",
+                            value = "$${stats[0]}",
                             image = R.drawable.piggybank,
                             modifier = Modifier.weight(1f)
                         )
                     }
-                    Column(
-                        modifier = Modifier
-                            .weight(1f)
-                            .fillMaxHeight()
-                    ) {
-                        StatTab(
-                            title = "Low on stock",
-                            value = "3",
-                            image = R.drawable.cartonbox,
-                            modifier = Modifier.weight(1f)
-                        )
-                        StatTab(
-                            title = "Monthly Revenue",
-                            value = "$51 223",
-                            image = R.drawable.calendar,
-                            modifier = Modifier.weight(1f)
-                        )
-                    }
+//                    Column(
+//                        modifier = Modifier
+//                            .weight(1f)
+//                            .fillMaxHeight()
+//                    ) {
+//                        StatTab(
+//                            title = "Low on stock",
+//                            value = "3",
+//                            image = R.drawable.cartonbox,
+//                            modifier = Modifier.weight(1f)
+//                        )
+//                        StatTab(
+//                            title = "Monthly Revenue",
+//                            value = "$51 223",
+//                            image = R.drawable.calendar,
+//                            modifier = Modifier.weight(1f)
+//                        )
+//                    }
                 }
             }
-
-            // Line Chart
-            item {
-                Surface(
-                    shadowElevation = 4.dp,
-                    shape = RoundedCornerShape(8.dp),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        val increased = mockData.last() > mockData.first()
-                        Text(
-                            "Today's Revenue",
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            modifier = Modifier.padding(4.dp)
-                        )
-                        Text(
-                            "$732",
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(4.dp)
-                        )
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                painter = painterResource(if (increased) R.drawable.arrowup else R.drawable.arrowdown),
-                                contentDescription = "warning icon",
-                                tint = if (increased) Color(0xFF36CD1D) else Color.Red,
-                                modifier = Modifier.padding(end = 8.dp)
-                            )
-                            Text(
-                                "${(mockData.last() - mockData.first()) / 100}% vs last week",
-                                fontSize = 14.sp,
-                                color = if (increased) Color(0xFF258714) else Color.Red
-                            )
-                        }
-                        LineChart(
-                            modifier = Modifier.height(268.dp),
-                            data = remember {
-                                listOf(
-                                    Line(
-                                        label = "Revenue",
-                                        values = mockData,
-                                        color = SolidColor(if (increased) Color(0xFF36CD1D) else Color.Red),
-                                        firstGradientFillColor = (if (increased) Color(0xFFBEEFB6).copy(
-                                            alpha = .5f
-                                        ) else Color.Red.copy(alpha = .5f)),
-                                        secondGradientFillColor = Color.Transparent,
-                                        strokeAnimationSpec = tween(3000, easing = EaseInOutCubic),
-                                        gradientAnimationDelay = 2000,
-                                        drawStyle = DrawStyle.Stroke(width = 2.dp),
-                                    )
-                                )
-                            },
-                        )
-                    }
-                }
-            }
-
-            //Pie chart
-            item {
-                Surface(
-                    shadowElevation = 4.dp,
-                    shape = RoundedCornerShape(8.dp),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        Text(
-                            "Weekly Customer",
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            modifier = Modifier.padding(4.dp)
-                        )
-                        Text(
-                            "732 Customer",
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(4.dp)
-                        )
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            val increased = mockData.last() > mockData.first()
-                            Icon(
-                                painter = painterResource(if (increased) R.drawable.arrowup else R.drawable.arrowdown),
-                                contentDescription = "warning icon",
-                                tint = if (increased) Color(0xFF258714) else Color.Red,
-                                modifier = Modifier.padding(end = 8.dp)
-                            )
-                            Text(
-                                "${(mockData.last() - mockData.first()) / 100}% vs last week",
-                                fontSize = 14.sp,
-                                color = if (increased) Color(0xFF258714) else Color.Red
-                            )
-                        }
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-
-                            ) {
-                            Column(
-                                modifier = Modifier.weight(1f)
-                            ) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    modifier = Modifier.padding(vertical = 4.dp)
-                                ) {
-                                    Box(
-                                        modifier = Modifier
-                                            .size(32.dp)
-                                            .background(Color(0xFFEF4444))
-                                    )
-                                    Spacer(modifier = Modifier.width(8.dp))
-                                    Text(
-                                        text = "Returning Customer:\n${mockDataCustomer.first().data}%",
-                                        fontSize = 14.sp,
-                                        fontWeight = FontWeight.Medium
-                                    )
-                                }
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    modifier = Modifier.padding(vertical = 4.dp)
-                                ) {
-                                    Box(
-                                        modifier = Modifier
-                                            .size(32.dp)
-                                            .background(Color(0xFFF97315))
-                                    )
-                                    Spacer(modifier = Modifier.width(8.dp))
-                                    Text(
-                                        text = "New Customer:\n${mockDataCustomer.last().data}%",
-                                        fontSize = 14.sp,
-                                        fontWeight = FontWeight.Medium
-                                    )
-                                }
-                            }
-                            PieChart(
-                                modifier = Modifier
-                                    .size(180.dp)
-                                    .padding(16.dp)
-                                    .weight(1f),
-                                data = mockDataCustomer,
-                                onPieClick = {
-                                    println("${it.label} Clicked")
-                                    val pieIndex = mockDataCustomer.indexOf(it)
-                                    mockDataCustomer =
-                                        mockDataCustomer.mapIndexed { mapIndex, pie ->
-                                            pie.copy(selected = pieIndex == mapIndex)
-                                        }
-                                },
-                                selectedScale = 1.1f,
-                                scaleAnimEnterSpec = spring<Float>(
-                                    dampingRatio = Spring.DampingRatioMediumBouncy,
-                                    stiffness = Spring.StiffnessLow
-                                ),
-                                colorAnimEnterSpec = tween(300),
-                                colorAnimExitSpec = tween(300),
-                                scaleAnimExitSpec = tween(300),
-                                spaceDegreeAnimExitSpec = tween(300),
-                                spaceDegree = 0f,
-                                selectedPaddingDegree = 4f,
-                                style = Pie.Style.Stroke(42.dp)
-                            )
-                        }
-                    }
-                }
-            }
+//
+//            // Line Chart
+//            item {
+//                Surface(
+//                    shadowElevation = 4.dp,
+//                    shape = RoundedCornerShape(8.dp),
+//                    modifier = Modifier.fillMaxWidth()
+//                ) {
+//                    Column(modifier = Modifier.padding(16.dp)) {
+//                        val increased = mockData.last() > mockData.first()
+//                        Text(
+//                            "Today's Revenue",
+//                            fontSize = 20.sp,
+//                            fontWeight = FontWeight.SemiBold,
+//                            modifier = Modifier.padding(4.dp)
+//                        )
+//                        Text(
+//                            "$732",
+//                            fontSize = 24.sp,
+//                            fontWeight = FontWeight.Bold,
+//                            modifier = Modifier.padding(4.dp)
+//                        )
+//                        Row(verticalAlignment = Alignment.CenterVertically) {
+//                            Icon(
+//                                painter = painterResource(if (increased) R.drawable.arrowup else R.drawable.arrowdown),
+//                                contentDescription = "warning icon",
+//                                tint = if (increased) Color(0xFF36CD1D) else Color.Red,
+//                                modifier = Modifier.padding(end = 8.dp)
+//                            )
+//                            Text(
+//                                "${(mockData.last() - mockData.first()) / 100}% vs last week",
+//                                fontSize = 14.sp,
+//                                color = if (increased) Color(0xFF258714) else Color.Red
+//                            )
+//                        }
+//                        LineChart(
+//                            modifier = Modifier.height(268.dp),
+//                            data = remember {
+//                                listOf(
+//                                    Line(
+//                                        label = "Revenue",
+//                                        values = mockData,
+//                                        color = SolidColor(if (increased) Color(0xFF36CD1D) else Color.Red),
+//                                        firstGradientFillColor = (if (increased) Color(0xFFBEEFB6).copy(
+//                                            alpha = .5f
+//                                        ) else Color.Red.copy(alpha = .5f)),
+//                                        secondGradientFillColor = Color.Transparent,
+//                                        strokeAnimationSpec = tween(3000, easing = EaseInOutCubic),
+//                                        gradientAnimationDelay = 2000,
+//                                        drawStyle = DrawStyle.Stroke(width = 2.dp),
+//                                    )
+//                                )
+//                            },
+//                        )
+//                    }
+//                }
+//            }
+//
+//            //Pie chart
+//            item {
+//                Surface(
+//                    shadowElevation = 4.dp,
+//                    shape = RoundedCornerShape(8.dp),
+//                    modifier = Modifier.fillMaxWidth()
+//                ) {
+//                    Column(modifier = Modifier.padding(16.dp)) {
+//                        Text(
+//                            "Weekly Customer",
+//                            fontSize = 20.sp,
+//                            fontWeight = FontWeight.SemiBold,
+//                            modifier = Modifier.padding(4.dp)
+//                        )
+//                        Text(
+//                            "732 Customer",
+//                            fontSize = 24.sp,
+//                            fontWeight = FontWeight.Bold,
+//                            modifier = Modifier.padding(4.dp)
+//                        )
+//                        Row(verticalAlignment = Alignment.CenterVertically) {
+//                            val increased = mockData.last() > mockData.first()
+//                            Icon(
+//                                painter = painterResource(if (increased) R.drawable.arrowup else R.drawable.arrowdown),
+//                                contentDescription = "warning icon",
+//                                tint = if (increased) Color(0xFF258714) else Color.Red,
+//                                modifier = Modifier.padding(end = 8.dp)
+//                            )
+//                            Text(
+//                                "${(mockData.last() - mockData.first()) / 100}% vs last week",
+//                                fontSize = 14.sp,
+//                                color = if (increased) Color(0xFF258714) else Color.Red
+//                            )
+//                        }
+//                        Row(
+//                            verticalAlignment = Alignment.CenterVertically,
+//
+//                            ) {
+//                            Column(
+//                                modifier = Modifier.weight(1f)
+//                            ) {
+//                                Row(
+//                                    verticalAlignment = Alignment.CenterVertically,
+//                                    modifier = Modifier.padding(vertical = 4.dp)
+//                                ) {
+//                                    Box(
+//                                        modifier = Modifier
+//                                            .size(32.dp)
+//                                            .background(Color(0xFFEF4444))
+//                                    )
+//                                    Spacer(modifier = Modifier.width(8.dp))
+//                                    Text(
+//                                        text = "Returning Customer:\n${mockDataCustomer.first().data}%",
+//                                        fontSize = 14.sp,
+//                                        fontWeight = FontWeight.Medium
+//                                    )
+//                                }
+//                                Row(
+//                                    verticalAlignment = Alignment.CenterVertically,
+//                                    modifier = Modifier.padding(vertical = 4.dp)
+//                                ) {
+//                                    Box(
+//                                        modifier = Modifier
+//                                            .size(32.dp)
+//                                            .background(Color(0xFFF97315))
+//                                    )
+//                                    Spacer(modifier = Modifier.width(8.dp))
+//                                    Text(
+//                                        text = "New Customer:\n${mockDataCustomer.last().data}%",
+//                                        fontSize = 14.sp,
+//                                        fontWeight = FontWeight.Medium
+//                                    )
+//                                }
+//                            }
+//                            PieChart(
+//                                modifier = Modifier
+//                                    .size(180.dp)
+//                                    .padding(16.dp)
+//                                    .weight(1f),
+//                                data = mockDataCustomer,
+//                                onPieClick = {
+//                                    println("${it.label} Clicked")
+//                                    val pieIndex = mockDataCustomer.indexOf(it)
+//                                    mockDataCustomer =
+//                                        mockDataCustomer.mapIndexed { mapIndex, pie ->
+//                                            pie.copy(selected = pieIndex == mapIndex)
+//                                        }
+//                                },
+//                                selectedScale = 1.1f,
+//                                scaleAnimEnterSpec = spring<Float>(
+//                                    dampingRatio = Spring.DampingRatioMediumBouncy,
+//                                    stiffness = Spring.StiffnessLow
+//                                ),
+//                                colorAnimEnterSpec = tween(300),
+//                                colorAnimExitSpec = tween(300),
+//                                scaleAnimExitSpec = tween(300),
+//                                spaceDegreeAnimExitSpec = tween(300),
+//                                spaceDegree = 0f,
+//                                selectedPaddingDegree = 4f,
+//                                style = Pie.Style.Stroke(42.dp)
+//                            )
+//                        }
+//                    }
+//                }
+//            }
 
             // Overview Section
             item {

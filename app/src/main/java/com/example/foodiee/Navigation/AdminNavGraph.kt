@@ -23,17 +23,17 @@ fun NavGraphBuilder.adminNavGraph(navController: NavController, userViewModel: U
         PeopleManagementScreen(navController, userViewModel, userAPIViewModel)
     }
     composable(Routes.StatisticScreen.route) {
-        StatisticsScreen(navController, userViewModel)
+        StatisticsScreen(navController, userViewModel, courseViewModel, userAPIViewModel)
     }
     composable(Routes.EditDishScreen.route){
-        EditDishScreen(navController, userViewModel, courseViewModel)
+        EditDishScreen(navController, userViewModel,userAPIViewModel, courseViewModel)
     }
     composable(
         route = "addItemScreen", // Base route without arguments
         arguments = emptyList() // No arguments for this route
     ) {
         Log.e("Nav", "going 1")
-        AddItemScreen(navController, userViewModel, courseViewModel, null)
+        AddItemScreen(navController, userViewModel, courseViewModel,userAPIViewModel ,null)
     }
 
     composable(
@@ -48,6 +48,6 @@ fun NavGraphBuilder.adminNavGraph(navController: NavController, userViewModel: U
         Log.e("Nav", "going 2")
 
         val dishId = backStackEntry.arguments?.getString("dishId")
-        AddItemScreen(navController, userViewModel, courseViewModel, dishId)
+        AddItemScreen(navController, userViewModel, courseViewModel,userAPIViewModel ,dishId)
     }
 }

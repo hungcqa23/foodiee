@@ -131,6 +131,16 @@ data class SString(
     val status: String
 )
 
+data class statResponse(
+    val status: String,
+    val data: statData
+)
+
+data class statData(
+    val todayOrdersCount: Int,
+    val todayTotalPrice: Double
+)
+
 
 interface CourseApiService {
     @POST("courses")
@@ -202,6 +212,11 @@ interface CourseApiService {
         @Path("id") id: Int,
         @Body updatedOrder: SString
     ): updateOrderRespond
+
+    @GET("orders/statistic")
+    suspend fun getStatistic(
+        @Header("Authorization") token: String
+    ): statResponse
 }
 
 

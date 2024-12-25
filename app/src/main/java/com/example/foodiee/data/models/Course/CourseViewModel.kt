@@ -244,4 +244,14 @@ class CourseViewModel : ViewModel() {
             }
         }
     }
+    fun getStatistic(token: String, onSuccess: (statResponse) -> Unit){
+        viewModelScope.launch {
+            try {
+                val response = RetrofitInstance.CourseApi.getStatistic("Bearer $token")
+                onSuccess(response)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
 }

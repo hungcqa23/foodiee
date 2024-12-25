@@ -44,13 +44,15 @@ import com.example.foodiee.R
 import com.example.foodiee.data.models.Course.CourseViewModel
 import com.example.foodiee.data.models.Course.Review
 import com.example.foodiee.data.models.CourseDetails
+import com.example.foodiee.data.models.User.UserAPI.User
+import com.example.foodiee.data.models.User.UserAPI.UserAPIViewModel
 import com.example.foodiee.data.models.User.UserViewModel
 import com.example.foodiee.ui.components.BackButton
 import com.example.foodiee.ui.components.Footer
 import com.example.foodiee.ui.theme.FoodieeeColors
 
 @Composable
-fun DishDescriptionScreen(navController: NavController, userViewModel: UserViewModel, courseViewModel: CourseViewModel, courseID: Int) {
+fun DishDescriptionScreen(navController: NavController, userViewModel: UserViewModel, courseViewModel: CourseViewModel,userAPIViewModel: UserAPIViewModel, courseID: Int) {
 
     // Observe course details from the ViewModel
     val course by courseViewModel.courseDetail.collectAsState()

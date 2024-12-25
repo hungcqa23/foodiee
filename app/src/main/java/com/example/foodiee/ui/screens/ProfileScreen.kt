@@ -38,7 +38,7 @@ fun ProfileScreen(navController: NavController, userViewModel: UserViewModel, us
     }
 
     Scaffold(
-        bottomBar = { Footer(navController = navController, userViewModel) }
+        bottomBar = { Footer(navController = navController, userAPIViewModel) }
     ) { paddingValues: PaddingValues ->
         Box(
             modifier = Modifier

@@ -25,7 +25,7 @@ import com.example.foodiee.ui.theme.FoodieeeColors
 
 @Composable
 fun Footer(navController: NavController, userAPIViewModel: UserAPIViewModel) {
-    val userRole = userAPIViewModel.currentUser.value?.role ?: Role.USER
+    val userRole = userAPIViewModel.currentUser.value?.role ?: Role.STAFF
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -47,13 +47,13 @@ fun Footer(navController: NavController, userAPIViewModel: UserAPIViewModel) {
             }
             Role.STAFF -> {
                 FooterItem(navController, R.drawable.orders, "Orders", listOf(Routes.OrdersManagementScreen.route))
-                FooterItem(navController, R.drawable.file_cog, "Config", listOf(Routes.StatisticScreen.route, Routes.EditDishScreen.route))
+                FooterItem(navController, R.drawable.file_cog, "Config", listOf( Routes.EditDishScreen.route,Routes.StatisticScreen.route))
                 FooterItem(navController, R.drawable.people, "People", listOf(Routes.PeopleManagementScreen.route))
                 FooterItem(navController, R.drawable.profile, "Profile", listOf(Routes.ProfileScreen.route, Routes.PersonalInformationScreen.route))
             }
             Role.ADMIN -> {
                 FooterItem(navController, R.drawable.orders, "Orders", listOf(Routes.OrdersManagementScreen.route))
-                FooterItem(navController, R.drawable.file_cog, "Config", listOf(Routes.StatisticScreen.route, Routes.EditDishScreen.route))
+                FooterItem(navController, R.drawable.file_cog, "Config", listOf( Routes.EditDishScreen.route,Routes.StatisticScreen.route))
                 FooterItem(navController, R.drawable.people, "People", listOf(Routes.PeopleManagementScreen.route))
                 FooterItem(navController, R.drawable.profile, "Profile", listOf(Routes.ProfileScreen.route, Routes.PersonalInformationScreen.route))
             }

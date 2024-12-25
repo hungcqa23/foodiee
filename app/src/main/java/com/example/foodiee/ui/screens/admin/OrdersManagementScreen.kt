@@ -39,7 +39,7 @@ fun OrdersManagementScreen(navController: NavController, userViewModel: UserView
     }
 
     Scaffold(
-        bottomBar = { Footer(navController = navController, userViewModel) }
+        bottomBar = { Footer(navController = navController, userAPIViewModel) }
     ) { paddingValues: PaddingValues ->
         Box(
             modifier = Modifier
