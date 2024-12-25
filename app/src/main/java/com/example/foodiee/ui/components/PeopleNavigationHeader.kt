@@ -41,8 +41,8 @@ fun PeopleNavigationHeader(currentPeopleSubPage: Role, onClick: (Role) -> Unit) 
         Text("Employee",
             fontSize = 18.sp,
             color = Color.Black,
-            textDecoration = if (currentPeopleSubPage == Role.STAFF) TextDecoration.Underline else TextDecoration.None,
-            fontWeight = if (currentPeopleSubPage == Role.STAFF) FontWeight.Bold else FontWeight.Normal,
+            textDecoration = if (currentPeopleSubPage == Role.STAFF ||currentPeopleSubPage == Role.ADMIN) TextDecoration.Underline else TextDecoration.None,
+            fontWeight = if (currentPeopleSubPage == Role.STAFF || currentPeopleSubPage == Role.ADMIN) FontWeight.Bold else FontWeight.Normal,
             modifier = Modifier.clickable { onClick(Role.STAFF) }
         )
 

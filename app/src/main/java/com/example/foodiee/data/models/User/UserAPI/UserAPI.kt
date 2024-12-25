@@ -73,4 +73,10 @@ interface UserApiService {
 
     @GET("users/current")
     suspend fun getCurrentUser(@Header("Authorization") token:String): currentUser
+
+    @PATCH("users/{id}")
+    suspend fun updateRole(
+        @Body role : Role,
+        @Path ("id") id: String
+    ): User
 }

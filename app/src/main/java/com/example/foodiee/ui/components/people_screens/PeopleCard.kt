@@ -1,5 +1,7 @@
 package com.example.foodiee.ui.components.people_screens
 
+import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -11,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -19,7 +22,8 @@ import com.example.foodiee.data.models.User.UserAPI.User
 import com.example.foodiee.ui.screens.admin.CustomerInfoRow
 
 @Composable
-fun PersonCard(person: User) {
+fun PersonCard(person: User, onSwapRole: () -> Unit) {
+    val context = LocalContext.current
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -82,6 +86,32 @@ fun PersonCard(person: User) {
                 icon = Icons.Default.LocationOn,
                 text = person.address ?: "Unknown address"
             )
+            Button(
+                onClick = {
+                    Toast(context).apply {
+                        setText("Role swapped")
+                        duration = Toast.LENGTH_SHORT
+                        show()
+                    }
+
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp)
+                    .padding(4.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.White
+                ),
+                border = BorderStroke(1.dp, Color(0xFFF8F8F8)),
+                shape = RoundedCornerShape(8.dp),
+            ) {
+                Text(
+                    text = "Swap Role",
+                    fontSize = 16.sp,
+                    color = Color(0xFFF37021),
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
         }
     }
 }

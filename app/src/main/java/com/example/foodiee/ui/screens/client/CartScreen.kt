@@ -1,5 +1,7 @@
 package com.example.foodiee.ui.screens.client
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -26,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.foodiee.Navigation.Routes
 import com.example.foodiee.R
 import com.example.foodiee.data.models.Course.CartItem
 import com.example.foodiee.data.models.Course.Course
@@ -43,17 +46,23 @@ import java.lang.Double.sum
 fun CartScreen(navController: NavController,userViewModel: UserViewModel, cartId: String, courseViewModel: CourseViewModel, userAPIViewModel: UserAPIViewModel) {
 
     val radioOptions = listOf("Eat at Restaurant", "Delivery")
+    val context = LocalContext.current
     val (selectedOrderOption, onOrderOptionSelected) = remember { mutableStateOf(radioOptions[0]) }
     val options = listOf("Cash", "Credit Card", "E-Wallet")
     var selectedPaymentOption by remember { mutableStateOf("") }
     var address by remember { mutableStateOf("") }
     var cartInfo = courseViewModel.cart.collectAsState().value
     val courses = cartInfo?.cartItems
-
+    var sum by remember { mutableStateOf((courses?.sumOf { it.course.price * it.quantity } ?: 0.0)) }
+    var roundedSum = String.format("%.2f", sum)
     LaunchedEffect(Unit) {
         userAPIViewModel.getToken()?.let { courseViewModel.getCartInfo(it) }
     }
 
+    LaunchedEffect(cartInfo) {
+        sum = (courses?.sumOf { it.course.price * it.quantity } ?: 0.0)
+        roundedSum = String.format("%.2f", sum)
+    }
 
     Scaffold(
         bottomBar = { Footer(navController = navController, userViewModel) },
@@ -77,7 +86,7 @@ fun CartScreen(navController: NavController,userViewModel: UserViewModel, cartId
             items(courses ?: emptyList()) { item ->
                 CartItemCard(
                     item = item,
-                    onQuantityClick = { item.quantity = it},
+                    onQuantityClick = { },
                     onRemoveClick = {  }
                 )
             }
@@ -233,7 +242,7 @@ fun CartScreen(navController: NavController,userViewModel: UserViewModel, cartId
                     )
                     Spacer(modifier = Modifier.weight(1f))
                     Text(
-                        (courses?.sumOf { it.course.price * it.quantity } ?: 0.0).toString(),
+                        roundedSum.toString(),
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(16.dp)
@@ -247,7 +256,18 @@ fun CartScreen(navController: NavController,userViewModel: UserViewModel, cartId
                         contentColor = Color.White
                     ),
                     shape = RoundedCornerShape(8.dp),
-                    onClick = { /*TODO*/ },
+                    onClick = {
+                        Log.d("create", cartId)
+                        userAPIViewModel.getToken()?.let {
+
+                            if (cartInfo != null) {
+                                courseViewModel.createOrder(it, cartInfo.id, onSuccess = {
+                                    Toast.makeText(context, "Order Placed", Toast.LENGTH_SHORT).show()
+                                    navController.navigate(Routes.OrdersManagementScreen.route)
+                                })
+                            }
+                        }
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp)

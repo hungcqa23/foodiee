@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.foodiee.data.models.Order
 import com.example.foodiee.data.models.RetrofitInstance
+import com.example.foodiee.data.models.Role
 import com.example.foodiee.data.models.User.UserAPI.UserAPIViewModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,8 +26,8 @@ class CourseViewModel : ViewModel() {
     private val _cart = MutableStateFlow<CartInfo?>(null)
     val cart: StateFlow<CartInfo?> = _cart
 
-    private val _orders = MutableStateFlow<List<Order>>(emptyList())
-    val orders: StateFlow<List<Order>> = _orders
+    private val _orders = MutableStateFlow<List<OrderRespond>>(emptyList())
+    val orders: StateFlow<List<OrderRespond>> = _orders
 
     fun createCourse(course: Course, onSuccess: () -> Unit) {
         viewModelScope.launch {
@@ -174,12 +175,46 @@ class CourseViewModel : ViewModel() {
             }
         }
     }
-    fun getOrders(token: String, param: String){
+
+    fun getOrders(token: String, param: String) {
         viewModelScope.launch {
             try {
                 val standard = param.lowercase()
                 val response = RetrofitInstance.CourseApi.getOrders("Bearer $token", standard)
+
+                Log.d("orderfatal", "API Response: ${response.data}")
+
+                // Filter out invalid orders
+
+                // Log the filtered result for debugging
+
                 _orders.value = response.data
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    // Helper function to validate orders
+    private fun isValidOrder(order: Order): Boolean {
+        return !(
+                order.orderId.isNullOrEmpty() ||
+                        order.customerName.isNullOrEmpty() ||
+                        order.orderStatus == null || // Assuming this is an enum or non-nullable type
+                        order.orderDetails.isNullOrEmpty() ||
+                        order.price.isNullOrEmpty() ||
+                        order.time.isNullOrEmpty()
+                )
+    }
+
+    fun createOrder(token: String, cartID: Int, onSuccess: () -> Unit){
+        viewModelScope.launch {
+            try {
+                Log.d("create", "creating order")
+                val request = CreateOrderRequest(cartID)
+                val response = RetrofitInstance.CourseApi.createOrder("Bearer $token",request)
+                Log.d("create", "created order")
+                onSuccess()
             } catch (e: Exception) {
                 e.printStackTrace()
             }

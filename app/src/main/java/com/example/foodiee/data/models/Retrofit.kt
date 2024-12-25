@@ -12,7 +12,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 object RetrofitInstance {
-    private const val BASE_URL = "https://2e61-171-250-164-115.ngrok-free.app"
+    private const val BASE_URL = "https://c648-14-161-13-78.ngrok-free.app"
 
     // Create a Gson instance with the RoleDeserializer
     private val gson: Gson by lazy {

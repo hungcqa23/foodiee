@@ -4,6 +4,8 @@ import com.example.foodiee.data.models.Order
 import com.example.foodiee.data.models.User.UserAPI.ApiRespond
 import com.example.foodiee.data.models.User.UserAPI.User
 import com.example.foodiee.data.models.User.UserAPI.UserApiService
+import com.google.android.gms.common.api.Api
+import com.google.gson.annotations.SerializedName
 import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.http.*
@@ -102,6 +104,23 @@ data class CartRespond(
     val status: String,
     val data: CartInfo
 )
+data class CreateOrderRequest(
+    val cartId: Int  // Cart ID
+)
+
+
+data class OrderRespond(
+    @SerializedName("id") val id: Int,
+    @SerializedName("paymentType") val paymentType: String?,
+    @SerializedName("status") val status: String?,
+    @SerializedName("createdAt") val createdAt: String?,
+    @SerializedName("user") val user: User?,
+    @SerializedName("cartItems") val cartItems: List<CartItem>?
+)
+data class orderCreate(
+    val status: String,
+    val order: OrderRespond
+)
 
 
 interface CourseApiService {
@@ -155,7 +174,13 @@ interface CourseApiService {
     suspend fun getOrders(
         @Header("Authorization") token: String,
         @Query("type") param: String
-    ): ApiRespond<Order>
+    ): ApiRespond<OrderRespond>
+
+    @POST("orders")
+    suspend fun createOrder(
+        @Header("Authorization") token: String,
+        @Body cardId: CreateOrderRequest
+    ): orderCreate
 }
 
 

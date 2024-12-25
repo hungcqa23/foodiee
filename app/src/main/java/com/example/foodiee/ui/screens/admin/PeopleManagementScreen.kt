@@ -94,7 +94,10 @@ fun PeopleManagementScreen(navController: NavController, userViewModel: UserView
             }
 
             items(queryResult) { user ->
-                PersonCard(person = user)
+                PersonCard(person = user, onSwapRole = {
+                    val newRole = if (user.role == Role.USER) Role.STAFF else Role.USER
+                    userAPIViewModel.updateRole(newRole, user.id)
+                })
             }
         }
     }

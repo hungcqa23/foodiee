@@ -7,13 +7,13 @@ enum class OrderStatus {
 }
 
 data class Order(
-    val orderId: String,
-    val customerName: String,
-    val orderStatus: OrderStatus,
-    val orderDetails: String,
-    val price: String,
-    val time: String,
-    val note: String? = null
+    val orderId: String?,          // Nullable
+    val customerName: String?,     // Nullable
+    val orderStatus: OrderStatus?, // Nullable
+    val orderDetails: String?,     // Nullable
+    val price: String?,            // Nullable
+    val time: String?,             // Nullable
+    val note: String? = null       // Already nullable
 )
 
 

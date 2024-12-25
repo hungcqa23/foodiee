@@ -53,8 +53,8 @@ fun OrderDetailScreen(
             ) {
                 Header(
                     orderId = orderId,
-                    customerName = order.customerName,
-                    orderStatus = order.orderStatus
+                    customerName = order.customerName ?: "Unknown",
+                    orderStatus = order.orderStatus ?: OrderStatus.PENDING
                 )
                 OrderDetails(order)
                 OrderItemsWithReviews(order)
@@ -74,7 +74,7 @@ fun OrderDetailScreen(
 @Composable
 fun OrderDetails(order: Order) {
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        OrderDetailRow(imageRes = R.drawable.clock, text = order.time)
+        order.time?.let { OrderDetailRow(imageRes = R.drawable.clock, text = it) }
         OrderDetailRow(imageRes = R.drawable.map_pin, text = "123 Main St, Anytown, AN 12345")
     }
 
@@ -109,17 +109,19 @@ fun OrderDetailRow(imageRes: Int, text: String) {
 fun OrderItemsWithReviews(order: Order) {
     Text("Order Items", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
 
-    val items = order.orderDetails.split(",").map { it.trim() }
+    val items = order.orderDetails?.split(",")?.map { it.trim() }
 
-    items.forEachIndexed { index, item ->
-        var isReviewed by remember { mutableStateOf(false) }
-        OrderItemRowWithReview(
-            item = item,  // Pass the individual item
-            price = "$5.33", // Adjust price dynamically if needed
-            orderStatus = order.orderStatus,
-            isReviewed = isReviewed,
-            onReviewSubmitted = { isReviewed = true }
-        )
+    if (items != null) {
+        items.forEachIndexed { index, item ->
+            var isReviewed by remember { mutableStateOf(false) }
+            OrderItemRowWithReview(
+                item = item,  // Pass the individual item
+                price = "$5.33", // Adjust price dynamically if needed
+                orderStatus = order.orderStatus ?: OrderStatus.PENDING,
+                isReviewed = isReviewed,
+                onReviewSubmitted = { isReviewed = true }
+            )
+        }
     }
 
     HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))

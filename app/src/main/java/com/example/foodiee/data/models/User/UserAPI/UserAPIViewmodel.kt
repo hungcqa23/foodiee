@@ -15,6 +15,7 @@ import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import androidx.lifecycle.*
+import com.example.foodiee.data.models.Role
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 
@@ -102,6 +103,17 @@ class UserAPIViewModel(context: Context) : ViewModel() {
         clearToken()
         _currentUser.value = null
         _isLoggedIn.value = false
+    }
+
+    fun updateRole(role: Role, id: String) {
+        viewModelScope.launch {
+            try {
+                val response = RetrofitInstance.UserApi.updateRole(role, id)
+                _currentUser.value = response
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
     }
 
     // Retrieve token from SharedPreferences

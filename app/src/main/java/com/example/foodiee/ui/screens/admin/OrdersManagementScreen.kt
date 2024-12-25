@@ -1,5 +1,6 @@
 package com.example.foodiee.ui.screens.admin
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -17,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.foodiee.data.models.Course.CourseViewModel
+import com.example.foodiee.data.models.Course.OrderRespond
 import com.example.foodiee.data.models.Order
 import com.example.foodiee.data.models.OrderStatus
 import com.example.foodiee.data.models.User.UserAPI.UserAPIViewModel
@@ -30,7 +32,10 @@ fun OrdersManagementScreen(navController: NavController, userViewModel: UserView
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     val ordersData = courseViewModel.orders.collectAsState().value
     LaunchedEffect(selectedTabIndex) {
-        courseViewModel.getOrders(userAPIViewModel.getToken()!!, tabs[selectedTabIndex])
+        Log.d("orderfatal", "fetching orders")
+        userAPIViewModel.getToken()?.let { courseViewModel.getOrders(it, tabs[selectedTabIndex]) }
+        Log.d("orderfatal", "fetched orders")
+        Log.d("orderfatal", ordersData.toString())
     }
 
     Scaffold(
@@ -61,9 +66,22 @@ fun OrdersManagementScreen(navController: NavController, userViewModel: UserView
                     modifier = Modifier
                         .fillMaxSize()
                 ) {
-
-                    items(ordersData) { item ->
-                        OrderItem(order = item, navController = navController)
+                    Log.d("orderfatal", (ordersData == emptyList<Order>()).toString())
+                    if(ordersData.isEmpty()) {
+                        item {
+                            Text(
+                                text = "No orders found",
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                color = Color.Gray
+                            )
+                        }
+                    }else{
+                        items(ordersData) { item ->
+                            Log.d("orderfatal", item.toString())
+                            OrderItem(order = item, navController = navController)
+                        }
                     }
                 }
             }
@@ -73,7 +91,7 @@ fun OrdersManagementScreen(navController: NavController, userViewModel: UserView
 
 
 @Composable
-fun OrderItem(order: Order, navController: NavController) {
+fun OrderItem(order: OrderRespond, navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -83,7 +101,7 @@ fun OrderItem(order: Order, navController: NavController) {
             .background(Color.White)               // Background color for the shadowed card
             .padding(16.dp)
             .clickable(
-                onClick = { navController.navigate("orderDetail/${order.orderId}") }
+                onClick = { navController.navigate("orderDetail/${order.id}") }
             ),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
@@ -92,12 +110,14 @@ fun OrderItem(order: Order, navController: NavController) {
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(
-                text = order.customerName,
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 20.sp,
-                letterSpacing = (-0.2).sp
-            )
+            order.user?.fullName?.let {
+                Text(
+                    text = it,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 20.sp,
+                    letterSpacing = (-0.2).sp
+                )
+            }
 
             Box(
                 modifier = Modifier
@@ -106,7 +126,7 @@ fun OrderItem(order: Order, navController: NavController) {
                     .padding(vertical = 1.dp, horizontal = 10.dp)
             ) {
                 Text(
-                    text = if (order.orderStatus == OrderStatus.PENDING) "Pending" else "Completed",
+                    text = order.status ?: "Pending",
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 12.sp,
                     color = Color.White
@@ -114,25 +134,31 @@ fun OrderItem(order: Order, navController: NavController) {
             }
         }
 
-        Text(
-            text = order.orderDetails,
-            color = Slate500
-        )
+        order.paymentType?.let {
+            Text(
+                text = it,
+                color = Slate500
+            )
+        }
 
         Row(
             modifier = Modifier
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(
-                text = order.price,
-                fontWeight = FontWeight.SemiBold,
-            )
+            order.cartItems?.let {
+                val sum = it.sumOf { cartItem -> cartItem.course.price * cartItem.quantity }
+                val roundedSum = String.format("%.2f", sum) // Rounds to 2 decimal places
+                Text(
+                    text = roundedSum,
+                    fontWeight = FontWeight.SemiBold,
+                )
+            }
 
-            Text(
-                text = order.time,
-                letterSpacing = (-0.3).sp
-            )
+                Text(
+                    text = order.createdAt ?: "Unknown",
+                    letterSpacing = (-0.3).sp
+                )
         }
     }
 }
