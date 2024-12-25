@@ -26,6 +26,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -45,6 +46,7 @@ import com.example.foodiee.data.models.Course.CartItem
 import com.example.foodiee.data.models.Course.Course
 import com.example.foodiee.data.models.Course.CourseViewModel
 import com.example.foodiee.data.models.Course.OrderRespond
+import com.example.foodiee.data.models.Role
 import com.example.foodiee.data.models.User.UserAPI.User
 import com.example.foodiee.data.models.User.UserAPI.UserAPIViewModel
 import com.example.foodiee.data.models.User.UserViewModel
@@ -94,8 +96,18 @@ fun OrderDetailScreen(
     }
     var totalAmount by remember { mutableStateOf("0.00") }
 
+    userAPIViewModel.getToken()?.let { Log.d("token", it) }
+
+    LaunchedEffect(Unit) {
+        userAPIViewModel.getToken()?.let { userAPIViewModel.getCurrentUser(it) }
+        Log.d("token", userAPIViewModel.getToken() ?: "null")
+    }
+    Log.d("Current User", userAPIViewModel.currentUser.value.toString())
+//    val user by userAPIViewModel.currentUser.observeAsState()
+
     LaunchedEffect(orderId) {
         Log.d("orderfatal", "fetching order")
+        userAPIViewModel.getCurrentUser(userAPIViewModel.getToken() ?: "")
         Log.d("order ID: ", orderId)  // Log the value of orderId to check if it's correct
         userAPIViewModel.getToken()?.let { token ->
             courseViewModel.getOrderById(token, orderId) { item ->
@@ -134,22 +146,25 @@ fun OrderDetailScreen(
 //                NoteSection(note = order.note)
                 Spacer(modifier = Modifier.height(48.dp))
             }
-
-            MarkAsCompletedButton(
-                modifier = Modifier.align(Alignment.BottomCenter),
-                isFinished = if (order.value.status == "Completed") true else false,
-                update = {
-                    if (token != null) {
-                        courseViewModel.updateOrder(
-                            token,
-                            orderId.toInt(),
-                            "completed",
-                            onSuccess = {
-                                navController.popBackStack()
-                            })
+            
+            if (userAPIViewModel.currentUser.value?.role != Role.USER) {
+                MarkAsCompletedButton(
+                    modifier = Modifier.align(Alignment.BottomCenter),
+                    isFinished = order.value.status == "Completed",
+                    update = {
+                        if (token != null) {
+                            courseViewModel.updateOrder(
+                                token,
+                                orderId.toInt(),
+                                "completed",
+                                onSuccess = {
+                                    navController.popBackStack()
+                                }
+                            )
+                        }
                     }
-                }
-            )
+                )
+            }
         }
     }
 }
